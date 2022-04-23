@@ -5,7 +5,7 @@ const offseterAbi = [
 ]
 
 export const autoOffset = async (poolToken, amount) => {
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(process.env.NODE_API_RPC_URL);
     const signer = provider.getSigner();
 
     const offsetter = new ethers.Contract(

@@ -1,0 +1,22 @@
+{
+  "name": "offsetter-sdk",
+  "version": "0.1.0",
+  "description": "Offset carbon footprint automatically",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "carbon",
+    "offset",
+    "bct",
+    "nct",
+    "toucan"
+  ],
+  "author": "Michalis Kargakis",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "ethers": "^5.6.4"
+  }
+}

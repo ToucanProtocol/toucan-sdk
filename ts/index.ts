@@ -124,3 +124,5 @@ class OffsetHelperClient {
     }
   };
 }
+
+export default OffsetHelperClient;

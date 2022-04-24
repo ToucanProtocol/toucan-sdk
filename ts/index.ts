@@ -11,33 +11,35 @@ const offseterAbi = [
   "function autoOffsetUsingPoolToken(address spender, uint256 amount)",
 ];
 
-type connectReturn = {
-  walletAddress: string;
-  provider: ethers.providers.Web3Provider;
-};
-
 class OffsetHelperClient {
   provider:
     | ethers.providers.Web3Provider
     | ethers.providers.JsonRpcProvider
     | undefined;
+  signer: ethers.providers.Provider | ethers.Signer | undefined;
+  walletAddress: string | undefined;
 
   constructor() {}
 
   /**
    * @notice to be used on the backend
+   * @param privateKey the key of the wallet to use when signing transactions
    * @param rpcUrl the rpc url you want to use for the provider (can be an Infura or Alchemy url)
-   * @param network the default rpc url should be for the network you specify here
    */
-  connectRpc = (rpcUrl?: string, network?: "polygon" | "mumbai") => {
+  connectRpc = (
+    walletAddress?: string,
+    privateKey?: string,
+    rpcUrl?: string
+  ) => {
     try {
-      const defaultUrl =
-        network == "polygon"
-          ? process.env.MATIC_NODE_API_RPC_URL
-          : process.env.MUMBAI_NODE_API_RPC_URL;
       this.provider = new ethers.providers.JsonRpcProvider(
-        rpcUrl || defaultUrl || ""
+        rpcUrl || process.env.NODE_API_RPC_URL || ""
       );
+      this.signer = new ethers.Wallet(
+        privateKey || process.env.PRIVATE_KEY || "",
+        this.provider
+      );
+      this.walletAddress = walletAddress;
     } catch (error: any) {
       console.error("error when connecting rpc:", error.message);
       return error;
@@ -49,18 +51,21 @@ class OffsetHelperClient {
    * @param network the network you want to connect the user to ("polygon" or "mumbai")
    * @returns a string representing the connected wallet address or an error if it fails
    */
-  connectWallet = async (
-    network: "polygon" | "mumbai"
-  ): Promise<connectReturn | Error> => {
+  connectWallet = async (network: "polygon" | "mumbai") => {
     try {
+      // check wallet (e.g.: Metamask)
       // @ts-ignore
       const { ethereum } = window;
       if (!ethereum) {
         throw new Error("You need a wallet.");
       }
 
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const { chainId } = await provider.getNetwork();
+      // set the provider and signer
+      this.provider = new ethers.providers.Web3Provider(ethereum);
+      this.signer = this.provider.getSigner();
+
+      // check network
+      const { chainId } = await this.provider.getNetwork();
       if (
         chainId !=
         (network == "polygon" ? networkIds.polygon : networkIds.mumbai)
@@ -68,11 +73,11 @@ class OffsetHelperClient {
         throw new Error("Make sure you are on the correct network.");
       }
 
+      // get wallet address
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
-
-      return { walletAddress: accounts[0], provider: provider };
+      this.walletAddress = accounts[0];
     } catch (error: any) {
       console.error("error when connecting wallet", error.message);
       return error;
@@ -80,7 +85,7 @@ class OffsetHelperClient {
   };
 
   /**
-   *
+   * @notice you need to connect wallet or rpc first
    * @param poolSymbol either "BCT" or "NCT"
    * @param amount amount of CO2 tons to offset
    */
@@ -93,13 +98,15 @@ class OffsetHelperClient {
         throw new Error("Make sure you connected a provider.");
       }
 
-      const signer = this.provider.getSigner();
-
       const poolTokenAddress =
         poolSymbol == "BCT" ? addresses.bct : addresses.nct;
 
       // approve OffsetHelper from pool token
-      const poolToken = new ethers.Contract(poolTokenAddress, poolAbi, signer);
+      const poolToken = new ethers.Contract(
+        poolTokenAddress,
+        poolAbi,
+        this.signer
+      );
 
       const approveTxn: ethers.ContractTransaction = await poolToken.approve(
         addresses.offsetHelper,
@@ -113,7 +120,7 @@ class OffsetHelperClient {
       const offsetHelper = new ethers.Contract(
         addresses.offsetHelper,
         offseterAbi,
-        signer
+        this.signer
       );
       const offsetTxn: ethers.ContractTransaction =
         await offsetHelper.autoOffsetUsingPoolToken(

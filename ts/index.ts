@@ -48,7 +48,6 @@ class OffsetHelperClient {
   /**
    * @notice to be used in the browser
    * @param network the network you want to connect the user to ("polygon" or "mumbai")
-   * @returns a string representing the connected wallet address or an error if it fails
    */
   connectWallet = async (network: "polygon" | "mumbai") => {
     try {

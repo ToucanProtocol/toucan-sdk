@@ -27,6 +27,7 @@ class OffsetHelperClient {
   /**
    * @notice to be used on the backend
    * @param rpcUrl the rpc url you want to use for the provider (can be an Infura or Alchemy url)
+   * @param network the default rpc url should be for the network you specify here
    */
   connectRpc = (rpcUrl?: string, network?: "polygon" | "mumbai") => {
     try {
@@ -45,7 +46,7 @@ class OffsetHelperClient {
 
   /**
    * @notice to be used in the browser
-   * @param networkId the network you want to connect the user to ("polygon" or "mumbai")
+   * @param network the network you want to connect the user to ("polygon" or "mumbai")
    * @returns a string representing the connected wallet address or an error if it fails
    */
   connectWallet = async (
@@ -80,7 +81,7 @@ class OffsetHelperClient {
 
   /**
    *
-   * @param poolToken either BCT or NCT
+   * @param poolSymbol either "BCT" or "NCT"
    * @param amount amount of CO2 tons to offset
    */
   autoOffset = async (

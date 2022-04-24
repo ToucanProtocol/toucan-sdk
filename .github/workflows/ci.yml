@@ -29,7 +29,8 @@ jobs:
       - name: Compile code
         run: yarn tsc
 
-      # - name: Test contract
-      #   run: npx hardhat test
+      - name: Test code
+        run: yarn test
+
       # - name: Deploy contract
       #   run: npx hardhat run ./scripts/deploy

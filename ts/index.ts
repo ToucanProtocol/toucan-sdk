@@ -35,10 +35,9 @@ class OffsetHelperClient {
       this.provider = new ethers.providers.JsonRpcProvider(
         rpcUrl || process.env.NODE_API_RPC_URL || ""
       );
-      this.signer = new ethers.Wallet(
-        privateKey || process.env.PRIVATE_KEY || "",
-        this.provider
-      );
+      this.signer = privateKey
+        ? new ethers.Wallet(privateKey, this.provider)
+        : this.provider.getSigner();
       this.walletAddress = walletAddress;
     } catch (error: any) {
       console.error("error when connecting rpc:", error.message);

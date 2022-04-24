@@ -28,10 +28,14 @@ class OffsetHelperClient {
    * @notice to be used on the backend
    * @param rpcUrl the rpc url you want to use for the provider (can be an Infura or Alchemy url)
    */
-  connectRpc = (rpcUrl?: string) => {
+  connectRpc = (rpcUrl?: string, network?: "polygon" | "mumbai") => {
     try {
+      const defaultUrl =
+        network == "polygon"
+          ? process.env.MATIC_NODE_API_RPC_URL
+          : process.env.MUMBAI_NODE_API_RPC_URL;
       this.provider = new ethers.providers.JsonRpcProvider(
-        rpcUrl || process.env.NODE_API_RPC_URL || ""
+        rpcUrl || defaultUrl || ""
       );
     } catch (error: any) {
       console.error("error when connecting rpc:", error.message);

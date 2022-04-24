@@ -7,4 +7,12 @@ describe("OffsetHelper SDK", function () {
 
     expect(ohc.provider).to.be.eql(undefined);
   });
+
+  it("Should connect a default rpc url", function () {
+    const ohc = new OffsetHelperClient();
+
+    ohc.connectRpc();
+
+    expect(ohc.provider).to.not.be.eql(undefined);
+  });
 });

@@ -77,27 +77,32 @@ class OffsetHelperClient {
       });
       this.walletAddress = accounts[0];
     } catch (error: any) {
-      console.error("error when connecting wallet", error.message);
+      console.error("error when connecting wallet:", error.message);
       return error;
     }
   };
 
   /**
    * @notice you need to connect wallet or rpc first
+   * @notice this method may take up to even 1 minute to give a result
    * @param poolSymbol either "BCT" or "NCT"
    * @param amount amount of CO2 tons to offset
    */
   autoOffset = async (
     poolSymbol: string,
-    amount: string
+    amount: string,
+    network: "polygon" | "mumbai"
   ): Promise<ethers.ContractReceipt | Error> => {
     try {
       if (!this.provider) {
         throw new Error("Make sure you connected a provider.");
       }
 
+      const extractedAddresses =
+        network == "polygon" ? addresses.polygon : addresses.mumbai;
+
       const poolTokenAddress =
-        poolSymbol == "BCT" ? addresses.bct : addresses.nct;
+        poolSymbol == "BCT" ? extractedAddresses.bct : extractedAddresses.nct;
 
       // approve OffsetHelper from pool token
       const poolToken = new ethers.Contract(
@@ -107,7 +112,7 @@ class OffsetHelperClient {
       );
 
       const approveTxn: ethers.ContractTransaction = await poolToken.approve(
-        addresses.offsetHelper,
+        extractedAddresses.offsetHelper,
         parseEther(amount)
       );
 
@@ -116,21 +121,24 @@ class OffsetHelperClient {
 
       // auto offset using pool token
       const offsetHelper = new ethers.Contract(
-        addresses.offsetHelper,
+        extractedAddresses.offsetHelper,
         offseterAbi,
         this.signer
       );
       const offsetTxn: ethers.ContractTransaction =
         await offsetHelper.autoOffsetUsingPoolToken(
-          addresses.nct,
-          parseEther(amount)
+          extractedAddresses.nct,
+          parseEther(amount),
+          {
+            gasLimit: 2000000,
+          }
         );
 
       // wait for offset receipt
       return await offsetTxn.wait();
     } catch (error: any) {
-      console.error("error when offseting", error.message);
-      return error;
+      console.error("error when offseting:", error.message);
+      return new Error(error.message);
     }
   };
 }

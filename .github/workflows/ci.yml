@@ -1,4 +1,4 @@
-name: Compile TypeScript
+name: CI
 
 on:
   push:
@@ -27,10 +27,4 @@ jobs:
         run: yarn
 
       - name: Compile code
-        run: yarn tsc
-
-      # - name: Test code
-      #   run: yarn test
-
-      # - name: Deploy contract
-      #   run: npx hardhat run ./scripts/deploy
+        run: yarn build

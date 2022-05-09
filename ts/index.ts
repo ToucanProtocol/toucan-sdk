@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
+import { OffsetHelper } from "./typechain";
 import addresses from "./utils/addresses";
 import networkIds from "./utils/networkIds";
 
@@ -119,8 +120,8 @@ class OffsetHelperClient {
       // wait for approval receipt
       await approveTxn.wait();
 
-      // auto offset using pool token
-      const offsetHelper = new ethers.Contract(
+      // @ts-ignore
+      const offsetHelper: OffsetHelper = new ethers.Contract(
         extractedAddresses.offsetHelper,
         offseterAbi,
         this.signer

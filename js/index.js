@@ -26,11 +26,16 @@ class OffsetHelperClient {
     constructor() {
         /**
          * @notice to be used on the backend
+         * @param privateKey the key of the wallet to use when signing transactions
          * @param rpcUrl the rpc url you want to use for the provider (can be an Infura or Alchemy url)
          */
-        this.connectRpc = (rpcUrl) => {
+        this.connectRpc = (walletAddress, privateKey, rpcUrl) => {
             try {
                 this.provider = new ethers_1.ethers.providers.JsonRpcProvider(rpcUrl || process.env.NODE_API_RPC_URL || "");
+                this.signer = privateKey
+                    ? new ethers_1.ethers.Wallet(privateKey, this.provider)
+                    : this.provider.getSigner();
+                this.walletAddress = walletAddress;
             }
             catch (error) {
                 console.error("error when connecting rpc:", error.message);
@@ -39,58 +44,65 @@ class OffsetHelperClient {
         };
         /**
          * @notice to be used in the browser
-         * @param networkId the network you want to connect the user to ("polygon" or "mumbai")
-         * @returns a string representing the connected wallet address or an error if it fails
+         * @param network the network you want to connect the user to ("polygon" or "mumbai")
          */
         this.connectWallet = (network) => __awaiter(this, void 0, void 0, function* () {
             try {
+                // check wallet (e.g.: Metamask)
                 // @ts-ignore
                 const { ethereum } = window;
                 if (!ethereum) {
                     throw new Error("You need a wallet.");
                 }
-                const provider = new ethers_1.ethers.providers.Web3Provider(ethereum);
-                const { chainId } = yield provider.getNetwork();
+                // set the provider and signer
+                this.provider = new ethers_1.ethers.providers.Web3Provider(ethereum);
+                this.signer = this.provider.getSigner();
+                // check network
+                const { chainId } = yield this.provider.getNetwork();
                 if (chainId !=
                     (network == "polygon" ? networkIds_1.default.polygon : networkIds_1.default.mumbai)) {
                     throw new Error("Make sure you are on the correct network.");
                 }
+                // get wallet address
                 const accounts = yield ethereum.request({
                     method: "eth_requestAccounts",
                 });
-                return { walletAddress: accounts[0], provider: provider };
+                this.walletAddress = accounts[0];
             }
             catch (error) {
-                console.error("error when connecting wallet", error.message);
+                console.error("error when connecting wallet:", error.message);
                 return error;
             }
         });
         /**
-         *
-         * @param poolToken either BCT or NCT
+         * @notice you need to connect wallet or rpc first
+         * @notice this method may take up to even 1 minute to give a result
+         * @param poolSymbol either "BCT" or "NCT"
          * @param amount amount of CO2 tons to offset
          */
-        this.autoOffset = (poolSymbol, amount) => __awaiter(this, void 0, void 0, function* () {
+        this.autoOffset = (poolSymbol, amount, network) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!this.provider) {
                     throw new Error("Make sure you connected a provider.");
                 }
-                const signer = this.provider.getSigner();
-                const poolTokenAddress = poolSymbol == "BCT" ? addresses_1.default.bct : addresses_1.default.nct;
+                const extractedAddresses = network == "polygon" ? addresses_1.default.polygon : addresses_1.default.mumbai;
+                const poolTokenAddress = poolSymbol == "BCT" ? extractedAddresses.bct : extractedAddresses.nct;
                 // approve OffsetHelper from pool token
-                const poolToken = new ethers_1.ethers.Contract(poolTokenAddress, poolAbi, signer);
-                const approveTxn = yield poolToken.approve(addresses_1.default.offsetHelper, (0, utils_1.parseEther)(amount));
+                const poolToken = new ethers_1.ethers.Contract(poolTokenAddress, poolAbi, this.signer);
+                const approveTxn = yield poolToken.approve(extractedAddresses.offsetHelper, (0, utils_1.parseEther)(amount));
                 // wait for approval receipt
                 yield approveTxn.wait();
-                // auto offset using pool token
-                const offsetHelper = new ethers_1.ethers.Contract(addresses_1.default.offsetHelper, offseterAbi, signer);
-                const offsetTxn = yield offsetHelper.autoOffsetUsingPoolToken(addresses_1.default.nct, (0, utils_1.parseEther)(amount));
+                // @ts-ignore
+                const offsetHelper = new ethers_1.ethers.Contract(extractedAddresses.offsetHelper, offseterAbi, this.signer);
+                const offsetTxn = yield offsetHelper.autoOffsetUsingPoolToken(extractedAddresses.nct, (0, utils_1.parseEther)(amount), {
+                    gasLimit: 2000000,
+                });
                 // wait for offset receipt
                 return yield offsetTxn.wait();
             }
             catch (error) {
-                console.error("error when offseting", error.message);
-                return error;
+                console.error("error when offseting:", error.message);
+                return new Error(error.message);
             }
         });
     }

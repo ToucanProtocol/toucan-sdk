@@ -60,8 +60,7 @@ class OffsetHelperClient {
     // check network
     const { chainId } = await this.provider.getNetwork();
     if (
-      chainId !=
-      (network == "polygon" ? networkIds.polygon : networkIds.mumbai)
+      chainId != (network == "polygon" ? networkIds.polygon : networkIds.mumbai)
     ) {
       throw new Error("Make sure you are on the correct network.");
     }
@@ -117,7 +116,7 @@ class OffsetHelperClient {
     const offsetTxn: ethers.ContractTransaction =
       await offsetHelper.autoOffsetUsingPoolToken(
         extractedAddresses.nct,
-        parseEther(amount),
+        parseEther(amount)
       );
 
     // wait for offset receipt

@@ -28,3 +28,9 @@ jobs:
 
       - name: Compile code
         run: yarn build
+
+      - name: Format
+        run: yarn format:check
+
+      - name: Lint
+        run: yarn lint

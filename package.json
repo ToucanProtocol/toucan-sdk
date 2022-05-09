@@ -4,7 +4,7 @@
   "description": "Offset carbon footprint automatically",
   "main": "index.js",
   "scripts": {
-    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'"
+    "build": "tsc"
   },
   "keywords": [
     "carbon",
@@ -13,7 +13,7 @@
     "nct",
     "toucan"
   ],
-  "author": "Michalis Kargakis",
+  "author": "Toucan Protocol",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.0",

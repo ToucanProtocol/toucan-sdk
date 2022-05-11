@@ -2,12 +2,12 @@
 
 We develop using [triangular workflows](https://github.blog/2015-07-29-git-2-5-including-multiple-worktrees-and-triangular-workflows/#improved-support-for-triangular-workflows) on git.
 
-For local deployment please create a fork of the [Offseter SDK repo](https://github.com/ToucanProtocol/offseter-sdk).
+For local deployment please create a fork of the [Toucan SDK repo](https://github.com/ToucanProtocol/toucan-sdk).
 
 Clone your fork:
 
 ```bash
-git clone git@github.com:YOURUSERNAME/offseter-sdk.git
+git clone git@github.com:YOURUSERNAME/toucan-sdk.git
 git config remote.pushdefault origin
 git config push.default current
 ```
@@ -15,7 +15,7 @@ git config push.default current
 next add the root repository as `upstream`:
 
 ```bash
-git remote add upstream git@github.com:ToucanProtocol/offseter-sdk.git
+git remote add upstream git@github.com:ToucanProtocol/toucan-sdk.git
 git fetch upstream
 ```
 
@@ -28,10 +28,10 @@ git remote -v
 and you should see something like:
 
 ```bash
-origin	git@github.com:YOURUSERNAME/offseter-sdk.git (fetch)
-origin	git@github.com:YOURUSERNAME/offseter-sdk.git (push)
-upstream	git@github.com:ToucanProtocol/offseter-sdk.git (fetch)
-upstream	git@github.com:ToucanProtocol/offseter-sdk.git (push)
+origin	git@github.com:YOURUSERNAME/toucan-sdk.git (fetch)
+origin	git@github.com:YOURUSERNAME/toucan-sdk.git (push)
+upstream	git@github.com:ToucanProtocol/toucan-sdk.git (fetch)
+upstream	git@github.com:ToucanProtocol/toucan-sdk.git (push)
 ```
 
 Feature flow:
@@ -46,4 +46,4 @@ Cmd+shift+. to copy your issue number from linear, and use it as your branch nam
 git checkout -b co2-190-small-edits-on-the-home-page
 ```
 
-To open a PR push to your fork and open your PR to `ToucanProtocol/offseter-sdk`.
+To open a PR push to your fork and open your PR to `ToucanProtocol/toucan-sdk`.

@@ -1,8 +1,8 @@
 {
   "name": "toucan-sdk",
-  "version": "0.1.0",
-  "description": "Toucan Protocol SDK",
-  "main": "index.js",
+  "version": "0.1.1-alpha",
+  "description": "A JavaScript SDK for Toucan Protocol. Works in the web browser and Node.js.",
+  "main": "index.ts",
   "scripts": {
     "build": "tsc",
     "format:check": "prettier --check \"**/*.ts\"",

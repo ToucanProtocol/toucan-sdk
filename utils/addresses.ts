@@ -1,10 +1,10 @@
-interface IfcOneNetworksAddresses {
+export interface IfcOneNetworksAddresses {
   bct: string;
   nct: string;
   offsetHelper: string;
 }
 
-interface IfcAddresses {
+export interface IfcAddresses {
   polygon: IfcOneNetworksAddresses;
   mumbai: IfcOneNetworksAddresses;
 }

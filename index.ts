@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 
+import { allowedNetworks } from "./types";
 import addresses from "./utils/addresses";
 import networkIds from "./utils/networkIds";
 
@@ -19,11 +20,15 @@ class OffsetHelperClient {
     | undefined;
   signer: ethers.providers.Provider | ethers.Signer | undefined;
   walletAddress: string | undefined;
+  network: allowedNetworks;
 
-  constructor() {}
+  constructor(network: allowedNetworks) {
+    this.network = network;
+  }
 
   /**
    * @notice to be used on the backend
+   * @param walletAddress the address of the wallet you want signing transactions
    * @param privateKey the key of the wallet to use when signing transactions
    * @param rpcUrl the rpc url you want to use for the provider (can be an Infura or Alchemy url)
    */
@@ -33,7 +38,7 @@ class OffsetHelperClient {
     rpcUrl?: string
   ): void => {
     this.provider = new ethers.providers.StaticJsonRpcProvider(
-      rpcUrl || process.env.NODE_API_RPC_URL || ""
+      rpcUrl || "https://matic-mainnet.chainstacklabs.com"
     );
     this.signer = privateKey
       ? new ethers.Wallet(privateKey, this.provider)
@@ -43,9 +48,8 @@ class OffsetHelperClient {
 
   /**
    * @notice to be used in the browser
-   * @param network the network you want to connect the user to ("polygon" or "mumbai")
    */
-  connectWallet = async (network: "polygon" | "mumbai"): Promise<void> => {
+  connectWallet = async (): Promise<void> => {
     // check wallet (e.g.: Metamask)
     // @ts-ignore
     const { ethereum } = window;
@@ -60,7 +64,8 @@ class OffsetHelperClient {
     // check network
     const { chainId } = await this.provider.getNetwork();
     if (
-      chainId != (network == "polygon" ? networkIds.polygon : networkIds.mumbai)
+      chainId !=
+      (this.network == "polygon" ? networkIds.polygon : networkIds.mumbai)
     ) {
       throw new Error("Make sure you are on the correct network.");
     }
@@ -80,15 +85,14 @@ class OffsetHelperClient {
    */
   autoOffset = async (
     poolSymbol: string,
-    amount: string,
-    network: "polygon" | "mumbai"
+    amount: string
   ): Promise<ethers.ContractReceipt> => {
     if (!this.provider) {
       throw new Error("Make sure you connected a provider.");
     }
 
     const extractedAddresses =
-      network == "polygon" ? addresses.polygon : addresses.mumbai;
+      this.network == "polygon" ? addresses.polygon : addresses.mumbai;
 
     const poolTokenAddress =
       poolSymbol == "BCT" ? extractedAddresses.bct : extractedAddresses.nct;

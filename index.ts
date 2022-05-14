@@ -45,10 +45,6 @@ class OffsetHelperClient {
     poolSymbol: string,
     amount: string
   ): Promise<ethers.ContractReceipt> => {
-    if (!this.provider) {
-      throw new Error("Make sure you connected a provider.");
-    }
-
     const poolTokenAddress =
       poolSymbol == "BCT" ? this.addresses.bct : this.addresses.nct;
 

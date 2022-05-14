@@ -3,7 +3,6 @@ import { parseEther } from "ethers/lib/utils";
 
 import { allowedNetworks, providerish, signerish } from "./types";
 import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
-import networkIds from "./utils/networkIds";
 
 const poolAbi = [
   "function approve(address _poolToken, uint256 _amountToOffset)",
@@ -19,6 +18,9 @@ class OffsetHelperClient {
   walletAddress: string;
   network: allowedNetworks;
   addresses: IfcOneNetworksAddresses;
+  offsetHelper: ethers.Contract;
+  bct: ethers.Contract;
+  nct: ethers.Contract;
 
   constructor(
     network: allowedNetworks,
@@ -33,10 +35,17 @@ class OffsetHelperClient {
 
     this.addresses =
       this.network == "polygon" ? addresses.polygon : addresses.mumbai;
+
+    this.offsetHelper = new ethers.Contract(
+      this.addresses.offsetHelper,
+      offseterAbi,
+      this.signer
+    );
+    this.bct = new ethers.Contract(this.addresses.bct, poolAbi, this.signer);
+    this.nct = new ethers.Contract(this.addresses.nct, poolAbi, this.signer);
   }
 
   /**
-   * @notice you need to connect wallet or rpc first
    * @notice this method may take up to even 1 minute to give a result
    * @param poolSymbol either "BCT" or "NCT"
    * @param amount amount of CO2 tons to offset
@@ -45,36 +54,19 @@ class OffsetHelperClient {
     poolSymbol: string,
     amount: string
   ): Promise<ethers.ContractReceipt> => {
-    const poolTokenAddress =
-      poolSymbol == "BCT" ? this.addresses.bct : this.addresses.nct;
-
-    // approve OffsetHelper from pool token
-    const poolToken = new ethers.Contract(
-      poolTokenAddress,
-      poolAbi,
-      this.signer
-    );
+    const poolToken = poolSymbol == "BCT" ? this.bct : this.nct;
 
     const approveTxn: ethers.ContractTransaction = await poolToken.approve(
       this.addresses.offsetHelper,
       parseEther(amount)
     );
-
-    // wait for approval receipt
     await approveTxn.wait();
 
-    const offsetHelper = new ethers.Contract(
-      this.addresses.offsetHelper,
-      offseterAbi,
-      this.signer
-    );
     const offsetTxn: ethers.ContractTransaction =
-      await offsetHelper.autoOffsetUsingPoolToken(
+      await this.offsetHelper.autoOffsetUsingPoolToken(
         this.addresses.nct,
         parseEther(amount)
       );
-
-    // wait for offset receipt
     return await offsetTxn.wait();
   };
 }

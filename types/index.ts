@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-export type allowedNetworks = "polygon" | "mumbai";
+export type Network = "polygon" | "mumbai";
 
 export type providerish =
   | ethers.providers.Web3Provider

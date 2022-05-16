@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 
-import { allowedNetworks, providerish, signerish } from "./types";
+import { Network, providerish, signerish } from "./types";
 import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
 
 const poolAbi = [
@@ -16,14 +16,14 @@ class OffsetHelperClient {
   provider: providerish;
   signer: signerish;
   walletAddress: string;
-  network: allowedNetworks;
+  network: Network;
   addresses: IfcOneNetworksAddresses;
   offsetHelper: ethers.Contract;
   bct: ethers.Contract;
   nct: ethers.Contract;
 
   constructor(
-    network: allowedNetworks,
+    network: Network,
     walletAddress: string,
     provider: providerish,
     signer: signerish

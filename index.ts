@@ -1,9 +1,8 @@
 import { ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 
-import { allowedNetworks } from "./types";
-import addresses from "./utils/addresses";
-import networkIds from "./utils/networkIds";
+import { Network, providerish, signerish } from "./types";
+import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
 
 const poolAbi = [
   "function approve(address _poolToken, uint256 _amountToOffset)",
@@ -14,71 +13,39 @@ const offseterAbi = [
 ];
 
 class OffsetHelperClient {
-  provider:
-    | ethers.providers.Web3Provider
-    | ethers.providers.JsonRpcProvider
-    | undefined;
-  signer: ethers.providers.Provider | ethers.Signer | undefined;
-  walletAddress: string | undefined;
-  network: allowedNetworks;
+  provider: providerish;
+  signer: signerish;
+  walletAddress: string;
+  network: Network;
+  addresses: IfcOneNetworksAddresses;
+  offsetHelper: ethers.Contract;
+  bct: ethers.Contract;
+  nct: ethers.Contract;
 
-  constructor(network: allowedNetworks) {
+  constructor(
+    network: Network,
+    walletAddress: string,
+    provider: providerish,
+    signer: signerish
+  ) {
     this.network = network;
+    this.walletAddress = walletAddress;
+    this.provider = provider;
+    this.signer = signer;
+
+    this.addresses =
+      this.network == "polygon" ? addresses.polygon : addresses.mumbai;
+
+    this.offsetHelper = new ethers.Contract(
+      this.addresses.offsetHelper,
+      offseterAbi,
+      this.signer
+    );
+    this.bct = new ethers.Contract(this.addresses.bct, poolAbi, this.signer);
+    this.nct = new ethers.Contract(this.addresses.nct, poolAbi, this.signer);
   }
 
   /**
-   * @notice to be used on the backend
-   * @param walletAddress the address of the wallet you want signing transactions
-   * @param privateKey the key of the wallet to use when signing transactions
-   * @param rpcUrl the rpc url you want to use for the provider (can be an Infura or Alchemy url)
-   */
-  connectRpc = (
-    walletAddress?: string,
-    privateKey?: string,
-    rpcUrl?: string
-  ): void => {
-    this.provider = new ethers.providers.StaticJsonRpcProvider(
-      rpcUrl || "https://matic-mainnet.chainstacklabs.com"
-    );
-    this.signer = privateKey
-      ? new ethers.Wallet(privateKey, this.provider)
-      : this.provider.getSigner();
-    this.walletAddress = walletAddress;
-  };
-
-  /**
-   * @notice to be used in the browser
-   */
-  connectWallet = async (): Promise<void> => {
-    // check wallet (e.g.: Metamask)
-    // @ts-ignore
-    const { ethereum } = window;
-    if (!ethereum) {
-      throw new Error("You need a wallet.");
-    }
-
-    // set the provider and signer
-    this.provider = new ethers.providers.Web3Provider(ethereum);
-    this.signer = this.provider.getSigner();
-
-    // check network
-    const { chainId } = await this.provider.getNetwork();
-    if (
-      chainId !=
-      (this.network == "polygon" ? networkIds.polygon : networkIds.mumbai)
-    ) {
-      throw new Error("Make sure you are on the correct network.");
-    }
-
-    // get wallet address
-    const accounts = await ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    this.walletAddress = accounts[0];
-  };
-
-  /**
-   * @notice you need to connect wallet or rpc first
    * @notice this method may take up to even 1 minute to give a result
    * @param poolSymbol either "BCT" or "NCT"
    * @param amount amount of CO2 tons to offset
@@ -87,43 +54,19 @@ class OffsetHelperClient {
     poolSymbol: string,
     amount: string
   ): Promise<ethers.ContractReceipt> => {
-    if (!this.provider) {
-      throw new Error("Make sure you connected a provider.");
-    }
-
-    const extractedAddresses =
-      this.network == "polygon" ? addresses.polygon : addresses.mumbai;
-
-    const poolTokenAddress =
-      poolSymbol == "BCT" ? extractedAddresses.bct : extractedAddresses.nct;
-
-    // approve OffsetHelper from pool token
-    const poolToken = new ethers.Contract(
-      poolTokenAddress,
-      poolAbi,
-      this.signer
-    );
+    const poolToken = poolSymbol == "BCT" ? this.bct : this.nct;
 
     const approveTxn: ethers.ContractTransaction = await poolToken.approve(
-      extractedAddresses.offsetHelper,
+      this.addresses.offsetHelper,
       parseEther(amount)
     );
-
-    // wait for approval receipt
     await approveTxn.wait();
 
-    const offsetHelper = new ethers.Contract(
-      extractedAddresses.offsetHelper,
-      offseterAbi,
-      this.signer
-    );
     const offsetTxn: ethers.ContractTransaction =
-      await offsetHelper.autoOffsetUsingPoolToken(
-        extractedAddresses.nct,
+      await this.offsetHelper.autoOffsetUsingPoolToken(
+        this.addresses.nct,
         parseEther(amount)
       );
-
-    // wait for offset receipt
     return await offsetTxn.wait();
   };
 }

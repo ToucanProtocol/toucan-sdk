@@ -7,3 +7,5 @@ export type providerish =
   | ethers.providers.JsonRpcProvider;
 
 export type signerish = ethers.providers.Provider | ethers.Signer;
+
+export type poolSymbol = "BCT" | "NCT";

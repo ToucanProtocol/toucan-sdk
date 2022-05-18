@@ -1,16 +1,9 @@
 import { ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 
-import { Network, providerish, signerish } from "./types";
+import { Network, poolSymbol, providerish, signerish } from "./types";
+import { offsetHelperABI, poolTokenABI } from "./utils/ABIs";
 import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
-
-const poolAbi = [
-  "function approve(address _poolToken, uint256 _amountToOffset)",
-];
-
-const offseterAbi = [
-  "function autoOffsetUsingPoolToken(address spender, uint256 amount)",
-];
 
 class OffsetHelperClient {
   provider: providerish;
@@ -38,11 +31,19 @@ class OffsetHelperClient {
 
     this.offsetHelper = new ethers.Contract(
       this.addresses.offsetHelper,
-      offseterAbi,
+      offsetHelperABI,
       this.signer
     );
-    this.bct = new ethers.Contract(this.addresses.bct, poolAbi, this.signer);
-    this.nct = new ethers.Contract(this.addresses.nct, poolAbi, this.signer);
+    this.bct = new ethers.Contract(
+      this.addresses.bct,
+      poolTokenABI,
+      this.signer
+    );
+    this.nct = new ethers.Contract(
+      this.addresses.nct,
+      poolTokenABI,
+      this.signer
+    );
   }
 
   /**
@@ -51,7 +52,7 @@ class OffsetHelperClient {
    * @param amount amount of CO2 tons to offset
    */
   autoOffset = async (
-    poolSymbol: string,
+    poolSymbol: poolSymbol,
     amount: string
   ): Promise<ethers.ContractReceipt> => {
     const poolToken = poolSymbol == "BCT" ? this.bct : this.nct;
@@ -65,7 +66,8 @@ class OffsetHelperClient {
     const offsetTxn: ethers.ContractTransaction =
       await this.offsetHelper.autoOffsetUsingPoolToken(
         this.addresses.nct,
-        parseEther(amount)
+        parseEther(amount),
+        { gasLimit: 2500000 }
       );
     return await offsetTxn.wait();
   };

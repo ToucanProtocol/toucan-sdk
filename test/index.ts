@@ -4,25 +4,21 @@ import { Contract } from "ethers";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
-import OffsetHelperClient from "..";
-import { swapperABI } from "../utils/ABIs";
+import ToucanClient from "..";
+import { IToucanCarbonOffsets } from "../typechain";
+import { poolTokenABI, swapperABI, tco2ABI } from "../utils/ABIs";
 import addresses from "../utils/addresses";
 
 describe("Testing Toucan-SDK", function () {
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
   let addrs: SignerWithAddress[];
-  let oh: OffsetHelperClient;
+  let toucan: ToucanClient;
   let swapper: Contract;
 
   before(async () => {
     [addr1, addr2, ...addrs] = await ethers.getSigners();
-    oh = new OffsetHelperClient(
-      "polygon",
-      addr1.address,
-      ethers.provider,
-      addr1
-    );
+    toucan = new ToucanClient("polygon", addr1.address, ethers.provider, addr1);
   });
 
   describe("Testing OffsetHelper related methods", function () {
@@ -39,8 +35,8 @@ describe("Testing Toucan-SDK", function () {
         ),
       });
 
-      await expect(oh.autoOffsetUsingPoolToken("NCT", "1.0")).to.not.be
-        .reverted;
+      await expect(toucan.autoOffsetUsingPoolToken("NCT", parseEther("1.0"))).to
+        .not.be.reverted;
     });
 
     it("Should retire 1 TCO2 using swap token", async function () {
@@ -62,12 +58,150 @@ describe("Testing Toucan-SDK", function () {
       iface.format(FormatTypes.full);
       const weth = new ethers.Contract(addresses.polygon.weth, iface, addr1);
 
-      await expect(oh.autoOffsetUsingSwapToken("NCT", "1.0", weth)).to.not.be
-        .reverted;
+      await expect(
+        toucan.autoOffsetUsingSwapToken("NCT", parseEther("1.0"), weth)
+      ).to.not.be.reverted;
     });
 
     it("Should retire 1 TCO2 using ETH deposit", async function () {
-      await oh.autoOffsetUsingETH("NCT", "1.0");
+      await expect(toucan.autoOffsetUsingETH("NCT", parseEther("1.0"))).to.not
+        .be.reverted;
+    });
+  });
+
+  describe("Testing pool related methods", function () {
+    it("Should automatically redeem NCT", async function () {
+      swapper = new ethers.Contract(
+        addresses.polygon.swapper,
+        swapperABI,
+        addr1
+      );
+      await swapper.swap(addresses.polygon.nct, parseEther("1.0"), {
+        value: await swapper.howMuchETHShouldISendToSwap(
+          addresses.polygon.nct,
+          parseEther("1.0")
+        ),
+      });
+
+      const nct = new ethers.Contract(
+        addresses.polygon.nct,
+        poolTokenABI,
+        addr1
+      );
+      const nctBalanceBefore = await nct.balanceOf(addr1.address);
+
+      await expect(toucan.redeemAuto("NCT", parseEther("1.0"))).to.not.be
+        .reverted;
+
+      expect(await nct.balanceOf(addr1.address)).to.be.eql(
+        nctBalanceBefore.sub(parseEther("1.0"))
+      );
+    });
+
+    it("Should automatically redeem & return a correct array of TCO2s", async function () {
+      swapper = new ethers.Contract(
+        addresses.polygon.swapper,
+        swapperABI,
+        addr1
+      );
+      await swapper.swap(addresses.polygon.nct, parseEther("100.0"), {
+        value: await swapper.howMuchETHShouldISendToSwap(
+          addresses.polygon.nct,
+          parseEther("100.0")
+        ),
+      });
+
+      const expectedTCO2s = await toucan.getScoredTCO2s("NCT");
+      const tco2 = new ethers.Contract(expectedTCO2s[0], tco2ABI, addr1);
+      const balanceBefore = await tco2.balanceOf(addr1.address);
+
+      const tco2s = await toucan.redeemAuto2("NCT", parseEther("100.0"));
+
+      for (let i = 0; i < tco2s.length; i++) {
+        const tco2 = new ethers.Contract(tco2s[i].address, tco2ABI, addr1);
+        expect(await tco2.balanceOf(addr1.address)).to.be.eql(
+          (await tco2s[i].amount).add(balanceBefore)
+        );
+      }
+    });
+
+    it("Should selectively redeem for the highest quality TCO2s", async function () {
+      swapper = new ethers.Contract(
+        addresses.polygon.swapper,
+        swapperABI,
+        addr1
+      );
+      await swapper.swap(addresses.polygon.nct, parseEther("1.0"), {
+        value: await swapper.howMuchETHShouldISendToSwap(
+          addresses.polygon.nct,
+          parseEther("1.0")
+        ),
+      });
+
+      const nct = new ethers.Contract(
+        addresses.polygon.nct,
+        poolTokenABI,
+        addr1
+      );
+      const nctBalanceBefore = await nct.balanceOf(addr1.address);
+
+      const tco2s = await toucan.getScoredTCO2s("NCT");
+      const tco2Address = tco2s[tco2s.length - 1];
+
+      const fees = await toucan.calculateRedeemFees(
+        "NCT",
+        [tco2Address],
+        [parseEther("1.0")]
+      );
+
+      await expect(toucan.redeemMany("NCT", [tco2Address], [parseEther("1.0")]))
+        .to.not.be.reverted;
+
+      const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
+      const balance = await tco2.balanceOf(addr1.address);
+      expect(balance).to.be.eql(parseEther("1.0").sub(fees));
+
+      expect(await nct.balanceOf(addr1.address)).to.be.eql(
+        nctBalanceBefore.sub(parseEther("1.0"))
+      );
+    });
+
+    it("Should automatically redeem TCO2 & deposit it back", async function () {
+      swapper = new ethers.Contract(
+        addresses.polygon.swapper,
+        swapperABI,
+        addr1
+      );
+      await swapper.swap(addresses.polygon.nct, parseEther("1.0"), {
+        value: await swapper.howMuchETHShouldISendToSwap(
+          addresses.polygon.nct,
+          parseEther("1.0")
+        ),
+      });
+
+      const expectedTCO2s = await toucan.getScoredTCO2s("NCT");
+      // @ts-ignore
+      const tco2: IToucanCarbonOffsets = new ethers.Contract(
+        expectedTCO2s[0],
+        tco2ABI,
+        addr1
+      );
+      const tco2BalanceBefore = await tco2.balanceOf(addr1.address);
+      const nct = new ethers.Contract(
+        addresses.polygon.nct,
+        poolTokenABI,
+        addr1
+      );
+      const nctBalanceBefore = await nct.balanceOf(addr1.address);
+
+      await toucan.redeemAuto("NCT", parseEther("1.0"));
+
+      await expect(toucan.depositTCO2("NCT", parseEther("1.0"), tco2)).to.not.be
+        .reverted;
+
+      expect(await tco2.balanceOf(addr1.address)).to.be.eql(tco2BalanceBefore);
+
+      expect(await nct.balanceOf(addr1.address)).to.be.eql(nctBalanceBefore);
     });
   });
 });

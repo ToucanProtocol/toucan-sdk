@@ -204,4 +204,16 @@ describe("Testing Toucan-SDK", function () {
       expect(await nct.balanceOf(addr1.address)).to.be.eql(nctBalanceBefore);
     });
   });
+
+  describe("Testing Contract Registry related methods", function () {
+    it("Should return true", async function () {
+      const tco2s = await toucan.getScoredTCO2s("NCT");
+
+      expect(await toucan.checkIfTCO2(tco2s[0])).to.be.eql(true);
+    });
+
+    it("Should return false", async function () {
+      expect(await toucan.checkIfTCO2(addr1.address)).to.be.eql(false);
+    });
+  });
 });

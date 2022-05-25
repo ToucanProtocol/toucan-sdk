@@ -8,11 +8,16 @@ import {
 
 import {
   IToucanCarbonOffsets,
+  IToucanContractRegistry,
   IToucanPoolToken,
   OffsetHelper,
 } from "./typechain";
 import { Network, poolSymbol, providerish, signerish } from "./types";
-import { offsetHelperABI, poolTokenABI } from "./utils/ABIs";
+import {
+  offsetHelperABI,
+  poolTokenABI,
+  toucanContractRegistryABI,
+} from "./utils/ABIs";
 import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
 
 class ToucanClient {
@@ -24,6 +29,7 @@ class ToucanClient {
   offsetHelper: OffsetHelper;
   bct: IToucanPoolToken;
   nct: IToucanPoolToken;
+  ToucanContractRegistry: IToucanContractRegistry;
 
   constructor(
     network: Network,
@@ -55,6 +61,12 @@ class ToucanClient {
     this.nct = new ethers.Contract(
       this.addresses.nct,
       poolTokenABI,
+      this.signer
+    );
+    // @ts-ignore
+    this.ToucanContractRegistry = new ethers.Contract(
+      this.addresses.toucanContractRegistry,
+      toucanContractRegistryABI,
       this.signer
     );
   }
@@ -187,6 +199,15 @@ class ToucanClient {
   getScoredTCO2s = async (poolSymbol: poolSymbol) => {
     const poolToken = poolSymbol == "BCT" ? this.bct : this.nct;
     return await poolToken.getScoredTCO2s();
+  };
+
+  /**
+   *
+   * @param address address of contract to check
+   * @returns true if TCO2, false if not
+   */
+  checkIfTCO2 = async (address: string) => {
+    return await this.ToucanContractRegistry.checkERC20(address);
   };
 
   /**

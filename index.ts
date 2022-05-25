@@ -141,7 +141,13 @@ class ToucanClient {
     amounts: BigNumber[]
   ) => {
     const poolToken = poolSymbol == "BCT" ? this.bct : this.nct;
-    return await poolToken.redeemMany(tco2s, amounts);
+
+    const redeemTxn: ContractTransaction = await poolToken.redeemMany(
+      tco2s,
+      amounts,
+      { gasLimit: 2500000 }
+    );
+    return await redeemTxn.wait();
   };
 
   /**
@@ -152,7 +158,11 @@ class ToucanClient {
    */
   redeemAuto = async (poolSymbol: poolSymbol, amount: BigNumber) => {
     const poolToken = poolSymbol == "BCT" ? this.bct : this.nct;
-    return await poolToken.redeemAuto(amount);
+
+    const redeemTxn: ContractTransaction = await poolToken.redeemAuto(amount, {
+      gasLimit: 2500000,
+    });
+    return await redeemTxn.wait();
   };
 
   /**
@@ -164,7 +174,9 @@ class ToucanClient {
    */
   redeemAuto2 = async (poolSymbol: poolSymbol, amount: BigNumber) => {
     const poolToken = poolSymbol == "BCT" ? this.bct : this.nct;
-    const redeemReceipt = await (await poolToken.redeemAuto2(amount)).wait();
+    const redeemReceipt = await (
+      await poolToken.redeemAuto2(amount, { gasLimit: 2500000 })
+    ).wait();
 
     if (!redeemReceipt.events) {
       throw new Error("No events to get tco2 addresses and amounts from");

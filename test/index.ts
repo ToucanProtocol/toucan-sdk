@@ -227,4 +227,51 @@ describe("Testing Toucan-SDK", function () {
       expect(await toucan.checkIfTCO2(addr1.address)).to.be.eql(false);
     });
   });
+
+  describe("Testing TCO related methods", function () {
+    it("Should retire 1 TCO2 & mint the certificate", async function () {
+      const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
+      toucan.instantiateTCO2(tco2s[0].address);
+
+      const retirementReceipt = await toucan.retireAndMintCertificate(
+        "Test",
+        addr1.address,
+        "Test",
+        "Test Message",
+        parseEther("1.0")
+      );
+
+      // TODO check NFT ownership
+    });
+
+    it("Should retire 1 TCO2", async function () {
+      const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
+      toucan.instantiateTCO2(tco2s[0].address);
+
+      const retirementReceipt = await toucan.retire(parseEther("1.0"));
+      const retiredEvents = retirementReceipt.events?.filter((event, index) => {
+        console.log(`Event ${index} is a "${event.event}" event;`);
+        return event.event == "Retired";
+      });
+
+      // TODO why doesn't the retire method have any "Retired" events
+      console.log("Retired events", retiredEvents);
+    });
+
+    it("Should retire 1 TCO2 from another address", async function () {
+      const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
+      toucan.instantiateTCO2(tco2s[0].address);
+      await toucan.TCO2?.approve(addr2.address, parseEther("1.0"));
+
+      const toucan2 = new ToucanClient(
+        "polygon",
+        addr2.address,
+        ethers.provider,
+        addr2
+      );
+      toucan2.instantiateTCO2(tco2s[0].address);
+      await expect(toucan2.retireFrom(parseEther("1.0"), addr1.address)).to.not
+        .be.reverted;
+    });
+  });
 });

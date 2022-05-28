@@ -2026,6 +2026,11 @@ export const tco2ABI = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "retiringEntityString",
+        type: "string",
+      },
+      {
         internalType: "address",
         name: "beneficiary",
         type: "address",
@@ -2046,7 +2051,7 @@ export const tco2ABI = [
         type: "uint256",
       },
     ],
-    name: "mintCertificate",
+    name: "mintCertificateLegacy",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -2100,6 +2105,11 @@ export const tco2ABI = [
   },
   {
     inputs: [
+      {
+        internalType: "string",
+        name: "retiringEntityString",
+        type: "string",
+      },
       {
         internalType: "address",
         name: "beneficiary",

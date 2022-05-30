@@ -28,10 +28,10 @@ interface IToucanCarbonOffsetsInterface extends ethers.utils.Interface {
     "getDepositCap()": FunctionFragment;
     "getGlobalProjectVintageIdentifiers()": FunctionFragment;
     "getRemaining()": FunctionFragment;
-    "mintCertificate(address,string,string,uint256)": FunctionFragment;
+    "mintCertificateLegacy(string,address,string,string,uint256)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "retire(uint256)": FunctionFragment;
-    "retireAndMintCertificate(address,string,string,uint256)": FunctionFragment;
+    "retireAndMintCertificate(string,address,string,string,uint256)": FunctionFragment;
     "retireFrom(address,uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -64,8 +64,8 @@ interface IToucanCarbonOffsetsInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "mintCertificate",
-    values: [string, string, string, BigNumberish]
+    functionFragment: "mintCertificateLegacy",
+    values: [string, string, string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onERC721Received",
@@ -77,7 +77,7 @@ interface IToucanCarbonOffsetsInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "retireAndMintCertificate",
-    values: [string, string, string, BigNumberish]
+    values: [string, string, string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "retireFrom",
@@ -116,7 +116,7 @@ interface IToucanCarbonOffsetsInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "mintCertificate",
+    functionFragment: "mintCertificateLegacy",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -283,7 +283,8 @@ export class IToucanCarbonOffsets extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { remaining: BigNumber }>;
 
-    mintCertificate(
+    mintCertificateLegacy(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,
@@ -305,6 +306,7 @@ export class IToucanCarbonOffsets extends BaseContract {
     ): Promise<ContractTransaction>;
 
     retireAndMintCertificate(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,
@@ -411,7 +413,8 @@ export class IToucanCarbonOffsets extends BaseContract {
 
   getRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
-  mintCertificate(
+  mintCertificateLegacy(
+    retiringEntityString: string,
     beneficiary: string,
     beneficiaryString: string,
     retirementMessage: string,
@@ -433,6 +436,7 @@ export class IToucanCarbonOffsets extends BaseContract {
   ): Promise<ContractTransaction>;
 
   retireAndMintCertificate(
+    retiringEntityString: string,
     beneficiary: string,
     beneficiaryString: string,
     retirementMessage: string,
@@ -539,7 +543,8 @@ export class IToucanCarbonOffsets extends BaseContract {
 
     getRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mintCertificate(
+    mintCertificateLegacy(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,
@@ -558,6 +563,7 @@ export class IToucanCarbonOffsets extends BaseContract {
     retire(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     retireAndMintCertificate(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,
@@ -650,7 +656,8 @@ export class IToucanCarbonOffsets extends BaseContract {
 
     getRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mintCertificate(
+    mintCertificateLegacy(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,
@@ -672,6 +679,7 @@ export class IToucanCarbonOffsets extends BaseContract {
     ): Promise<BigNumber>;
 
     retireAndMintCertificate(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,
@@ -729,7 +737,8 @@ export class IToucanCarbonOffsets extends BaseContract {
 
     getRemaining(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    mintCertificate(
+    mintCertificateLegacy(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,
@@ -751,6 +760,7 @@ export class IToucanCarbonOffsets extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     retireAndMintCertificate(
+      retiringEntityString: string,
       beneficiary: string,
       beneficiaryString: string,
       retirementMessage: string,

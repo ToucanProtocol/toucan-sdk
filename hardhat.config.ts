@@ -26,7 +26,7 @@ const config: HardhatUserConfig = {
       forking: {
         url:
           process.env.POLYGON_URL ||
-          "https://polygon-mainnet.g.alchemy.com/v2/4rzRS2MH5LIunV6cejmLhQelv_Vd82rq",
+          "https://polygon-mainnet.g.alchemy.com/v2/gHj4hjcafR_LP6vG6Ru6s1MomfYeVdYC",
       },
     },
   },

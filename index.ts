@@ -43,18 +43,6 @@ import {
 import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
 import { MUMBAI_GRAPH_API_URL, POLYGON_GRAPH_API_URL } from "./utils/graphAPIs";
 
-// TODO: continue this
-
-// =============   =============   =====   =====
-// |           |   |           |   |   |   |   |
-// |           |   |   =====   |   |   |   |   |
-// ===|     |===   |   |   |   |   |   |   |   |
-//    |     |      |   |   |   |   |   |   |   |
-//    |     |      |   |   |   |   |   |   |   |
-//    |     |      |   =====   |   |   =====   |
-//    |     |      |           |   |           |
-//    =======      =============   =============
-
 class ToucanClient {
   provider: providerish;
   signer: signerish;
@@ -613,7 +601,7 @@ class ToucanClient {
     if (result.error) throw result.error;
     if (result.data?.users[0]?.batchesOwned)
       return result.data.users[0].batchesOwned;
-    return;
+    return [];
   };
 
   // --------------------------------------------------------------------------------
@@ -853,7 +841,7 @@ class ToucanClient {
     if (result.error) throw result.error;
     if (result.data?.user?.retirementsCreated)
       return result.data.user.retirementsCreated;
-    return;
+    return [];
   };
 
   // --------------------------------------------------------------------------------
@@ -907,7 +895,7 @@ class ToucanClient {
 
     if (result.error) throw result.error;
     if (result.data?.redeems) return result.data.redeems;
-    return;
+    return [];
   };
 
   /**
@@ -976,7 +964,7 @@ class ToucanClient {
     if (result.error) throw result.error;
     if (result.data?.user?.redeemsCreated)
       return result.data.user.redeemsCreated;
-    return;
+    return [];
   };
 
   // --------------------------------------------------------------------------------
@@ -1032,7 +1020,7 @@ class ToucanClient {
 
     if (result.error) throw result.error;
     if (result.data?.pooledTCO2Tokens) return result.data.pooledTCO2Tokens;
-    return;
+    return [];
   };
 
   // --------------------------------------------------------------------------------
@@ -1043,7 +1031,7 @@ class ToucanClient {
    *
    * @description fetches a project by its id
    * @param id id of the project to fetch; e.g.: "10"
-   * @returns an objects with properties of the Project like projectId, region, standard and more
+   * @returns an object with properties of the Project like projectId, region, standard and more
    */
   fetchProjectById: fetchProjectByIdMethod = async (id) => {
     const query = gql`
@@ -1091,7 +1079,7 @@ class ToucanClient {
 
     if (result.error) throw result.error;
     if (result.data?.aggregations) return result.data.aggregations;
-    return;
+    return [];
   };
 
   // --------------------------------------------------------------------------------

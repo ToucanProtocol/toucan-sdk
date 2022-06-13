@@ -9,3 +9,9 @@ export type providerish =
 export type signerish = ethers.providers.Provider | ethers.Signer;
 
 export type poolSymbol = "BCT" | "NCT";
+
+export declare enum RetirementStatus {
+  Pending = 0,
+  Rejected = 1,
+  Confirmed = 2,
+}

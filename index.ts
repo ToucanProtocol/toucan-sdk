@@ -56,6 +56,13 @@ class ToucanClient {
   TCO2: IToucanCarbonOffsets | undefined;
   graphClient: Client;
 
+  /**
+   *
+   * @param network network that you want to work on
+   * @param walletAddress address of the signer you want to use
+   * @param provider web3 or jsonRpc provider
+   * @param signer signer
+   */
   constructor(
     network: Network,
     walletAddress: string,

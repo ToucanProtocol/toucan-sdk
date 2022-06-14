@@ -177,10 +177,8 @@ describe("Testing Toucan-SDK", function () {
       const remainingTCO2 = await toucan.bct.tokenBalances(tco2Address);
       console.log("remainingTCO2", remainingTCO2);
 
-      // await expect(
-      await toucan.redeemMany("BCT", [tco2Address], [parseEther("1.0")]);
-      // .to.not.be.reverted;
-      return;
+      await expect(toucan.redeemMany("BCT", [tco2Address], [parseEther("1.0")]))
+        .to.not.be.reverted;
 
       const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
@@ -208,10 +206,8 @@ describe("Testing Toucan-SDK", function () {
 
       await toucan.redeemAuto("BCT", parseEther("1.0"));
 
-      // await expect(
-      await toucan.depositTCO2("BCT", parseEther("1.0"), tco2);
-      // .to.not.be
-      //   .reverted;
+      await expect(toucan.depositTCO2("BCT", parseEther("1.0"), tco2)).to.not.be
+        .reverted;
 
       expect(await tco2.balanceOf(addr1.address)).to.be.eql(tco2BalanceBefore);
 

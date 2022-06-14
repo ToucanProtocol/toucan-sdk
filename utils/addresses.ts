@@ -14,20 +14,20 @@ export interface IfcAddresses {
 
 const addresses: IfcAddresses = {
   polygon: {
-    bct: "0x2F800Db0fdb5223b3C3f354886d907A671414A7F",
-    nct: "0xD838290e877E0188a4A44700463419ED96c16107",
-    offsetHelper: "0x7229F708d2d1C29b1508E35695a3070F55BbA479",
-    swapper: "0x5c48019F480a96AE5e963D0D1cDC673fd52A02D4",
-    weth: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
-    toucanContractRegistry: "0x263fA1c180889b3a3f46330F32a4a23287E99FC9",
+    bct: "0x2f800db0fdb5223b3c3f354886d907a671414a7f",
+    nct: "0xd838290e877e0188a4a44700463419ed96c16107",
+    offsetHelper: "0x7229f708d2d1c29b1508e35695a3070f55bba479",
+    swapper: "0x5c48019f480a96ae5e963d0d1cdc673fd52a02d4",
+    weth: "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+    toucanContractRegistry: "0x263fa1c180889b3a3f46330f32a4a23287e99fc9",
   },
   mumbai: {
-    bct: "0xf2438A14f668b1bbA53408346288f3d7C71c10a1",
-    nct: "0x7beCBA11618Ca63Ead5605DE235f6dD3b25c530E",
-    offsetHelper: "0xE0a1D62C84f7Ca4611C0ada6cfC3E9187a7A97e6",
-    swapper: "0xA84adeb585e95D2206735910Cdb2774CCdaD8b99",
-    weth: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
-    toucanContractRegistry: "0x6739D490670B2710dc7E79bB12E455DE33EE1cb6",
+    bct: "0xf2438a14f668b1bba53408346288f3d7c71c10a1",
+    nct: "0x7becba11618ca63ead5605de235f6dd3b25c530e",
+    offsetHelper: "0xe0a1d62c84f7ca4611c0ada6cfc3e9187a7a97e6",
+    swapper: "0xa84adeb585e95d2206735910cdb2774ccdad8b99",
+    weth: "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa",
+    toucanContractRegistry: "0x6739d490670b2710dc7e79bb12e455de33ee1cb6",
   },
 };
 

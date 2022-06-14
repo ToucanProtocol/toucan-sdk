@@ -135,11 +135,117 @@ That's useful in case you happen to be a 'broker' that retires in someone else's
 
 # Subgraph queries
 
-TODO
+Now, the above example of selective retirement is only useful in specific cases.
+
+**What if you only have the name or symbol of the project?**
+
+That's where subgraph queries come in handy. (and we have plenty of those 😉)
+
+## Fetching a TCO2 by its symbol
+
+```typescript
+const tco2 = await toucan.fetchTCO2TokenByFullSymbol("TCO2-VCS-1718-2013");
+```
+
+The result will look like so:
+
+```json
+{
+  "id": "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153",
+  "name": "Toucan Protocol: TCO2-VCS-1718-2013",
+  "symbol": "TCO2-VCS-1718-2013",
+  "address": "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153",
+  "projectVintage": {
+    "name": "2013",
+    "project": {
+      "projectId": "VCS-1718"
+    }
+  }
+}
+```
+
+Now you have quite some info on the project, including its address.
+
+## Fetching a TCO2's data by its address
+
+What if you already had a TCO2s address, but you now want to get more data about it?
+
+There's a pre-built subgraph query for that too.
+
+```typescript
+const tco2 = await toucan.fetchTCO2TokenById(
+  "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153"
+);
+```
+
+The result will look like the same as the one of the query above.
+
+## Fetching a pool's contents
+
+It may come in handy to know what TCO2s are in the NCT pool.
+
+```typescript
+const tco2 = await toucan.fetchPoolContents("NCT");
+```
+
+This is how the result would look (with a lot more projects in it though):
+
+```json
+[
+  {
+    "token": {
+      "name": "Toucan Protocol: TCO2-VCS-1718-2013",
+      "projectVintage": {
+        "id": "296",
+        "project": {
+          "methodology": "VM0010",
+          "standard": "VCS"
+        }
+      }
+    },
+    "amount": "37152880725394938464551"
+  },
+  {
+    "token": {
+      "name": "Toucan Protocol: TCO2-VCS-1577-2015",
+      "projectVintage": {
+        "id": "25",
+        "project": {
+          "methodology": "VM0010",
+          "standard": "VCS"
+        }
+      }
+    },
+    "amount": "10000000000000000000000"
+  }
+]
+```
 
 ## Custom queries
 
-TODO
+There's a lot more other pre-built subgraph queries that I could show you, but what I really want to show you is the `fetchCustomQuery` method.
+
+This allows you to fetch with your own queries and can be very powerful if you know graphQL.
+
+```typescript
+import { gql } from "@urql/core";
+
+const query = gql`
+  query ($id: String) {
+    project(id: $id) {
+      projectId
+      region
+      standard
+      methodology
+      vintages {
+        id
+      }
+    }
+  }
+`;
+
+const result = await toucan.fetchCustomQuery(query, { id: "1" });
+```
 
 # Tutorials
 

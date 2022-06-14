@@ -38,12 +38,12 @@ nctPrice = await toucan.fetchTokenPriceOnSushiSwap("NCT");
 
 The object returned by the above method will look like so:
 
-```typescript
+```json
 {
-  price: 0.429078376646587,
-  url: 'https://app.sushi.com/analytics/tokens/0x2F800Db0fdb5223b3C3f354886d907A671414A7F',
-  liquidityUSD: 228402845.61580917,
-  volumeUSD: 44457843860.01181
+  "price": 0.429078376646587,
+  "url": "https://app.sushi.com/analytics/tokens/0x2F800Db0fdb5223b3C3f354886d907A671414A7F",
+  "liquidityUSD": 228402845.61580917,
+  "volumeUSD": 44457843860.01181
 }
 ```
 
@@ -80,8 +80,6 @@ const offsetReceipt = await toucan.autoOffsetUsingSwapToken(
 If you already have BCT/NCT, you can use `autoOffsetUsingPoolToken()` like so:
 
 ```typescript
-const weth = new ethers.Contract(wethAddress, wethAbi, signer);
-
 const offsetReceipt = await toucan.autoOffsetUsingPoolToken(
   "NCT",
   parseEther("1.0")
@@ -106,7 +104,7 @@ const redeemReceipt = await toucan.redeemMany(
   [parseEther("3.0")]
 );
 
-toucan.instantiateTCO2(tco2s[0].address);
+toucan.instantiateTCO2(tco2s[len - 1].address);
 
 const retirementReceipt = await toucan.retire(parseEther("3.0"));
 ```
@@ -127,11 +125,11 @@ const retirementReceipt = await toucan.retireAndMintCertificate(
 );
 ```
 
-Why can you see my name twice you ask? 🤔
+Why do you see my name twice you ask? 🤔
 
 Well, the first "Alex" represents the entity that is doing the retirement/offset. The second one represents the party that 'benefits' from it. The address also represents the beneficiary.
 
-That's useful in case you happen to be a 'broker' that retires in someone else's name.
+That's useful in case you happen to be an entity that retires on behalf of someone else.
 
 # Subgraph queries
 
@@ -185,7 +183,7 @@ The result will look like the same as the one of the query above.
 It may come in handy to know what TCO2s are in the NCT pool.
 
 ```typescript
-const tco2 = await toucan.fetchPoolContents("NCT");
+const tco2s = await toucan.fetchPoolContents("NCT");
 ```
 
 This is how the result would look (with a lot more projects in it though):
@@ -246,6 +244,16 @@ const query = gql`
 
 const result = await toucan.fetchCustomQuery(query, { id: "1" });
 ```
+
+# What if I can't find contract interactions that I need?
+
+You can always access any method or property of the bct, nct and tco2 contracts like so:
+
+```typescript
+const remainingTCO2 = await toucan.bct.tokenBalances(tco2Address);
+```
+
+This is useful if you need to interact with a method of our contracts that hasn't been implemented in the SDK yet.
 
 # Tutorials
 

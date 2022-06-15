@@ -25,7 +25,7 @@ Instantiate the Toucan client to interact with our infrastructure.
 ```typescript
 import ToucanClient from "toucan-sdk";
 
-const toucan = new ToucanClient("polygon", signer.address, provider, signer);
+const toucan = new ToucanClient("polygon", provider, signer);
 ```
 
 ## Fetch pool prices from SushiSwap

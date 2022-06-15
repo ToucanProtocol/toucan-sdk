@@ -21,7 +21,7 @@ describe("Testing Toucan-SDK", function () {
 
   before(async () => {
     [addr1, addr2, ...addrs] = await ethers.getSigners();
-    toucan = new ToucanClient("polygon", addr1.address, ethers.provider, addr1);
+    toucan = new ToucanClient("polygon", ethers.provider, addr1);
 
     swapper = new ethers.Contract(addresses.polygon.swapper, swapperABI, addr1);
     await swapper.swap(addresses.polygon.nct, parseEther("100.0"), {
@@ -260,12 +260,7 @@ describe("Testing Toucan-SDK", function () {
       toucan.instantiateTCO2(tco2s[0].address);
       await toucan.TCO2?.approve(addr2.address, parseEther("1.0"));
 
-      const toucan2 = new ToucanClient(
-        "polygon",
-        addr2.address,
-        ethers.provider,
-        addr2
-      );
+      const toucan2 = new ToucanClient("polygon", ethers.provider, addr2);
       toucan2.instantiateTCO2(tco2s[0].address);
       await expect(toucan2.retireFrom(parseEther("1.0"), addr1.address)).to.not
         .be.reverted;

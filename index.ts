@@ -15,7 +15,7 @@ import {
   IToucanPoolToken,
   OffsetHelper,
 } from "./typechain";
-import { Network, poolSymbol, providerish, signerish } from "./types";
+import { Network, poolSymbol } from "./types";
 import {
   fetchAggregationsMethod,
   fetchAllTCO2TokensMethod,
@@ -44,9 +44,8 @@ import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
 import { MUMBAI_GRAPH_API_URL, POLYGON_GRAPH_API_URL } from "./utils/graphAPIs";
 
 class ToucanClient {
-  provider: providerish;
-  signer: signerish;
-  walletAddress: string;
+  provider: ethers.providers.Provider;
+  signer: ethers.Wallet | ethers.Signer;
   network: Network;
   addresses: IfcOneNetworksAddresses;
   offsetHelper: OffsetHelper;
@@ -59,18 +58,15 @@ class ToucanClient {
   /**
    *
    * @param network network that you want to work on
-   * @param walletAddress address of the signer you want to use
    * @param provider web3 or jsonRpc provider
    * @param signer signer
    */
   constructor(
     network: Network,
-    walletAddress: string,
-    provider: providerish,
-    signer: signerish
+    provider: ethers.providers.Provider,
+    signer: ethers.Wallet | ethers.Signer
   ) {
     this.network = network;
-    this.walletAddress = walletAddress;
     this.provider = provider;
     this.signer = signer;
 

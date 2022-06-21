@@ -47,7 +47,7 @@ import {
   getToucanGraphClient,
 } from "./utils/graphClients";
 
-class ToucanClient {
+export class ContractInteractions {
   provider: ethers.providers.Provider;
   signer: ethers.Wallet | ethers.Signer;
   network: Network;
@@ -546,10 +546,38 @@ class ToucanClient {
   };
 
   // --------------------------------------------------------------------------------
+  //  Internal methods
   // --------------------------------------------------------------------------------
-  //  Subgraph related methods
-  // --------------------------------------------------------------------------------
-  // --------------------------------------------------------------------------------
+
+  /**
+   *
+   * @description gets the contract of a pool token based on the symbol
+   * @param pool symbol of the pool (token) to use
+   * @returns a ethers.contract to interact with the pool
+   */
+  private getPoolContract = (pool: poolSymbol): IToucanPoolToken => {
+    return pool == "BCT" ? this.bct : this.nct;
+  };
+}
+
+export class SubgraphInteractions {
+  network: Network;
+  addresses: IfcOneNetworksAddresses;
+  TCO2: IToucanCarbonOffsets | undefined;
+  graphClient: Client;
+
+  /**
+   *
+   * @param network network that you want to work on
+   */
+  constructor(network: Network) {
+    this.network = network;
+
+    this.addresses =
+      this.network == "polygon" ? addresses.polygon : addresses.mumbai;
+
+    this.graphClient = getToucanGraphClient(network);
+  }
 
   /**
    *
@@ -857,7 +885,7 @@ class ToucanClient {
    * @returns an array of objects with properties of the redeems like id, amount, timestamp and more
    */
   fetchRedeems: fetchRedeemsMethod = async (pool, first = 100, skip = 0) => {
-    const poolAddress = this.getPoolContract(pool).address;
+    const poolAddress = this.getPoolAddress(pool);
 
     const query = gql`
       query ($poolAddress: String, $first: Int, $skip: Int) {
@@ -913,7 +941,7 @@ class ToucanClient {
     first = 100,
     skip = 0
   ) => {
-    const poolAddress = this.getPoolContract(pool).address;
+    const poolAddress = this.getPoolAddress(pool);
 
     const query = gql`
       query (
@@ -984,7 +1012,7 @@ class ToucanClient {
     first = 1000,
     skip = 0
   ) => {
-    const poolAddress = this.getPoolContract(pool).address;
+    const poolAddress = this.getPoolAddress(pool);
 
     const query = gql`
       query ($poolAddress: String, $first: Int, $skip: Int) {
@@ -1235,7 +1263,7 @@ class ToucanClient {
     liquidityUSD: number | null;
     volumeUSD: number | null;
   }> => {
-    const tokenAddress = this.getPoolContract(pool).address;
+    const tokenAddress = this.getPoolAddress(pool);
     let url = null;
     const [price, liquidityUSD, volumeUSD] = await this.fetchTokenPrice(
       tokenAddress
@@ -1255,9 +1283,7 @@ class ToucanClient {
    * @param pool symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
-  private getPoolContract = (pool: poolSymbol): IToucanPoolToken => {
-    return pool == "BCT" ? this.bct : this.nct;
+  private getPoolAddress = (pool: poolSymbol): string => {
+    return pool == "BCT" ? this.addresses.bct : this.addresses.nct;
   };
 }
-
-export default ToucanClient;

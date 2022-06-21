@@ -4,7 +4,7 @@ import { Contract } from "ethers";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
-import ToucanClient from "..";
+import { ContractInteractions, SubgraphInteractions } from "..";
 import { IToucanCarbonOffsets } from "../typechain";
 import { poolTokenABI, swapperABI, tco2ABI } from "../utils/ABIs";
 import addresses from "../utils/addresses";
@@ -13,7 +13,8 @@ describe("Testing Toucan-SDK", function () {
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
   let addrs: SignerWithAddress[];
-  let toucan: ToucanClient;
+  let toucan: ContractInteractions;
+  let subgraph: SubgraphInteractions;
   let swapper: Contract;
   let scoredTCO2sBCT: string[];
   let scoredTCO2sNCT: string[];
@@ -21,7 +22,8 @@ describe("Testing Toucan-SDK", function () {
 
   before(async () => {
     [addr1, addr2, ...addrs] = await ethers.getSigners();
-    toucan = new ToucanClient("polygon", ethers.provider, addr1);
+    toucan = new ContractInteractions("polygon", ethers.provider, addr1);
+    subgraph = new SubgraphInteractions("polygon");
 
     swapper = new ethers.Contract(addresses.polygon.swapper, swapperABI, addr1);
     await swapper.swap(addresses.polygon.nct, parseEther("100.0"), {
@@ -260,7 +262,11 @@ describe("Testing Toucan-SDK", function () {
       toucan.instantiateTCO2(tco2s[0].address);
       await toucan.TCO2?.approve(addr2.address, parseEther("1.0"));
 
-      const toucan2 = new ToucanClient("polygon", ethers.provider, addr2);
+      const toucan2 = new ContractInteractions(
+        "polygon",
+        ethers.provider,
+        addr2
+      );
       toucan2.instantiateTCO2(tco2s[0].address);
       await expect(toucan2.retireFrom(parseEther("1.0"), addr1.address)).to.not
         .be.reverted;
@@ -269,13 +275,14 @@ describe("Testing Toucan-SDK", function () {
 
   describe("Testing subgraph related methods", function () {
     it("Should fetch user batches", async function () {
-      expect((res = await toucan.fetchUserBatches(addr1.address))).to.not.throw;
+      expect((res = await subgraph.fetchUserBatches(addr1.address))).to.not
+        .throw;
     });
 
     describe("Testing TCO2 Token fetching methods", function () {
       it("Should fetch details about TCO2 based on its address", async function () {
         expect(
-          (res = await toucan.fetchTCO2TokenById(
+          (res = await subgraph.fetchTCO2TokenById(
             "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153"
           ))
         ).to.not.throw;
@@ -283,54 +290,56 @@ describe("Testing Toucan-SDK", function () {
 
       it("Should fetch details about TCO2 based on its full symbol", async function () {
         expect(
-          (res = await toucan.fetchTCO2TokenByFullSymbol("TCO2-VCS-1718-2013"))
+          (res = await subgraph.fetchTCO2TokenByFullSymbol(
+            "TCO2-VCS-1718-2013"
+          ))
         ).to.not.throw;
       });
 
       it("Should fetch all TCO2 Tokens", async function () {
-        expect((res = await toucan.fetchAllTCO2Tokens())).to.not.throw;
+        expect((res = await subgraph.fetchAllTCO2Tokens())).to.not.throw;
       });
     });
 
     it("Should fetch bridged batch tokens", async function () {
-      expect((res = await toucan.fetchBridgedBatchTokens())).to.not.throw;
+      expect((res = await subgraph.fetchBridgedBatchTokens())).to.not.throw;
     });
 
     it("Should fetch user retirements", async function () {
-      expect((res = await toucan.fetchUserRetirements(addr1.address))).to.not
+      expect((res = await subgraph.fetchUserRetirements(addr1.address))).to.not
         .throw;
     });
 
     describe("Testing Redeems fetching methods", function () {
       it("Should fetch redeems", async function () {
-        expect((res = await toucan.fetchRedeems("NCT"))).to.not.throw;
+        expect((res = await subgraph.fetchRedeems("NCT"))).to.not.throw;
       });
 
       it("Should fetch user redeems", async function () {
-        expect((res = await toucan.fetchUserRedeems(addr1.address, "NCT"))).to
+        expect((res = await subgraph.fetchUserRedeems(addr1.address, "NCT"))).to
           .not.throw;
       });
     });
 
     it("Should fetch pooled tokens", async function () {
-      expect((res = await toucan.fetchPoolContents("NCT"))).to.not.throw;
+      expect((res = await subgraph.fetchPoolContents("NCT"))).to.not.throw;
     });
 
     it("Should fetch a project by its id", async function () {
-      expect((res = await toucan.fetchProjectById("1"))).to.not.throw;
+      expect((res = await subgraph.fetchProjectById("1"))).to.not.throw;
     });
 
     it("Should fetch aggregations", async function () {
-      expect((res = await toucan.fetchAggregations())).to.not.throw;
+      expect((res = await subgraph.fetchAggregations())).to.not.throw;
     });
 
     it("Should fetch price of BCT", async function () {
-      expect((res = await toucan.fetchTokenPriceOnSushiSwap("BCT"))).to.not
+      expect((res = await subgraph.fetchTokenPriceOnSushiSwap("BCT"))).to.not
         .throw;
     });
 
     it("Should fetch price of NCT", async function () {
-      expect((res = await toucan.fetchTokenPriceOnSushiSwap("NCT"))).to.not
+      expect((res = await subgraph.fetchTokenPriceOnSushiSwap("NCT"))).to.not
         .throw;
     });
   });

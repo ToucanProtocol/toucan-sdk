@@ -22,12 +22,13 @@ yarn add toucan-sdk
 
 # Quickstart
 
-Instantiate the Toucan client to interact with our infrastructure.
+Instantiate the ContractInteractions and the SubgraphInteractions clients to interact with our infrastructure.
 
 ```typescript
-import ToucanClient from "toucan-sdk";
+import { ContractInteractions, SubgraphInteractions } from "toucan-sdk";
 
-const toucan = new ToucanClient("polygon", provider, signer);
+const toucan = new ContractInteractions("polygon", provider, signer);
+const subgraph = new SubgraphInteractions("polygon");
 ```
 
 ## Fetch pool prices from SushiSwap
@@ -35,7 +36,7 @@ const toucan = new ToucanClient("polygon", provider, signer);
 Something that may come in handy in your applications is fetching the USD price of our pool tokens.
 
 ```typescript
-nctPrice = await toucan.fetchTokenPriceOnSushiSwap("NCT");
+nctPrice = await subgraph.fetchTokenPriceOnSushiSwap("NCT");
 ```
 
 The object returned by the above method will look like so:
@@ -144,7 +145,7 @@ That's where subgraph queries come in handy. (and we have plenty of those 😉)
 ## Fetching a TCO2 by its symbol
 
 ```typescript
-const tco2 = await toucan.fetchTCO2TokenByFullSymbol("TCO2-VCS-1718-2013");
+const tco2 = await subgraph.fetchTCO2TokenByFullSymbol("TCO2-VCS-1718-2013");
 ```
 
 The result will look like so:
@@ -173,7 +174,7 @@ What if you already had a TCO2s address, but you now want to get more data about
 There's a pre-built subgraph query for that too.
 
 ```typescript
-const tco2 = await toucan.fetchTCO2TokenById(
+const tco2 = await subgraph.fetchTCO2TokenById(
   "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153"
 );
 ```
@@ -185,7 +186,7 @@ The result will look like the same as the one of the query above.
 It may come in handy to know what TCO2s are in the NCT pool.
 
 ```typescript
-const tco2s = await toucan.fetchPoolContents("NCT");
+const tco2s = await subgraph.fetchPoolContents("NCT");
 ```
 
 This is how the result would look (with a lot more projects in it though):
@@ -244,7 +245,7 @@ const query = gql`
   }
 `;
 
-const result = await toucan.fetchCustomQuery(query, { id: "1" });
+const result = await subgraph.fetchCustomQuery(query, { id: "1" });
 ```
 
 # What if I can't find contract interactions that I need?

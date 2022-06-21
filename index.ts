@@ -42,6 +42,10 @@ import {
 } from "./utils/ABIs";
 import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
 import { MUMBAI_GRAPH_API_URL, POLYGON_GRAPH_API_URL } from "./utils/graphAPIs";
+import {
+  getSushiGraphClient,
+  getToucanGraphClient,
+} from "./utils/graphClients";
 
 class ToucanClient {
   provider: ethers.providers.Provider;
@@ -98,14 +102,7 @@ class ToucanClient {
       this.signer
     );
 
-    this.graphClient = createClient({
-      url:
-        this.network == "polygon"
-          ? POLYGON_GRAPH_API_URL
-          : MUMBAI_GRAPH_API_URL,
-      requestPolicy: "network-only",
-      fetch: fetch,
-    });
+    this.graphClient = getToucanGraphClient(network);
   }
 
   // --------------------------------------------------------------------------------
@@ -1136,9 +1133,7 @@ class ToucanClient {
   };
 
   private fetchTokenPrice = async (tokenAddress: string): Promise<number[]> => {
-    const SushiGraphClient = createClient({
-      url: "https://api.thegraph.com/subgraphs/name/sushiswap/matic-exchange",
-    });
+    const SushiGraphClient = getSushiGraphClient();
 
     const senderQuery = gql`
       query tokenPairsQuery($id: String!, $skip: Int, $block: Block_height) {

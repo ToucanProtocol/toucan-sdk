@@ -573,7 +573,7 @@ export class SubgraphInteractions {
     this.network = network;
 
     this.addresses =
-      this.network == "polygon" ? addresses.polygon : addresses.mumbai;
+      network === "polygon" ? addresses.polygon : addresses.mumbai;
 
     this.graphClient = getToucanGraphClient(network);
   }

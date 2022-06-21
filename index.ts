@@ -1,6 +1,6 @@
 import "isomorphic-unfetch";
 
-import { Client, createClient, gql } from "@urql/core";
+import { Client, gql } from "@urql/core";
 import {
   BigNumber,
   Contract,
@@ -41,7 +41,6 @@ import {
   toucanContractRegistryABI,
 } from "./utils/ABIs";
 import addresses, { IfcOneNetworksAddresses } from "./utils/addresses";
-import { MUMBAI_GRAPH_API_URL, POLYGON_GRAPH_API_URL } from "./utils/graphAPIs";
 import {
   getSushiGraphClient,
   getToucanGraphClient,

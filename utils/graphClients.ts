@@ -1,4 +1,5 @@
 import { createClient } from "@urql/core";
+
 import { Network } from "../types";
 import { MUMBAI_GRAPH_API_URL, POLYGON_GRAPH_API_URL } from "./graphAPIs";
 

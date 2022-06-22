@@ -27,19 +27,19 @@ describe("Testing Toucan-SDK", function () {
 
     swapper = new ethers.Contract(addresses.polygon.swapper, swapperABI, addr1);
     await swapper.swap(addresses.polygon.nct, parseEther("100.0"), {
-      value: await swapper.howMuchETHShouldISendToSwap(
+      value: await swapper.calculateNeededETHAmount(
         addresses.polygon.nct,
         parseEther("100.0")
       ),
     });
     await swapper.swap(addresses.polygon.bct, parseEther("100.0"), {
-      value: await swapper.howMuchETHShouldISendToSwap(
+      value: await swapper.calculateNeededETHAmount(
         addresses.polygon.bct,
         parseEther("100.0")
       ),
     });
     await swapper.swap(addresses.polygon.weth, parseEther("1.0"), {
-      value: await swapper.howMuchETHShouldISendToSwap(
+      value: await swapper.calculateNeededETHAmount(
         addresses.polygon.weth,
         parseEther("1.0")
       ),

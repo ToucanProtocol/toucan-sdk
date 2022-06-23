@@ -1,41 +1,34 @@
-import "isomorphic-unfetch";
+import {
+  BigNumber,
+  Contract,
+  ContractReceipt,
+  ContractTransaction,
+  ethers,
+} from "ethers";
 
-import { BigNumber, Contract, ContractReceipt, ethers } from "ethers";
-
-import ContractInteractions from "./subclasses/ContractInteractions";
-import SubgraphInteractions from "./subclasses/SubgraphInteractions";
 import {
   IToucanCarbonOffsets,
   IToucanContractRegistry,
   IToucanPoolToken,
   OffsetHelper,
-} from "./typechain";
-import { Network, poolSymbol } from "./types";
+} from "../typechain";
+import { Network, poolSymbol } from "../types";
+import { GAS_LIMIT } from "../utils";
 import {
-  fetchAggregationsMethod,
-  fetchAllTCO2TokensMethod,
-  fetchBridgedBatchTokensMethod,
-  fetchCustomQueryMethod,
-  fetchPoolContentsMethod,
-  fetchProjectByIdMethod,
-  fetchRedeemsMethod,
-  fetchTCO2TokenByFullSymbolMethod,
-  fetchTCO2TokenByIdMethod,
-  fetchUserBatchesMethod,
-  fetchUserRedeemsMethod,
-  fetchUserRetirementsMethod,
-} from "./types/methods";
+  offsetHelperABI,
+  poolTokenABI,
+  tco2ABI,
+  toucanContractRegistryABI,
+} from "../utils/ABIs";
+import addresses, { IfcOneNetworksAddresses } from "../utils/addresses";
 
 /**
- *
  * @class ContractInteractions
- * @description This class wraps around classes that help users to interact with Toucan infrastructure
- * @implements ContractInteractions, SubgraphInteractions
+ * @description This class helps interact with Toucan contracts
  */
-export class ToucanClient {
+class ContractInteractions {
   network: Network;
-  contractInteractions: ContractInteractions;
-  subgraphInteractions: SubgraphInteractions;
+  addresses: IfcOneNetworksAddresses;
 
   /**
    *
@@ -44,8 +37,8 @@ export class ToucanClient {
   constructor(network: Network) {
     this.network = network;
 
-    this.contractInteractions = new ContractInteractions(network);
-    this.subgraphInteractions = new SubgraphInteractions(network);
+    this.addresses =
+      this.network == "polygon" ? addresses.polygon : addresses.mumbai;
   }
 
   // --------------------------------------------------------------------------------
@@ -67,7 +60,13 @@ export class ToucanClient {
     tco2Address: string,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.retire(amount, tco2Address, signer);
+    const TCO2 = this.getTCO2Contract(tco2Address, signer);
+
+    const retirementTxn: ContractTransaction = await TCO2.retire(amount, {
+      gasLimit: GAS_LIMIT,
+    });
+    // TODO get retirementEventId ?
+    return await retirementTxn.wait();
   };
 
   /**
@@ -91,15 +90,18 @@ export class ToucanClient {
     tco2Address: string,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.retireAndMintCertificate(
-      retirementEntityName,
-      beneficiaryAddress,
-      beneficiaryName,
-      retirementMessage,
-      amount,
-      tco2Address,
-      signer
-    );
+    const TCO2 = this.getTCO2Contract(tco2Address, signer);
+
+    const retirementTxn: ContractTransaction =
+      await TCO2.retireAndMintCertificate(
+        retirementEntityName,
+        beneficiaryAddress,
+        beneficiaryName,
+        retirementMessage,
+        amount,
+        { gasLimit: GAS_LIMIT }
+      );
+    return await retirementTxn.wait();
   };
 
   /**
@@ -118,12 +120,17 @@ export class ToucanClient {
     tco2Address: string,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.retireFrom(
-      amount,
+    const TCO2 = this.getTCO2Contract(tco2Address, signer);
+
+    const retirementTxn: ContractTransaction = await TCO2.retireFrom(
       address,
-      tco2Address,
-      signer
+      amount,
+      {
+        gasLimit: GAS_LIMIT,
+      }
     );
+    // TODO get retirementEventId ?
+    return await retirementTxn.wait();
   };
 
   /**
@@ -137,10 +144,8 @@ export class ToucanClient {
     tco2Address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    return this.contractInteractions.getDepositCap(
-      tco2Address,
-      signerOrProvider
-    );
+    const TCO2 = this.getTCO2Contract(tco2Address, signerOrProvider);
+    return await TCO2.getDepositCap();
   };
 
   /**
@@ -154,10 +159,9 @@ export class ToucanClient {
     tco2Address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ) => {
-    return this.contractInteractions.getAttributes(
-      tco2Address,
-      signerOrProvider
-    );
+    // TODO: a return TS type
+    const TCO2 = this.getTCO2Contract(tco2Address, signerOrProvider);
+    return await TCO2.getAttributes();
   };
 
   /**
@@ -171,10 +175,8 @@ export class ToucanClient {
     tco2Address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    return this.contractInteractions.getTCO2Remaining(
-      tco2Address,
-      signerOrProvider
-    );
+    const TCO2 = this.getTCO2Contract(tco2Address, signerOrProvider);
+    return await TCO2.getRemaining();
   };
 
   // --------------------------------------------------------------------------------
@@ -198,12 +200,22 @@ export class ToucanClient {
     tco2Address: string,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.depositTCO2(
-      pool,
-      amount,
-      tco2Address,
-      signer
+    const poolToken = this.getPoolContract(pool, signer);
+
+    const TCO2 = this.getTCO2Contract(tco2Address, signer);
+
+    const approveTxn: ContractTransaction = await TCO2.approve(
+      poolToken.address,
+      amount
     );
+    await approveTxn.wait();
+
+    const depositTxn: ContractTransaction = await poolToken.deposit(
+      tco2Address,
+      amount,
+      { gasLimit: GAS_LIMIT }
+    );
+    return await depositTxn.wait();
   };
 
   /**
@@ -218,12 +230,19 @@ export class ToucanClient {
     tco2: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<boolean> => {
-    return this.contractInteractions.checkEligible(
-      pool,
-      tco2,
-      signerOrProvider
-    );
+    const poolToken = this.getPoolContract(pool, signerOrProvider);
+    return await poolToken.checkEligible(tco2);
   };
+
+  /**
+   *
+   * @description calculates the fees to selectively redeem pool tokens for TCO2s
+   * @param pool symbol of the pool (token) to use
+   * @param tco2s array of TCO2 contract addresses
+   * @param amounts array of amounts to redeem for each tco2s
+   * @notice tco2s must match amounts; amounts[0] is the amount of tco2[0] token to redeem for
+   * @returns amount (BigNumber) of fees it will cost to redeem
+   */
 
   /**
    *
@@ -241,12 +260,8 @@ export class ToucanClient {
     amounts: BigNumber[],
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    return this.contractInteractions.calculateRedeemFees(
-      pool,
-      tco2s,
-      amounts,
-      signerOrProvider
-    );
+    const poolToken = this.getPoolContract(pool, signerOrProvider);
+    return await poolToken.calculateRedeemFees(tco2s, amounts);
   };
 
   /**
@@ -264,7 +279,14 @@ export class ToucanClient {
     amounts: BigNumber[],
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.redeemMany(pool, tco2s, amounts, signer);
+    const poolToken = this.getPoolContract(pool, signer);
+
+    const redeemTxn: ContractTransaction = await poolToken.redeemMany(
+      tco2s,
+      amounts,
+      { gasLimit: GAS_LIMIT }
+    );
+    return await redeemTxn.wait();
   };
 
   /**
@@ -280,7 +302,12 @@ export class ToucanClient {
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.redeemAuto(pool, amount, signer);
+    const poolToken = this.getPoolContract(pool, signer);
+
+    const redeemTxn: ContractTransaction = await poolToken.redeemAuto(amount, {
+      gasLimit: GAS_LIMIT,
+    });
+    return await redeemTxn.wait();
   };
 
   /**
@@ -296,7 +323,24 @@ export class ToucanClient {
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<{ address: string; amount: BigNumber }[]> => {
-    return this.contractInteractions.redeemAuto2(pool, amount, signer);
+    const poolToken = this.getPoolContract(pool, signer);
+    const redeemReceipt = await (
+      await poolToken.redeemAuto2(amount, { gasLimit: GAS_LIMIT })
+    ).wait();
+
+    if (!redeemReceipt.events) {
+      throw new Error("No events to get tco2 addresses and amounts from");
+    }
+
+    return redeemReceipt.events
+      .filter((event) => {
+        return (
+          event.event == "Redeemed" && event.args?.erc20 && event.args?.amount
+        );
+      })
+      .map((event) => {
+        return { address: event.args?.erc20, amount: event.args?.amount };
+      });
   };
 
   /**
@@ -310,10 +354,8 @@ export class ToucanClient {
     poolSymbol: poolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    return this.contractInteractions.getPoolRemaining(
-      poolSymbol,
-      signerOrProvider
-    );
+    const poolToken = this.getPoolContract(poolSymbol, signerOrProvider);
+    return await poolToken.getRemaining();
   };
 
   /**
@@ -327,7 +369,8 @@ export class ToucanClient {
     pool: poolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<string[]> => {
-    return this.contractInteractions.getScoredTCO2s(pool, signerOrProvider);
+    const poolToken = this.getPoolContract(pool, signerOrProvider);
+    return await poolToken.getScoredTCO2s();
   };
 
   // --------------------------------------------------------------------------------
@@ -347,7 +390,8 @@ export class ToucanClient {
     address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<boolean> => {
-    return this.contractInteractions.checkIfTCO2(address, signerOrProvider);
+    const registry = this.getRegistryContract(signerOrProvider);
+    return await registry.checkERC20(address);
   };
 
   // --------------------------------------------------------------------------------
@@ -370,11 +414,21 @@ export class ToucanClient {
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.autoOffsetUsingPoolToken(
-      pool,
-      amount,
-      signer
+    const poolToken = this.getPoolContract(pool, signer);
+
+    const approveTxn: ContractTransaction = await poolToken.approve(
+      this.addresses.offsetHelper,
+      amount
     );
+    await approveTxn.wait();
+
+    const offsetHelper = this.getOffsetHelperContract(signer);
+
+    const offsetTxn: ContractTransaction =
+      await offsetHelper.autoOffsetUsingPoolToken(this.addresses.nct, amount, {
+        gasLimit: GAS_LIMIT,
+      });
+    return await offsetTxn.wait();
   };
 
   /**
@@ -393,12 +447,27 @@ export class ToucanClient {
     swapToken: Contract,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.autoOffsetUsingSwapToken(
-      pool,
-      amount,
-      swapToken,
-      signer
+    const poolAddress = this.getPoolAddress(pool);
+    const offsetHelper = this.getOffsetHelperContract(signer);
+
+    const approveTxn: ContractTransaction = await swapToken.approve(
+      this.addresses.offsetHelper,
+      await offsetHelper.calculateNeededTokenAmount(
+        swapToken.address,
+        poolAddress,
+        amount
+      )
     );
+    await approveTxn.wait();
+
+    const offsetTxn: ContractTransaction =
+      await offsetHelper.autoOffsetUsingToken(
+        swapToken.address,
+        poolAddress,
+        amount,
+        { gasLimit: GAS_LIMIT }
+      );
+    return await offsetTxn.wait();
   };
 
   /**
@@ -415,7 +484,15 @@ export class ToucanClient {
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
-    return this.contractInteractions.autoOffsetUsingETH(pool, amount, signer);
+    const offsetHelper = this.getOffsetHelperContract(signer);
+    const poolAddress = this.getPoolAddress(pool);
+
+    const offsetTxn: ContractTransaction =
+      await offsetHelper.autoOffsetUsingETH(poolAddress, amount, {
+        gasLimit: GAS_LIMIT,
+        value: await offsetHelper.calculateNeededETHAmount(poolAddress, amount),
+      });
+    return await offsetTxn.wait();
   };
 
   /**
@@ -433,11 +510,11 @@ export class ToucanClient {
     swapToken: Contract,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    return this.contractInteractions.calculateNeededTokenAmount(
-      pool,
-      amount,
-      swapToken,
-      signerOrProvider
+    const offsetHelper = this.getOffsetHelperContract(signerOrProvider);
+    return await offsetHelper.calculateNeededTokenAmount(
+      swapToken.address,
+      this.getPoolAddress(pool),
+      amount
     );
   };
 
@@ -454,215 +531,11 @@ export class ToucanClient {
     amount: BigNumber,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    return this.contractInteractions.calculateNeededETHAmount(
-      pool,
-      amount,
-      signerOrProvider
+    const offsetHelper = this.getOffsetHelperContract(signerOrProvider);
+    return await offsetHelper.calculateNeededETHAmount(
+      this.getPoolAddress(pool),
+      amount
     );
-  };
-
-  // --------------------------------------------------------------------------------
-  //  Batches Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetches the batches of a user
-   * @param walletAddress address of user to query for
-   * @returns an array of BatchTokens (they contain different properties of the Batch)
-   */
-  fetchUserBatches: fetchUserBatchesMethod = async (walletAddress) => {
-    return this.subgraphInteractions.fetchUserBatches(walletAddress);
-  };
-
-  // --------------------------------------------------------------------------------
-  //  TCO2Tokens Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetches properties of a TCO2
-   * @param id id of the TCO2 to query for; the id happens to be the same as the address e.g.: "0x004090eef602e024b2a6cb7f0c1edda992382994"
-   * @returns a TCO2Detail object with properties of the TCO2 (name, address, etc)
-   */
-  fetchTCO2TokenById: fetchTCO2TokenByIdMethod = async (id) => {
-    return this.subgraphInteractions.fetchTCO2TokenById(id);
-  };
-
-  /**
-   *
-   * @description fetches properties of a TCO2
-   * @param symbol full symbol of the TCO2 to query for e.g.: "TCO2-VCS-1718-2013"
-   * @returns a TCO2Detail object with properties of the TCO2 (name, address, etc)
-   */
-  fetchTCO2TokenByFullSymbol: fetchTCO2TokenByFullSymbolMethod = async (
-    symbol: string
-  ) => {
-    return this.subgraphInteractions.fetchTCO2TokenByFullSymbol(symbol);
-  };
-
-  /**
-   *
-   * @description fetches TCO2Details of all TCO2s
-   * @returns an array of TCO2Detail objects with properties of the TCO2s (name, address, etc)
-   */
-  fetchAllTCO2Tokens: fetchAllTCO2TokensMethod = async () => {
-    return this.subgraphInteractions.fetchAllTCO2Tokens();
-  };
-
-  // --------------------------------------------------------------------------------
-  //  BatchTokens Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetches data about BatchTokens that have been bridged
-   * @returns an array of BatchTokens containing different properties like id, serialNumber or quantity
-   */
-  fetchBridgedBatchTokens: fetchBridgedBatchTokensMethod = async () => {
-    return this.subgraphInteractions.fetchBridgedBatchTokens();
-  };
-
-  // --------------------------------------------------------------------------------
-  //  Retirements Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetches retirements made by a user
-   * @param walletAddress address of the user/wallet to query for
-   * @param first how many retirements you want fetched; defaults to 100
-   * @param skip how many (if any) retirements you want skipped; defaults to 0
-   * @returns an array of objects containing properties of the retirements like id, creationTx, amount and more
-   */
-  fetchUserRetirements: fetchUserRetirementsMethod = async (
-    walletAddress,
-    first = 100,
-    skip = 0
-  ) => {
-    return this.subgraphInteractions.fetchUserRetirements(
-      walletAddress,
-      first,
-      skip
-    );
-  };
-
-  // --------------------------------------------------------------------------------
-  //  Redeems Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetches redeems of a given pool
-   * @param pool symbol of pool to fetch for
-   * @param first how many redeems you want fetched; defaults to 100
-   * @param skip how many (if any) redeems you want skipped; defaults to 0
-   * @returns an array of objects with properties of the redeems like id, amount, timestamp and more
-   */
-  fetchRedeems: fetchRedeemsMethod = async (pool, first = 100, skip = 0) => {
-    return this.subgraphInteractions.fetchRedeems(pool, first, skip);
-  };
-
-  /**
-   *
-   * @description fetches redeems of a given pool and user
-   * @param walletAddress address of the user/wallet to query for
-   * @param pool symbol of pool to fetch for
-   * @param first how many redeems you want fetched; defaults to 100
-   * @param skip how many (if any) redeems you want skipped; defaults to 0
-   * @returns an array of objects with properties of the redeems like id, amount, timestamp and more
-   */
-  fetchUserRedeems: fetchUserRedeemsMethod = async (
-    walletAddress,
-    pool,
-    first = 100,
-    skip = 0
-  ) => {
-    return this.subgraphInteractions.fetchUserRedeems(
-      walletAddress,
-      pool,
-      first,
-      skip
-    );
-  };
-
-  // --------------------------------------------------------------------------------
-  //  PooledTCO2Tokens Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetches TCO2 tokens that are part of the given pool
-   * @param pool symbol of the pool to fetch for
-   * @param first how many TCO2 tokens you want fetched; defaults to 1000
-   * @param skip how many (if any) retirements you want skipped; defaults to 0
-   * @returns an array of objects representing TCO2 tokens and containing properties like name, amount, methodology and more
-   */
-  fetchPoolContents: fetchPoolContentsMethod = async (
-    pool,
-    first = 1000,
-    skip = 0
-  ) => {
-    return this.subgraphInteractions.fetchPoolContents(pool, first, skip);
-  };
-
-  // --------------------------------------------------------------------------------
-  //  Projects Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetches a project by its id
-   * @param id id of the project to fetch; e.g.: "10"
-   * @returns an object with properties of the Project like projectId, region, standard and more
-   */
-  fetchProjectById: fetchProjectByIdMethod = async (id) => {
-    return this.subgraphInteractions.fetchProjectById(id);
-  };
-
-  // --------------------------------------------------------------------------------
-  //  Aggregations Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description fetch all aggregations (including, for example, tco2TotalRetired or totalCarbonBridged)
-   * @returns an array of Aggregation objects containing properties like id, key, value
-   */
-  fetchAggregations: fetchAggregationsMethod = async () => {
-    return this.subgraphInteractions.fetchAggregations();
-  };
-
-  // --------------------------------------------------------------------------------
-  //  Other Subgraph Methods
-  // --------------------------------------------------------------------------------
-
-  /**
-   *
-   * @description if pre-made queries to Toucan's Subgraph don't fit all your needs; use this for custom queries
-   * @param query a gql formated GraphQL query
-   * @param params any parameters you may want to pass to the query
-   * @returns all data fetched from query; you can use generics to declare what type to expect (if you're a fan of TS)
-   */
-  fetchCustomQuery: fetchCustomQueryMethod = async (query, params) => {
-    return this.subgraphInteractions.fetchCustomQuery(query, params);
-  };
-
-  // --------------------------------------------------------------------------------
-  // --------------------------------------------------------------------------------
-  //  Price / Sushiswap related methods
-  // --------------------------------------------------------------------------------
-  // --------------------------------------------------------------------------------
-
-  fetchTokenPriceOnSushiSwap = async (
-    pool: poolSymbol
-  ): Promise<{
-    price: number | null;
-    url: string | null;
-    liquidityUSD: number | null;
-    volumeUSD: number | null;
-  }> => {
-    return this.subgraphInteractions.fetchTokenPriceOnSushiSwap(pool);
   };
 
   // --------------------------------------------------------------------------------
@@ -676,7 +549,7 @@ export class ToucanClient {
    * @returns a ethers.contract to interact with the pool
    */
   public getPoolAddress = (pool: poolSymbol): string => {
-    return this.contractInteractions.getPoolAddress(pool);
+    return pool == "BCT" ? this.addresses.bct : this.addresses.nct;
   };
 
   /**
@@ -691,10 +564,12 @@ export class ToucanClient {
     poolSymbol: poolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): IToucanPoolToken => {
-    return this.contractInteractions.getPoolContract(
-      poolSymbol,
+    const poolContract = new ethers.Contract(
+      this.getPoolAddress(poolSymbol),
+      poolTokenABI,
       signerOrProvider
-    );
+    ) as IToucanPoolToken;
+    return poolContract;
   };
 
   /**
@@ -708,7 +583,15 @@ export class ToucanClient {
     address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): IToucanCarbonOffsets => {
-    return this.contractInteractions.getTCO2Contract(address, signerOrProvider);
+    if (!this.checkIfTCO2(address, signerOrProvider))
+      throw new Error(`${address} is not a TCO2 address`);
+
+    const TCO2 = new ethers.Contract(
+      address,
+      tco2ABI,
+      signerOrProvider
+    ) as IToucanCarbonOffsets;
+    return TCO2;
   };
 
   /**
@@ -720,7 +603,12 @@ export class ToucanClient {
   public getRegistryContract = (
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): IToucanContractRegistry => {
-    return this.contractInteractions.getRegistryContract(signerOrProvider);
+    const toucanContractRegistry = new ethers.Contract(
+      this.addresses.toucanContractRegistry,
+      toucanContractRegistryABI,
+      signerOrProvider
+    ) as IToucanContractRegistry;
+    return toucanContractRegistry;
   };
 
   /**
@@ -732,6 +620,13 @@ export class ToucanClient {
   public getOffsetHelperContract = (
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): OffsetHelper => {
-    return this.contractInteractions.getOffsetHelperContract(signerOrProvider);
+    const offsetHelper = new ethers.Contract(
+      this.addresses.offsetHelper,
+      offsetHelperABI,
+      signerOrProvider
+    ) as OffsetHelper;
+    return offsetHelper;
   };
 }
+
+export default ContractInteractions;

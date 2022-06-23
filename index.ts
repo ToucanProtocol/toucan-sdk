@@ -51,12 +51,7 @@ export class ContractInteractions {
   signer: ethers.Wallet | ethers.Signer;
   network: Network;
   addresses: IfcOneNetworksAddresses;
-  offsetHelper: OffsetHelper;
-  bct: IToucanPoolToken;
-  nct: IToucanPoolToken;
-  ToucanContractRegistry: IToucanContractRegistry;
   TCO2: IToucanCarbonOffsets | undefined;
-  graphClient: Client;
 
   /**
    *
@@ -75,33 +70,6 @@ export class ContractInteractions {
 
     this.addresses =
       this.network == "polygon" ? addresses.polygon : addresses.mumbai;
-
-    // @ts-ignore
-    this.offsetHelper = new ethers.Contract(
-      this.addresses.offsetHelper,
-      offsetHelperABI,
-      this.signer
-    );
-    // @ts-ignore
-    this.bct = new ethers.Contract(
-      this.addresses.bct,
-      poolTokenABI,
-      this.signer
-    );
-    // @ts-ignore
-    this.nct = new ethers.Contract(
-      this.addresses.nct,
-      poolTokenABI,
-      this.signer
-    );
-    // @ts-ignore
-    this.ToucanContractRegistry = new ethers.Contract(
-      this.addresses.toucanContractRegistry,
-      toucanContractRegistryABI,
-      this.signer
-    );
-
-    this.graphClient = getToucanGraphClient(network);
   }
 
   // --------------------------------------------------------------------------------
@@ -377,8 +345,8 @@ export class ContractInteractions {
    * @param tokenSymbol symbol of the token to use
    * @returns BigNumber representing the remaining space
    */
-  getPoolRemaining = async (tokenSymbol: poolSymbol): Promise<BigNumber> => {
-    const poolToken = tokenSymbol == "BCT" ? this.bct : this.nct;
+  getPoolRemaining = async (poolSymbol: poolSymbol): Promise<BigNumber> => {
+    const poolToken = this.getPoolContract(poolSymbol);
     return await poolToken.getRemaining();
   };
 
@@ -406,7 +374,8 @@ export class ContractInteractions {
    * @returns boolean
    */
   checkIfTCO2 = async (address: string): Promise<boolean> => {
-    return await this.ToucanContractRegistry.checkERC20(address);
+    const registry = this.getRegistryContract();
+    return await registry.checkERC20(address);
   };
 
   // --------------------------------------------------------------------------------
@@ -435,12 +404,12 @@ export class ContractInteractions {
     );
     await approveTxn.wait();
 
+    const offsetHelper = this.getOffsetHelperContract();
+
     const offsetTxn: ContractTransaction =
-      await this.offsetHelper.autoOffsetUsingPoolToken(
-        this.addresses.nct,
-        amount,
-        { gasLimit: GAS_LIMIT }
-      );
+      await offsetHelper.autoOffsetUsingPoolToken(this.addresses.nct, amount, {
+        gasLimit: GAS_LIMIT,
+      });
     return await offsetTxn.wait();
   };
 
@@ -460,9 +429,11 @@ export class ContractInteractions {
   ): Promise<ContractReceipt> => {
     const poolToken = this.getPoolContract(pool);
 
+    const offsetHelper = this.getOffsetHelperContract();
+
     const approveTxn: ContractTransaction = await swapToken.approve(
       this.addresses.offsetHelper,
-      await this.offsetHelper.calculateNeededTokenAmount(
+      await offsetHelper.calculateNeededTokenAmount(
         swapToken.address,
         poolToken.address,
         amount
@@ -471,7 +442,7 @@ export class ContractInteractions {
     await approveTxn.wait();
 
     const offsetTxn: ContractTransaction =
-      await this.offsetHelper.autoOffsetUsingToken(
+      await offsetHelper.autoOffsetUsingToken(
         swapToken.address,
         poolToken.address,
         amount,
@@ -494,10 +465,12 @@ export class ContractInteractions {
   ): Promise<ContractReceipt> => {
     const poolToken = this.getPoolContract(pool);
 
+    const offsetHelper = this.getOffsetHelperContract();
+
     const offsetTxn: ContractTransaction =
-      await this.offsetHelper.autoOffsetUsingETH(poolToken.address, amount, {
+      await offsetHelper.autoOffsetUsingETH(poolToken.address, amount, {
         gasLimit: GAS_LIMIT,
-        value: await this.offsetHelper.calculateNeededETHAmount(
+        value: await offsetHelper.calculateNeededETHAmount(
           poolToken.address,
           amount
         ),
@@ -518,8 +491,10 @@ export class ContractInteractions {
     amount: BigNumber,
     swapToken: Contract
   ): Promise<BigNumber> => {
+    const offsetHelper = this.getOffsetHelperContract();
+
     const poolToken = this.getPoolContract(pool);
-    return await this.offsetHelper.calculateNeededTokenAmount(
+    return await offsetHelper.calculateNeededTokenAmount(
       swapToken.address,
       poolToken.address,
       amount
@@ -538,7 +513,8 @@ export class ContractInteractions {
     amount: BigNumber
   ): Promise<BigNumber> => {
     const poolToken = this.getPoolContract(pool);
-    return await this.offsetHelper.calculateNeededETHAmount(
+    const offsetHelper = this.getOffsetHelperContract();
+    return await offsetHelper.calculateNeededETHAmount(
       poolToken.address,
       amount
     );
@@ -551,11 +527,44 @@ export class ContractInteractions {
   /**
    *
    * @description gets the contract of a pool token based on the symbol
-   * @param pool symbol of the pool (token) to use
+   * @param poolSymbol symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
-  private getPoolContract = (pool: poolSymbol): IToucanPoolToken => {
-    return pool == "BCT" ? this.bct : this.nct;
+  public getPoolContract = (poolSymbol: poolSymbol): IToucanPoolToken => {
+    const poolContract = new ethers.Contract(
+      poolSymbol == "BCT" ? this.addresses.bct : this.addresses.nct,
+      poolTokenABI,
+      this.signer
+    ) as IToucanPoolToken;
+    return poolContract;
+  };
+
+  /**
+   *
+   * @description gets the contract of a the Toucan contract registry
+   * @returns a ethers.contract to interact with the contract registry
+   */
+  public getRegistryContract = (): IToucanContractRegistry => {
+    const toucanContractRegistry = new ethers.Contract(
+      this.addresses.toucanContractRegistry,
+      toucanContractRegistryABI,
+      this.signer
+    ) as IToucanContractRegistry;
+    return toucanContractRegistry;
+  };
+
+  /**
+   *
+   * @description gets the contract of a the OffsetHelper contract
+   * @returns a ethers.contract to interact with the OffsetHelper
+   */
+  public getOffsetHelperContract = (): OffsetHelper => {
+    const offsetHelper = new ethers.Contract(
+      this.addresses.offsetHelper,
+      offsetHelperABI,
+      this.signer
+    ) as OffsetHelper;
+    return offsetHelper;
   };
 }
 

@@ -22,13 +22,12 @@ yarn add toucan-sdk
 
 # Quickstart
 
-Instantiate the ContractInteractions and the SubgraphInteractions clients to interact with our infrastructure.
+Instantiate the ToucanClient to interact with our infrastructure.
 
 ```typescript
-import { ContractInteractions, SubgraphInteractions } from "toucan-sdk";
+import { ToucanClient } from "toucan-sdk";
 
-const toucan = new ContractInteractions("polygon", provider, signer);
-const subgraph = new SubgraphInteractions("polygon");
+const toucan = new ToucanClient("polygon");
 ```
 
 ## Fetch pool prices from SushiSwap
@@ -36,7 +35,7 @@ const subgraph = new SubgraphInteractions("polygon");
 Something that may come in handy in your applications is fetching the USD price of our pool tokens.
 
 ```typescript
-nctPrice = await subgraph.fetchTokenPriceOnSushiSwap("NCT");
+nctPrice = await toucan.fetchTokenPriceOnSushiSwap("NCT");
 ```
 
 The object returned by the above method will look like so:
@@ -61,7 +60,11 @@ This is how you do that when you want to use ETH (or the network's native curren
 In this example, you'd be offseting 1 TON of CO2 with carbon projects from the NCT pool.
 
 ```typescript
-const offsetReceipt = await toucan.autoOffsetUsingETH("NCT", parseEther("1.0"));
+const offsetReceipt = await toucan.autoOffsetUsingETH(
+  "NCT",
+  parseEther("1.0"),
+  signer
+);
 ```
 
 ## Don't want to spend your ETH to offset?
@@ -74,7 +77,8 @@ const weth = new ethers.Contract(wethAddress, wethAbi, signer);
 const offsetReceipt = await toucan.autoOffsetUsingSwapToken(
   "NCT",
   parseEther("1.0"),
-  weth
+  weth,
+  signer
 );
 ```
 
@@ -85,7 +89,8 @@ If you already have BCT/NCT, you can use `autoOffsetUsingPoolToken()` like so:
 ```typescript
 const offsetReceipt = await toucan.autoOffsetUsingPoolToken(
   "NCT",
-  parseEther("1.0")
+  parseEther("1.0"),
+  signer
 );
 ```
 
@@ -98,18 +103,21 @@ Assuming you already have some NCT, this example gets an array of all TCO2s in t
 Then redeems and retires 3 TONS of the higest ranked TCO2 it can find.
 
 ```typescript
-const scoredTCO2s = await toucan.getScoredTCO2s("NCT");
+const scoredTCO2s = await toucan.getScoredTCO2s("NCT", signerOrProvider);
 const len = scoredTCO2s.length;
 
 const redeemReceipt = await toucan.redeemMany(
   "NCT",
   [scoredTCO2s[len - 1]],
-  [parseEther("3.0")]
+  [parseEther("3.0")],
+  signer
 );
 
-toucan.instantiateTCO2(tco2s[len - 1].address);
-
-const retirementReceipt = await toucan.retire(parseEther("3.0"));
+const retirementReceipt = await toucan.retire(
+  parseEther("3.0"),
+  tco2s[len - 1].address,
+  signer
+);
 ```
 
 Of course, you could have avoided using the `getScoredTCO2s` method if you already had the address of the TCO2s you wanted to offset.
@@ -124,7 +132,9 @@ const retirementReceipt = await toucan.retireAndMintCertificate(
   signer.address,
   "Alex",
   "Just helping the planet",
-  parseEther("3.0")
+  parseEther("3.0"),
+  tco2s[len - 1].address,
+  signer
 );
 ```
 
@@ -145,7 +155,7 @@ That's where subgraph queries come in handy. (and we have plenty of those 😉)
 ## Fetching a TCO2 by its symbol
 
 ```typescript
-const tco2 = await subgraph.fetchTCO2TokenByFullSymbol("TCO2-VCS-1718-2013");
+const tco2 = await toucan.fetchTCO2TokenByFullSymbol("TCO2-VCS-1718-2013");
 ```
 
 The result will look like so:
@@ -174,7 +184,7 @@ What if you already had a TCO2s address, but you now want to get more data about
 There's a pre-built subgraph query for that too.
 
 ```typescript
-const tco2 = await subgraph.fetchTCO2TokenById(
+const tco2 = await toucan.fetchTCO2TokenById(
   "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153"
 );
 ```
@@ -186,7 +196,7 @@ The result will look like the same as the one of the query above.
 It may come in handy to know what TCO2s are in the NCT pool.
 
 ```typescript
-const tco2s = await subgraph.fetchPoolContents("NCT");
+const tco2s = await toucan.fetchPoolContents("NCT");
 ```
 
 This is how the result would look (with a lot more projects in it though):
@@ -245,18 +255,23 @@ const query = gql`
   }
 `;
 
-const result = await subgraph.fetchCustomQuery(query, { id: "1" });
+const result = await toucan.fetchCustomQuery(query, { id: "1" });
 ```
 
 # What if I can't find contract interactions that I need?
 
-You can always access any method or property of the bct, nct and tco2 contracts like so:
+You can always access any method or property of the bct, nct and tco2 contracts by first getting and storing them in a variable, like so:
 
 ```typescript
-const remainingTCO2 = await toucan.bct.tokenBalances(tco2Address);
+const bct = toucan.getPoolContract("BCT", signerOrProvider);
+const tco2 = toucan.getTCO2Contract(tco2Address, signerOrProvider);
+const registry = toucan.getRegistryContract(signerOrProvider);
+const offsetHelper = toucan.getOffsetHelperContract(signerOrProivder);
+
+const remainingTCO2 = await bct.tokenBalances(tco2Address);
 ```
 
-This is useful if you need to interact with a method of our contracts that hasn't been implemented in the SDK yet.
+This is useful if you need to interact with a method of our contracts that hasn't been implemented in the SDK yet. It's important that, if you want to use write methods you pass a signer, but otherwise you can also pass a provider.
 
 # Tutorials
 

@@ -33,6 +33,8 @@ import {
  * @implements ContractInteractions, SubgraphInteractions
  */
 export class ToucanClient {
+  signer: ethers.Signer | undefined;
+  provider: ethers.providers.Provider | undefined;
   network: Network;
   contractInteractions: ContractInteractions;
   subgraphInteractions: SubgraphInteractions;
@@ -40,13 +42,29 @@ export class ToucanClient {
   /**
    *
    * @param network network that you want to work on
+   * @param provider to be able to read from the blockchain
+   * @param signer to be able to sign transactions
    */
-  constructor(network: Network) {
+  constructor(
+    network: Network,
+    provider?: ethers.providers.Provider,
+    signer?: ethers.Signer
+  ) {
     this.network = network;
+    this.provider = provider;
+    this.signer = signer;
 
     this.contractInteractions = new ContractInteractions(network);
     this.subgraphInteractions = new SubgraphInteractions(network);
   }
+
+  setSigner = (signer: ethers.Signer) => {
+    this.signer = signer;
+  };
+
+  setProvider = (provider: ethers.providers.Provider) => {
+    this.provider = provider;
+  };
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
@@ -58,15 +76,15 @@ export class ToucanClient {
    *
    * @description retires/burns an amount of TCO2s (each represents 1 ton of CO2) to achieve offset
    * @param amount amount of TCO2 to retire
-   * @param tco2Address address of the TCO2 token to retire
-   * @param signer this being a write transaction, we need a signer
-   * @returns retirement transaction
+   * @param tco2Address address of the TCO2 token to retire* @returns retirement transaction
    */
   retire = async (
     amount: BigNumber,
-    tco2Address: string,
-    signer: ethers.Signer
+    tco2Address: string
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.retire(amount, tco2Address, signer);
   };
 
@@ -78,9 +96,7 @@ export class ToucanClient {
    * @param beneficiaryName name of the beneficiary
    * @param retirementMessage retirement message
    * @param amount amount of TCO2 to retire
-   * @param tco2Address address of the TCO2 token to retire
-   * @param signer this being a write transaction, we need a signer
-   * @returns retirement transaction
+   * @param tco2Address address of the TCO2 token to retire* @returns retirement transaction
    */
   retireAndMintCertificate = async (
     retirementEntityName: string,
@@ -88,9 +104,11 @@ export class ToucanClient {
     beneficiaryName: string,
     retirementMessage: string,
     amount: BigNumber,
-    tco2Address: string,
-    signer: ethers.Signer
+    tco2Address: string
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.retireAndMintCertificate(
       retirementEntityName,
       beneficiaryAddress,
@@ -108,16 +126,16 @@ export class ToucanClient {
    * @notice requires approval from the address you're trying to retire from
    * @param amount amount of TCO2 to retire
    * @param address address of the account to retire from
-   * @param tco2Address address of the TCO2 token to retire
-   * @param signer this being a write transaction, we need a signer
-   * @returns retirement transaction
+   * @param tco2Address address of the TCO2 token to retire* @returns retirement transaction
    */
   retireFrom = async (
     amount: BigNumber,
     address: string,
-    tco2Address: string,
-    signer: ethers.Signer
+    tco2Address: string
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.retireFrom(
       amount,
       address,
@@ -130,13 +148,12 @@ export class ToucanClient {
    *
    * @description gets the cap for TCO2s based on `totalVintageQuantity`
    * @param tco2Address address of the TCO2 token
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns
    */
-  getDepositCap = async (
-    tco2Address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): Promise<BigNumber> => {
+  getDepositCap = async (tco2Address: string): Promise<BigNumber> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getDepositCap(
       tco2Address,
       signerOrProvider
@@ -147,13 +164,12 @@ export class ToucanClient {
    *
    * @description gets the attributes of the project represented by the TCO2
    * @param tco2Address address of the TCO2 token
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns an array of attributes
    */
-  getAttributes = async (
-    tco2Address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ) => {
+  getAttributes = async (tco2Address: string) => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getAttributes(
       tco2Address,
       signerOrProvider
@@ -164,13 +180,12 @@ export class ToucanClient {
    *
    * @description gets the remaining space in TCO2 contract before hitting the cap
    * @param tco2Address address of the TCO2 token
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns BigNumber representing the remaining space
    */
-  getTCO2Remaining = async (
-    tco2Address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): Promise<BigNumber> => {
+  getTCO2Remaining = async (tco2Address: string): Promise<BigNumber> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getTCO2Remaining(
       tco2Address,
       signerOrProvider
@@ -188,16 +203,16 @@ export class ToucanClient {
    * @description deposits TCO2s in the pool which mints a pool token for the user
    * @param pool symbol of the pool (token) to use
    * @param amount amount of TCO2s to deposit
-   * @param tco2Address address of the TCO2 token to deposit
-   * @param signer this being a write transaction, we need a signer
-   * @returns deposit transaction
+   * @param tco2Address address of the TCO2 token to deposit* @returns deposit transaction
    */
   depositTCO2 = async (
     pool: poolSymbol,
     amount: BigNumber,
-    tco2Address: string,
-    signer: ethers.Signer
+    tco2Address: string
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.depositTCO2(
       pool,
       amount,
@@ -213,11 +228,10 @@ export class ToucanClient {
    * @param tco2 address of TCO2 to deposit
    * @returns boolean
    */
-  checkEligible = async (
-    pool: poolSymbol,
-    tco2: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): Promise<boolean> => {
+  checkEligible = async (pool: poolSymbol, tco2: string): Promise<boolean> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.checkEligible(
       pool,
       tco2,
@@ -232,15 +246,16 @@ export class ToucanClient {
    * @param tco2s array of TCO2 contract addresses
    * @param amounts array of amounts to redeem for each tco2s
    * @notice tco2s must match amounts; amounts[0] is the amount of tco2[0] token to redeem for
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns amount (BigNumber) of fees it will cost to redeem
    */
   calculateRedeemFees = async (
     pool: poolSymbol,
     tco2s: string[],
-    amounts: BigNumber[],
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
+    amounts: BigNumber[]
   ): Promise<BigNumber> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.calculateRedeemFees(
       pool,
       tco2s,
@@ -255,15 +270,16 @@ export class ToucanClient {
    * @param pool symbol of the pool (token) to use
    * @param tco2s array of TCO2 contract addresses
    * @param amounts array of amounts to redeem for each tco2s
-   * @param signer this being a write transaction, we need a signer
    * @returns redeem transaction
    */
   redeemMany = async (
     pool: poolSymbol,
     tco2s: string[],
-    amounts: BigNumber[],
-    signer: ethers.Signer
+    amounts: BigNumber[]
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.redeemMany(pool, tco2s, amounts, signer);
   };
 
@@ -272,14 +288,15 @@ export class ToucanClient {
    * @description automatically redeems pool tokens for TCO2s
    * @param pool symbol of the pool (token) to use
    * @param amount amount to redeem
-   * @param signer this being a write transaction, we need a signer
    * @returns redeem transaction
    */
   redeemAuto = async (
     pool: poolSymbol,
-    amount: BigNumber,
-    signer: ethers.Signer
+    amount: BigNumber
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.redeemAuto(pool, amount, signer);
   };
 
@@ -288,14 +305,15 @@ export class ToucanClient {
    * @description automatically redeems pool tokens for TCO2s
    * @param pool symbol of the pool (token) to use
    * @param amount amount to redeem
-   * @param signer this being a write transaction, we need a signer
    * @returns array containing tco2 addresses (string) and amounts (BigNumber)
    */
   redeemAuto2 = async (
     pool: poolSymbol,
-    amount: BigNumber,
-    signer: ethers.Signer
+    amount: BigNumber
   ): Promise<{ address: string; amount: BigNumber }[]> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.redeemAuto2(pool, amount, signer);
   };
 
@@ -303,13 +321,12 @@ export class ToucanClient {
    *
    * @description gets the remaining space in pool contract before hitting the cap
    * @param poolSymbol symbol of the token to use
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns BigNumber representing the remaining space
    */
-  getPoolRemaining = async (
-    poolSymbol: poolSymbol,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): Promise<BigNumber> => {
+  getPoolRemaining = async (poolSymbol: poolSymbol): Promise<BigNumber> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getPoolRemaining(
       poolSymbol,
       signerOrProvider
@@ -320,13 +337,12 @@ export class ToucanClient {
    *
    * @description gets an array of scored TCO2s; scoredTCO2s[0] is lowest ranked
    * @param pool symbol of the pool (token) to use
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns array of TCO2 addresses by rank
    */
-  getScoredTCO2s = async (
-    pool: poolSymbol,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): Promise<string[]> => {
+  getScoredTCO2s = async (pool: poolSymbol): Promise<string[]> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getScoredTCO2s(pool, signerOrProvider);
   };
 
@@ -340,13 +356,12 @@ export class ToucanClient {
    *
    * @description checks if an address represents a TCO2
    * @param address address of contract to check
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns boolean
    */
-  checkIfTCO2 = async (
-    address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): Promise<boolean> => {
+  checkIfTCO2 = async (address: string): Promise<boolean> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.checkIfTCO2(address, signerOrProvider);
   };
 
@@ -361,15 +376,15 @@ export class ToucanClient {
    * @description allows user to retire carbon using carbon pool tokens from his wallet
    * @notice this method may take up to even 1 minute to give a result
    * @param pool symbol of the pool (token) to use
-   * @param amount amount of CO2 tons to offset
-   * @param signer this being a write transaction, we need a signer
-   * @returns offset transaction
+   * @param amount amount of CO2 tons to offset* @returns offset transaction
    */
   autoOffsetUsingPoolToken = async (
     pool: poolSymbol,
-    amount: BigNumber,
-    signer: ethers.Signer
+    amount: BigNumber
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.autoOffsetUsingPoolToken(
       pool,
       amount,
@@ -383,16 +398,16 @@ export class ToucanClient {
    * @notice this method may take up to even 1 minute to give a result
    * @param pool symbol of the pool (token) to use
    * @param amount amount of CO2 tons to offset
-   * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
-   * @param signer this being a write transaction, we need a signer
-   * @returns offset transaction
+   * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)* @returns offset transaction
    */
   autoOffsetUsingSwapToken = async (
     pool: poolSymbol,
     amount: BigNumber,
-    swapToken: Contract,
-    signer: ethers.Signer
+    swapToken: Contract
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.autoOffsetUsingSwapToken(
       pool,
       amount,
@@ -406,15 +421,15 @@ export class ToucanClient {
    * @description swaps ETH for carbon pool tokens and uses them to retire carbon
    * @notice this method may take up to even 1 minute to give a result
    * @param pool symbol of the pool (token) to use
-   * @param amount amount of CO2 tons to offset
-   * @param signer this being a write transaction, we need a signer
-   * @returns offset transaction
+   * @param amount amount of CO2 tons to offset* @returns offset transaction
    */
   autoOffsetUsingETH = async (
     pool: poolSymbol,
-    amount: BigNumber,
-    signer: ethers.Signer
+    amount: BigNumber
   ): Promise<ContractReceipt> => {
+    if (!this.signer) throw new Error("No signer set");
+    const signer = this.signer;
+
     return this.contractInteractions.autoOffsetUsingETH(pool, amount, signer);
   };
 
@@ -424,15 +439,16 @@ export class ToucanClient {
    * @param pool symbol of the pool (token) to use
    * @param amount amount of CO2 tons to calculate for
    * @param swapToken contract of the token to use in swap
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns amount (BigNumber) of swapToken needed to deposit
    */
   calculateNeededTokenAmount = async (
     pool: poolSymbol,
     amount: BigNumber,
-    swapToken: Contract,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
+    swapToken: Contract
   ): Promise<BigNumber> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.calculateNeededTokenAmount(
       pool,
       amount,
@@ -446,14 +462,15 @@ export class ToucanClient {
    * @description calculates the needed amount of ETH to send to offset; ETH = native currency of network you are on
    * @param pool symbol of the pool (token) to use
    * @param amount amount of CO2 tons to calculate for
-   * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns amount (BigNumber) of ETH needed to deposit; ETH = native currency of network you are on
    */
   calculateNeededETHAmount = async (
     pool: poolSymbol,
-    amount: BigNumber,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
+    amount: BigNumber
   ): Promise<BigNumber> => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.calculateNeededETHAmount(
       pool,
       amount,
@@ -684,13 +701,12 @@ export class ToucanClient {
    * @dev
    * @description gets the contract of a pool token based on the symbol
    * @param poolSymbol symbol of the pool (token) to use
-   * @param signerOrProvider depending on what you intend to do with the contract, a signer or provider
    * @returns a ethers.contract to interact with the pool
    */
-  public getPoolContract = (
-    poolSymbol: poolSymbol,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): IToucanPoolToken => {
+  public getPoolContract = (poolSymbol: poolSymbol): IToucanPoolToken => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getPoolContract(
       poolSymbol,
       signerOrProvider
@@ -701,37 +717,36 @@ export class ToucanClient {
    *
    * @description gets the contract of a TCO2 token based on the address
    * @param address address of TCO2 ethers.Contract to insantiate
-   * @param signerOrProvider depending on what you intend to do with the contract, a signer or provider
    * @returns a ethers.contract to interact with the token
    */
-  getTCO2Contract = (
-    address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): IToucanCarbonOffsets => {
+  getTCO2Contract = (address: string): IToucanCarbonOffsets => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getTCO2Contract(address, signerOrProvider);
   };
 
   /**
    *
    * @description gets the contract of a the Toucan contract registry
-   * @param signerOrProvider depending on what you intend to do with the contract, a signer or provider
    * @returns a ethers.contract to interact with the contract registry
    */
-  public getRegistryContract = (
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): IToucanContractRegistry => {
+  public getRegistryContract = (): IToucanContractRegistry => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getRegistryContract(signerOrProvider);
   };
 
   /**
    *
    * @description gets the contract of a the OffsetHelper contract
-   * @param signerOrProvider depending on what you intend to do with the contract, a signer or provider
    * @returns a ethers.contract to interact with the OffsetHelper
    */
-  public getOffsetHelperContract = (
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): OffsetHelper => {
+  public getOffsetHelperContract = (): OffsetHelper => {
+    const signerOrProvider = this.signer ? this.signer : this.provider;
+    if (!signerOrProvider) throw new Error("No signer or provider set");
+
     return this.contractInteractions.getOffsetHelperContract(signerOrProvider);
   };
 }

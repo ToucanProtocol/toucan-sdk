@@ -22,13 +22,25 @@ yarn add toucan-sdk
 
 # Quickstart
 
-Instantiate the ToucanClient to interact with our infrastructure.
+Instantiate the ToucanClient and set a signer & provider to interact with our infrastructure.
+
+```typescript
+import { ToucanClient } from "toucan-sdk";
+
+const toucan = new ToucanClient("polygon", provider, signer);
+```
+
+You could also set the signer/provider later if you prefer that. They are optional. But you will need to set them if you want to interact with contracts. The provider is read-only, while the signer allows both writing to and reading from the blockchain.
 
 ```typescript
 import { ToucanClient } from "toucan-sdk";
 
 const toucan = new ToucanClient("polygon");
+toucan.setProvider(provider);
+toucan.setSigner(signer);
 ```
+
+If you don't have a signer nor a provider set, you can only interact with the subgraph.
 
 ## Fetch pool prices from SushiSwap
 
@@ -60,11 +72,7 @@ This is how you do that when you want to use ETH (or the network's native curren
 In this example, you'd be offseting 1 TON of CO2 with carbon projects from the NCT pool.
 
 ```typescript
-const offsetReceipt = await toucan.autoOffsetUsingETH(
-  "NCT",
-  parseEther("1.0"),
-  signer
-);
+const offsetReceipt = await toucan.autoOffsetUsingETH("NCT", parseEther("1.0"));
 ```
 
 ## Don't want to spend your ETH to offset?
@@ -77,8 +85,7 @@ const weth = new ethers.Contract(wethAddress, wethAbi, signer);
 const offsetReceipt = await toucan.autoOffsetUsingSwapToken(
   "NCT",
   parseEther("1.0"),
-  weth,
-  signer
+  weth
 );
 ```
 
@@ -89,8 +96,7 @@ If you already have BCT/NCT, you can use `autoOffsetUsingPoolToken()` like so:
 ```typescript
 const offsetReceipt = await toucan.autoOffsetUsingPoolToken(
   "NCT",
-  parseEther("1.0"),
-  signer
+  parseEther("1.0")
 );
 ```
 
@@ -103,20 +109,18 @@ Assuming you already have some NCT, this example gets an array of all TCO2s in t
 Then redeems and retires 3 TONS of the higest ranked TCO2 it can find.
 
 ```typescript
-const scoredTCO2s = await toucan.getScoredTCO2s("NCT", signerOrProvider);
+const scoredTCO2s = await toucan.getScoredTCO2s("NCT");
 const len = scoredTCO2s.length;
 
 const redeemReceipt = await toucan.redeemMany(
   "NCT",
   [scoredTCO2s[len - 1]],
-  [parseEther("3.0")],
-  signer
+  [parseEther("3.0")]
 );
 
 const retirementReceipt = await toucan.retire(
   parseEther("3.0"),
-  tco2s[len - 1].address,
-  signer
+  tco2s[len - 1].address
 );
 ```
 
@@ -133,8 +137,7 @@ const retirementReceipt = await toucan.retireAndMintCertificate(
   "Alex",
   "Just helping the planet",
   parseEther("3.0"),
-  tco2s[len - 1].address,
-  signer
+  tco2s[len - 1].address
 );
 ```
 
@@ -263,15 +266,19 @@ const result = await toucan.fetchCustomQuery(query, { id: "1" });
 You can always access any method or property of the bct, nct and tco2 contracts by first getting and storing them in a variable, like so:
 
 ```typescript
-const bct = toucan.getPoolContract("BCT", signerOrProvider);
-const tco2 = toucan.getTCO2Contract(tco2Address, signerOrProvider);
-const registry = toucan.getRegistryContract(signerOrProvider);
-const offsetHelper = toucan.getOffsetHelperContract(signerOrProivder);
+toucan.setSigner(signer);
+
+const bct = toucan.getPoolContract("BCT");
+const tco2 = toucan.getTCO2Contract(tco2Address);
+const registry = toucan.getRegistryContract();
+const offsetHelper = toucan.getOffsetHelperContract();
 
 const remainingTCO2 = await bct.tokenBalances(tco2Address);
 ```
 
-This is useful if you need to interact with a method of our contracts that hasn't been implemented in the SDK yet. It's important that, if you want to use write methods you pass a signer, but otherwise you can also pass a provider.
+This is useful if you need to interact with a method of our contracts that hasn't been implemented in the SDK yet.
+
+It's important to note that, if you want to use write methods you need to have a signer set, but otherwise you can also set a provider.
 
 # Tutorials
 

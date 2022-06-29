@@ -1,4 +1,6 @@
-export const POLYGON_GRAPH_API_URL =
+export const POLYGON_TOUCAN_GRAPH_API_URL =
   "https://api.thegraph.com/subgraphs/name/toucanprotocol/matic";
-export const MUMBAI_GRAPH_API_URL =
+export const MUMBAI_TOUCAN_GRAPH_API_URL =
   "https://api.thegraph.com/subgraphs/name/toucanprotocol/mumbai";
+export const POLYGON_SUSHI_GRAPH_API_URL =
+  "https://api.thegraph.com/subgraphs/name/sushiswap/matic-exchange";

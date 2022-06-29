@@ -1,6 +1,6 @@
 {
   "name": "toucan-sdk",
-  "version": "0.1.2-alpha",
+  "version": "0.1.3-beta",
   "description": "A JavaScript SDK for Toucan Protocol. Works in the web browser and Node.js.",
   "main": "index.ts",
   "scripts": {

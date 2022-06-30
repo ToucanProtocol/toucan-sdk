@@ -10,7 +10,7 @@ import {
   IToucanPoolToken,
   OffsetHelper,
 } from "./typechain";
-import { Network, poolSymbol } from "./types";
+import { Network, PoolSymbol } from "./types";
 import {
   fetchAggregationsMethod,
   fetchAllTCO2TokensMethod,
@@ -206,7 +206,7 @@ export class ToucanClient {
    * @param tco2Address address of the TCO2 token to deposit* @returns deposit transaction
    */
   depositTCO2 = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     tco2Address: string
   ): Promise<ContractReceipt> => {
@@ -228,7 +228,7 @@ export class ToucanClient {
    * @param tco2 address of TCO2 to deposit
    * @returns boolean
    */
-  checkEligible = async (pool: poolSymbol, tco2: string): Promise<boolean> => {
+  checkEligible = async (pool: PoolSymbol, tco2: string): Promise<boolean> => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
@@ -249,7 +249,7 @@ export class ToucanClient {
    * @returns amount (BigNumber) of fees it will cost to redeem
    */
   calculateRedeemFees = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     tco2s: string[],
     amounts: BigNumber[]
   ): Promise<BigNumber> => {
@@ -273,7 +273,7 @@ export class ToucanClient {
    * @returns redeem transaction
    */
   redeemMany = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     tco2s: string[],
     amounts: BigNumber[]
   ): Promise<ContractReceipt> => {
@@ -291,7 +291,7 @@ export class ToucanClient {
    * @returns redeem transaction
    */
   redeemAuto = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
     if (!this.signer) throw new Error("No signer set");
@@ -308,7 +308,7 @@ export class ToucanClient {
    * @returns array containing tco2 addresses (string) and amounts (BigNumber)
    */
   redeemAuto2 = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber
   ): Promise<{ address: string; amount: BigNumber }[]> => {
     if (!this.signer) throw new Error("No signer set");
@@ -320,15 +320,15 @@ export class ToucanClient {
   /**
    *
    * @description gets the remaining space in pool contract before hitting the cap
-   * @param poolSymbol symbol of the token to use
+   * @param PoolSymbol symbol of the token to use
    * @returns BigNumber representing the remaining space
    */
-  getPoolRemaining = async (poolSymbol: poolSymbol): Promise<BigNumber> => {
+  getPoolRemaining = async (PoolSymbol: PoolSymbol): Promise<BigNumber> => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
     return this.contractInteractions.getPoolRemaining(
-      poolSymbol,
+      PoolSymbol,
       signerOrProvider
     );
   };
@@ -339,7 +339,7 @@ export class ToucanClient {
    * @param pool symbol of the pool (token) to use
    * @returns array of TCO2 addresses by rank
    */
-  getScoredTCO2s = async (pool: poolSymbol): Promise<string[]> => {
+  getScoredTCO2s = async (pool: PoolSymbol): Promise<string[]> => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
@@ -379,7 +379,7 @@ export class ToucanClient {
    * @param amount amount of CO2 tons to offset* @returns offset transaction
    */
   autoOffsetUsingPoolToken = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
     if (!this.signer) throw new Error("No signer set");
@@ -401,7 +401,7 @@ export class ToucanClient {
    * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)* @returns offset transaction
    */
   autoOffsetUsingSwapToken = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     swapToken: Contract
   ): Promise<ContractReceipt> => {
@@ -424,7 +424,7 @@ export class ToucanClient {
    * @param amount amount of CO2 tons to offset* @returns offset transaction
    */
   autoOffsetUsingETH = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
     if (!this.signer) throw new Error("No signer set");
@@ -442,7 +442,7 @@ export class ToucanClient {
    * @returns amount (BigNumber) of swapToken needed to deposit
    */
   calculateNeededTokenAmount = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     swapToken: Contract
   ): Promise<BigNumber> => {
@@ -465,7 +465,7 @@ export class ToucanClient {
    * @returns amount (BigNumber) of ETH needed to deposit; ETH = native currency of network you are on
    */
   calculateNeededETHAmount = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber
   ): Promise<BigNumber> => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
@@ -672,7 +672,7 @@ export class ToucanClient {
   // --------------------------------------------------------------------------------
 
   fetchTokenPriceOnSushiSwap = async (
-    pool: poolSymbol
+    pool: PoolSymbol
   ): Promise<{
     price: number | null;
     url: string | null;
@@ -692,7 +692,7 @@ export class ToucanClient {
    * @param pool symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
-  public getPoolAddress = (pool: poolSymbol): string => {
+  public getPoolAddress = (pool: PoolSymbol): string => {
     return this.contractInteractions.getPoolAddress(pool);
   };
 
@@ -700,15 +700,15 @@ export class ToucanClient {
    *
    * @dev
    * @description gets the contract of a pool token based on the symbol
-   * @param poolSymbol symbol of the pool (token) to use
+   * @param PoolSymbol symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
-  public getPoolContract = (poolSymbol: poolSymbol): IToucanPoolToken => {
+  public getPoolContract = (PoolSymbol: PoolSymbol): IToucanPoolToken => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
     return this.contractInteractions.getPoolContract(
-      poolSymbol,
+      PoolSymbol,
       signerOrProvider
     );
   };

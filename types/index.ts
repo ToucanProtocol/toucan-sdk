@@ -1,6 +1,6 @@
 export type Network = "polygon" | "mumbai";
 
-export type poolSymbol = "BCT" | "NCT";
+export type PoolSymbol = "BCT" | "NCT";
 
 export declare enum RetirementStatus {
   Pending = 0,

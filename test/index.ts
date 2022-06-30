@@ -132,12 +132,11 @@ describe("Testing Toucan-SDK", function () {
     });
 
     it("Should automatically redeem NCT & deposit the TCO2 back", async function () {
-      // @ts-ignore
       const tco2: IToucanCarbonOffsets = new ethers.Contract(
         scoredTCO2sNCT[0],
         tco2ABI,
         addr1
-      );
+      ) as IToucanCarbonOffsets;
       const tco2BalanceBefore = await tco2.balanceOf(addr1.address);
       const nct = new ethers.Contract(
         addresses.polygon.nct,

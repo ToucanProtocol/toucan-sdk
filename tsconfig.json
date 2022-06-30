@@ -7,6 +7,5 @@
     "outDir": "dist",
     "declaration": true
   },
-  "include": ["./**/*.ts", "./**.ts"],
-  "files": ["./hardhat.config.ts"]
+  "include": ["./**/*.ts", "./**.ts"]
 }

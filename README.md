@@ -263,7 +263,7 @@ const result = await toucan.fetchCustomQuery(query, { id: "1" });
 
 # What if I can't find contract interactions that I need?
 
-You can always access any method or property of the bct, nct and tco2 contracts by first getting and storing them in a variable, like so:
+You can always access any method or property of the BCT, NCT and TCO2 contracts by first getting and storing them in a variable, like so:
 
 ```typescript
 toucan.setSigner(signer);

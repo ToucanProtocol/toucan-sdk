@@ -155,7 +155,7 @@ export type fetchPoolContentsResult = Pick<PooledTCO2TokenSchema, "amount"> & {
 };
 
 export type fetchPoolContentsMethod = (
-  PoolSymbol: PoolSymbol,
+  pool: PoolSymbol,
   first?: number,
   skip?: number
 ) => Promise<fetchPoolContentsResult[] | undefined>;

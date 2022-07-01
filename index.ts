@@ -323,14 +323,11 @@ export class ToucanClient {
    * @param PoolSymbol symbol of the token to use
    * @returns BigNumber representing the remaining space
    */
-  getPoolRemaining = async (PoolSymbol: PoolSymbol): Promise<BigNumber> => {
+  getPoolRemaining = async (pool: PoolSymbol): Promise<BigNumber> => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
-    return this.contractInteractions.getPoolRemaining(
-      PoolSymbol,
-      signerOrProvider
-    );
+    return this.contractInteractions.getPoolRemaining(pool, signerOrProvider);
   };
 
   /**
@@ -703,14 +700,11 @@ export class ToucanClient {
    * @param PoolSymbol symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
-  public getPoolContract = (PoolSymbol: PoolSymbol): IToucanPoolToken => {
+  public getPoolContract = (pool: PoolSymbol): IToucanPoolToken => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
-    return this.contractInteractions.getPoolContract(
-      PoolSymbol,
-      signerOrProvider
-    );
+    return this.contractInteractions.getPoolContract(pool, signerOrProvider);
   };
 
   /**

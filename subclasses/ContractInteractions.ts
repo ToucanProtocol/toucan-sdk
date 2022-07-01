@@ -351,10 +351,10 @@ class ContractInteractions {
    * @returns BigNumber representing the remaining space
    */
   getPoolRemaining = async (
-    PoolSymbol: PoolSymbol,
+    pool: PoolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    const poolToken = this.getPoolContract(PoolSymbol, signerOrProvider);
+    const poolToken = this.getPoolContract(pool, signerOrProvider);
     return await poolToken.getRemaining();
   };
 
@@ -561,11 +561,11 @@ class ContractInteractions {
    * @returns a ethers.contract to interact with the pool
    */
   public getPoolContract = (
-    PoolSymbol: PoolSymbol,
+    pool: PoolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): IToucanPoolToken => {
     const poolContract = new ethers.Contract(
-      this.getPoolAddress(PoolSymbol),
+      this.getPoolAddress(pool),
       poolTokenABI,
       signerOrProvider
     ) as IToucanPoolToken;

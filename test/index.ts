@@ -130,7 +130,7 @@ describe("Testing Toucan-SDK", function () {
     });
 
     it("Should automatically redeem NCT & deposit the TCO2 back", async function () {
-      const tco2: IToucanCarbonOffsets = new ethers.Contract(
+      const tco2 = new ethers.Contract(
         scoredTCO2sNCT[0],
         tco2ABI,
         addr1

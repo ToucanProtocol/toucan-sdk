@@ -12,7 +12,7 @@ import {
   IToucanPoolToken,
   OffsetHelper,
 } from "../typechain";
-import { Network, poolSymbol } from "../types";
+import { Network, PoolSymbol } from "../types";
 import { GAS_LIMIT } from "../utils";
 import {
   offsetHelperABI,
@@ -195,7 +195,7 @@ class ContractInteractions {
    * @returns deposit transaction
    */
   depositTCO2 = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     tco2Address: string,
     signer: ethers.Signer
@@ -226,7 +226,7 @@ class ContractInteractions {
    * @returns boolean
    */
   checkEligible = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     tco2: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<boolean> => {
@@ -255,7 +255,7 @@ class ContractInteractions {
    * @returns amount (BigNumber) of fees it will cost to redeem
    */
   calculateRedeemFees = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     tco2s: string[],
     amounts: BigNumber[],
     signerOrProvider: ethers.Signer | ethers.providers.Provider
@@ -274,7 +274,7 @@ class ContractInteractions {
    * @returns redeem transaction
    */
   redeemMany = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     tco2s: string[],
     amounts: BigNumber[],
     signer: ethers.Signer
@@ -298,7 +298,7 @@ class ContractInteractions {
    * @returns redeem transaction
    */
   redeemAuto = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
@@ -319,7 +319,7 @@ class ContractInteractions {
    * @returns array containing tco2 addresses (string) and amounts (BigNumber)
    */
   redeemAuto2 = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<{ address: string; amount: BigNumber }[]> => {
@@ -346,15 +346,15 @@ class ContractInteractions {
   /**
    *
    * @description gets the remaining space in pool contract before hitting the cap
-   * @param poolSymbol symbol of the token to use
+   * @param PoolSymbol symbol of the token to use
    * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns BigNumber representing the remaining space
    */
   getPoolRemaining = async (
-    poolSymbol: poolSymbol,
+    pool: PoolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
-    const poolToken = this.getPoolContract(poolSymbol, signerOrProvider);
+    const poolToken = this.getPoolContract(pool, signerOrProvider);
     return await poolToken.getRemaining();
   };
 
@@ -366,7 +366,7 @@ class ContractInteractions {
    * @returns array of TCO2 addresses by rank
    */
   getScoredTCO2s = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<string[]> => {
     const poolToken = this.getPoolContract(pool, signerOrProvider);
@@ -410,7 +410,7 @@ class ContractInteractions {
    * @returns offset transaction
    */
   autoOffsetUsingPoolToken = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
@@ -442,7 +442,7 @@ class ContractInteractions {
    * @returns offset transaction
    */
   autoOffsetUsingSwapToken = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     swapToken: Contract,
     signer: ethers.Signer
@@ -480,7 +480,7 @@ class ContractInteractions {
    * @returns offset transaction
    */
   autoOffsetUsingETH = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     signer: ethers.Signer
   ): Promise<ContractReceipt> => {
@@ -505,7 +505,7 @@ class ContractInteractions {
    * @returns amount (BigNumber) of swapToken needed to deposit
    */
   calculateNeededTokenAmount = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     swapToken: Contract,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
@@ -527,7 +527,7 @@ class ContractInteractions {
    * @returns amount (BigNumber) of ETH needed to deposit; ETH = native currency of network you are on
    */
   calculateNeededETHAmount = async (
-    pool: poolSymbol,
+    pool: PoolSymbol,
     amount: BigNumber,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): Promise<BigNumber> => {
@@ -548,7 +548,7 @@ class ContractInteractions {
    * @param pool symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
-  public getPoolAddress = (pool: poolSymbol): string => {
+  public getPoolAddress = (pool: PoolSymbol): string => {
     return pool == "BCT" ? this.addresses.bct : this.addresses.nct;
   };
 
@@ -556,16 +556,16 @@ class ContractInteractions {
    *
    * @dev
    * @description gets the contract of a pool token based on the symbol
-   * @param poolSymbol symbol of the pool (token) to use
+   * @param PoolSymbol symbol of the pool (token) to use
    * @param signerOrProvider depending on what you intend to do with the contract, a signer or provider
    * @returns a ethers.contract to interact with the pool
    */
   public getPoolContract = (
-    poolSymbol: poolSymbol,
+    pool: PoolSymbol,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): IToucanPoolToken => {
     const poolContract = new ethers.Contract(
-      this.getPoolAddress(poolSymbol),
+      this.getPoolAddress(pool),
       poolTokenABI,
       signerOrProvider
     ) as IToucanPoolToken;

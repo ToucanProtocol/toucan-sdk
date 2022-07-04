@@ -1,6 +1,6 @@
 import { TypedDocumentNode } from "@urql/core";
 
-import { poolSymbol } from ".";
+import { PoolSymbol } from ".";
 import {
   AggregationsSchema,
   BatchCommentSchema,
@@ -130,14 +130,14 @@ export type fetchRedeemsResult = Pick<
 };
 
 export type fetchRedeemsMethod = (
-  pool: poolSymbol,
+  pool: PoolSymbol,
   first?: number,
   skip?: number
 ) => Promise<fetchRedeemsResult[] | undefined>;
 
 export type fetchUserRedeemsMethod = (
   walletAddress: string,
-  pool: poolSymbol,
+  pool: PoolSymbol,
   first?: number,
   skip?: number
 ) => Promise<fetchRedeemsResult[] | undefined>;
@@ -155,7 +155,7 @@ export type fetchPoolContentsResult = Pick<PooledTCO2TokenSchema, "amount"> & {
 };
 
 export type fetchPoolContentsMethod = (
-  poolSymbol: poolSymbol,
+  pool: PoolSymbol,
   first?: number,
   skip?: number
 ) => Promise<fetchPoolContentsResult[] | undefined>;

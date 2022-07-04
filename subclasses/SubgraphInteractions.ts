@@ -1,7 +1,7 @@
 import { Client, gql } from "@urql/core";
 
 import { IToucanCarbonOffsets } from "../typechain";
-import { Network, poolSymbol } from "../types";
+import { Network, PoolSymbol } from "../types";
 import {
   fetchAggregationsMethod,
   fetchAllTCO2TokensMethod,
@@ -725,7 +725,7 @@ class SubgraphInteractions {
   };
 
   fetchTokenPriceOnSushiSwap = async (
-    pool: poolSymbol
+    pool: PoolSymbol
   ): Promise<{
     price: number | null;
     url: string | null;
@@ -752,7 +752,7 @@ class SubgraphInteractions {
    * @param pool symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
-  private getPoolAddress = (pool: poolSymbol): string => {
+  private getPoolAddress = (pool: PoolSymbol): string => {
     return pool == "BCT" ? this.addresses.bct : this.addresses.nct;
   };
 }

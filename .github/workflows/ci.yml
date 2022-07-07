@@ -27,7 +27,7 @@ jobs:
         run: yarn
 
       - name: Compile code
-        run: yarn build
+        run: yarn build:clean
 
       - name: Format
         run: yarn format:check

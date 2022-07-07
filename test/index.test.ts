@@ -4,10 +4,10 @@ import { Contract } from "ethers";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
-import { ToucanClient } from "..";
-import { IToucanCarbonOffsets } from "../typechain";
-import { poolTokenABI, swapperABI, tco2ABI } from "../utils/ABIs";
-import addresses from "../utils/addresses";
+import { ToucanClient } from "../dist";
+import { IToucanCarbonOffsets } from "../dist/typechain";
+import { poolTokenABI, swapperABI, tco2ABI } from "../dist/utils/ABIs";
+import addresses from "../dist/utils/addresses";
 
 describe("Testing Toucan-SDK", function () {
   let addr1: SignerWithAddress;

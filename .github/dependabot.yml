@@ -6,4 +6,4 @@ updates:
       interval: "weekly"
     allow:
       - dependency-name: "*"
-      dependency-type: "production"
+        dependency-type: "production"

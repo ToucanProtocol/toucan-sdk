@@ -1,7 +1,12 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { Contract } from "ethers";
-import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
+import {
+  formatEther,
+  FormatTypes,
+  Interface,
+  parseEther,
+} from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
 import { ToucanClient } from "../dist";
@@ -77,8 +82,8 @@ describe("Testing Toucan-SDK", function () {
 
       await toucan.redeemAuto("NCT", parseEther("1.0"));
 
-      expect(await nct.balanceOf(addr1.address)).to.be.eql(
-        nctBalanceBefore.sub(parseEther("1.0"))
+      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(nctBalanceBefore.sub(parseEther("1.0")))
       );
     });
 
@@ -90,8 +95,8 @@ describe("Testing Toucan-SDK", function () {
 
       for (let i = 0; i < tco2s.length; i++) {
         const tco2 = new ethers.Contract(tco2s[i].address, tco2ABI, addr1);
-        expect(await tco2.balanceOf(addr1.address)).to.be.eql(
-          (await tco2s[i].amount).add(balanceBefore)
+        expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
+          formatEther((await tco2s[i].amount).add(balanceBefore))
         );
       }
     });
@@ -116,10 +121,12 @@ describe("Testing Toucan-SDK", function () {
 
       const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(balance).to.be.eql(parseEther("1.0").sub(fees));
+      expect(formatEther(balance)).to.be.eql(
+        formatEther(parseEther("1.0").sub(fees))
+      );
 
-      expect(await nct.balanceOf(addr1.address)).to.be.eql(
-        nctBalanceBefore.sub(parseEther("1.0"))
+      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(nctBalanceBefore.sub(parseEther("1.0")))
       );
     });
 
@@ -141,9 +148,13 @@ describe("Testing Toucan-SDK", function () {
 
       await toucan.depositTCO2("NCT", parseEther("1.0"), tco2.address);
 
-      expect(await tco2.balanceOf(addr1.address)).to.be.eql(tco2BalanceBefore);
+      expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
+        formatEther(tco2BalanceBefore)
+      );
 
-      expect(await nct.balanceOf(addr1.address)).to.be.eql(nctBalanceBefore);
+      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(nctBalanceBefore)
+      );
     });
   });
 
@@ -168,10 +179,12 @@ describe("Testing Toucan-SDK", function () {
 
       const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(balance).to.be.eql(parseEther("1.0").sub(fees));
+      expect(formatEther(balance)).to.be.eql(
+        formatEther(parseEther("1.0").sub(fees))
+      );
 
-      expect(await bct.balanceOf(addr1.address)).to.be.eql(
-        bctBalanceBefore.sub(parseEther("1.0"))
+      expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(bctBalanceBefore.sub(parseEther("1.0")))
       );
     });
 
@@ -185,9 +198,13 @@ describe("Testing Toucan-SDK", function () {
 
       await toucan.depositTCO2("BCT", parseEther("1.0"), TCO2.address);
 
-      expect(await TCO2.balanceOf(addr1.address)).to.be.eql(tco2BalanceBefore);
+      expect(formatEther(await TCO2.balanceOf(addr1.address))).to.be.eql(
+        formatEther(tco2BalanceBefore)
+      );
 
-      expect(await bct.balanceOf(addr1.address)).to.be.eql(bctBalanceBefore);
+      expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(bctBalanceBefore)
+      );
     });
   });
 

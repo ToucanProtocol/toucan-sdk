@@ -1,7 +1,12 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { Contract } from "ethers";
-import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
+import {
+  formatEther,
+  FormatTypes,
+  Interface,
+  parseEther,
+} from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
 import { ToucanClient } from "../dist";
@@ -48,8 +53,7 @@ describe("Testing Toucan-SDK", function () {
 
   describe("Testing OffsetHelper related methods", function () {
     it("Should retire 1 TCO2 using pool token deposit", async function () {
-      await expect(toucan.autoOffsetUsingPoolToken("NCT", parseEther("1.0"))).to
-        .not.be.reverted;
+      await toucan.autoOffsetUsingPoolToken("NCT", parseEther("1.0"));
     });
 
     it("Should retire 1 TCO2 using swap token", async function () {
@@ -59,14 +63,11 @@ describe("Testing Toucan-SDK", function () {
       iface.format(FormatTypes.full);
       const weth = new ethers.Contract(addresses.polygon.weth, iface, addr1);
 
-      await expect(
-        toucan.autoOffsetUsingSwapToken("NCT", parseEther("1.0"), weth)
-      ).to.not.be.reverted;
+      await toucan.autoOffsetUsingSwapToken("NCT", parseEther("1.0"), weth);
     });
 
     it("Should retire 1 TCO2 using ETH deposit", async function () {
-      await expect(toucan.autoOffsetUsingETH("NCT", parseEther("1.0"))).to.not
-        .be.reverted;
+      await toucan.autoOffsetUsingETH("NCT", parseEther("1.0"));
     });
   });
 
@@ -79,11 +80,10 @@ describe("Testing Toucan-SDK", function () {
       );
       const nctBalanceBefore = await nct.balanceOf(addr1.address);
 
-      await expect(toucan.redeemAuto("NCT", parseEther("1.0"))).to.not.be
-        .reverted;
+      await toucan.redeemAuto("NCT", parseEther("1.0"));
 
-      expect(await nct.balanceOf(addr1.address)).to.be.eql(
-        nctBalanceBefore.sub(parseEther("1.0"))
+      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(nctBalanceBefore.sub(parseEther("1.0")))
       );
     });
 
@@ -95,8 +95,8 @@ describe("Testing Toucan-SDK", function () {
 
       for (let i = 0; i < tco2s.length; i++) {
         const tco2 = new ethers.Contract(tco2s[i].address, tco2ABI, addr1);
-        expect(await tco2.balanceOf(addr1.address)).to.be.eql(
-          (await tco2s[i].amount).add(balanceBefore)
+        expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
+          formatEther((await tco2s[i].amount).add(balanceBefore))
         );
       }
     });
@@ -117,15 +117,16 @@ describe("Testing Toucan-SDK", function () {
         [parseEther("1.0")]
       );
 
-      await expect(toucan.redeemMany("NCT", [tco2Address], [parseEther("1.0")]))
-        .to.not.be.reverted;
+      await toucan.redeemMany("NCT", [tco2Address], [parseEther("1.0")]);
 
       const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(balance).to.be.eql(parseEther("1.0").sub(fees));
+      expect(formatEther(balance)).to.be.eql(
+        formatEther(parseEther("1.0").sub(fees))
+      );
 
-      expect(await nct.balanceOf(addr1.address)).to.be.eql(
-        nctBalanceBefore.sub(parseEther("1.0"))
+      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(nctBalanceBefore.sub(parseEther("1.0")))
       );
     });
 
@@ -145,12 +146,15 @@ describe("Testing Toucan-SDK", function () {
 
       await toucan.redeemAuto("NCT", parseEther("1.0"));
 
-      await expect(toucan.depositTCO2("NCT", parseEther("1.0"), tco2.address))
-        .to.not.be.reverted;
+      await toucan.depositTCO2("NCT", parseEther("1.0"), tco2.address);
 
-      expect(await tco2.balanceOf(addr1.address)).to.be.eql(tco2BalanceBefore);
+      expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
+        formatEther(tco2BalanceBefore)
+      );
 
-      expect(await nct.balanceOf(addr1.address)).to.be.eql(nctBalanceBefore);
+      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(nctBalanceBefore)
+      );
     });
   });
 
@@ -171,15 +175,16 @@ describe("Testing Toucan-SDK", function () {
         [parseEther("1.0")]
       );
 
-      await expect(toucan.redeemMany("BCT", [tco2Address], [parseEther("1.0")]))
-        .to.not.be.reverted;
+      await toucan.redeemMany("BCT", [tco2Address], [parseEther("1.0")]);
 
       const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(balance).to.be.eql(parseEther("1.0").sub(fees));
+      expect(formatEther(balance)).to.be.eql(
+        formatEther(parseEther("1.0").sub(fees))
+      );
 
-      expect(await bct.balanceOf(addr1.address)).to.be.eql(
-        bctBalanceBefore.sub(parseEther("1.0"))
+      expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(bctBalanceBefore.sub(parseEther("1.0")))
       );
     });
 
@@ -191,12 +196,15 @@ describe("Testing Toucan-SDK", function () {
 
       await toucan.redeemAuto("BCT", parseEther("1.0"));
 
-      await expect(toucan.depositTCO2("BCT", parseEther("1.0"), TCO2.address))
-        .to.not.be.reverted;
+      await toucan.depositTCO2("BCT", parseEther("1.0"), TCO2.address);
 
-      expect(await TCO2.balanceOf(addr1.address)).to.be.eql(tco2BalanceBefore);
+      expect(formatEther(await TCO2.balanceOf(addr1.address))).to.be.eql(
+        formatEther(tco2BalanceBefore)
+      );
 
-      expect(await bct.balanceOf(addr1.address)).to.be.eql(bctBalanceBefore);
+      expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
+        formatEther(bctBalanceBefore)
+      );
     });
   });
 
@@ -250,9 +258,7 @@ describe("Testing Toucan-SDK", function () {
       const toucan2 = new ToucanClient("polygon");
       toucan2.setSigner(addr2);
 
-      await expect(
-        toucan2.retireFrom(parseEther("1.0"), addr1.address, TCO2.address)
-      ).to.not.be.reverted;
+      await toucan2.retireFrom(parseEther("1.0"), addr1.address, TCO2.address);
     });
   });
 

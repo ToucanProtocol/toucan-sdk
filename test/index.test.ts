@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { Contract } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import {
   formatEther,
   FormatTypes,
@@ -11,6 +11,7 @@ import { ethers } from "hardhat";
 
 import { ToucanClient } from "../dist";
 import { IToucanCarbonOffsets } from "../dist/typechain";
+import { PoolSymbol } from "../dist/types";
 import { poolTokenABI, swapperABI, tco2ABI } from "../dist/utils/ABIs";
 import addresses from "../dist/utils/addresses";
 
@@ -19,8 +20,32 @@ describe("Testing Toucan-SDK", function () {
   let addr2: SignerWithAddress;
   let toucan: ToucanClient;
   let swapper: Contract;
-  let scoredTCO2sBCT: string[];
-  let scoredTCO2sNCT: string[];
+
+  /**
+   *
+   * @param poolSymbol Pool symbol to get scored TCO2s for
+   * @returns an array of addresses representing TCO2s in the given pool that have a balance > 1.0
+   */
+  const getFilteredScoredTCO2s = async (
+    poolSymbol: PoolSymbol
+  ): Promise<string[]> => {
+    const scoredTCO2s = await toucan.getScoredTCO2s(poolSymbol);
+    const pool = toucan.getPoolContract(poolSymbol);
+    return await asyncFilter(scoredTCO2s, async (tco2: string) => {
+      // tokenBalances is not defined because the storage contract is not in typechain
+      // @ts-ignore
+      const tokenBalance: BigNumber = await pool.tokenBalances(tco2);
+      return tokenBalance.gt(parseEther("1.0"));
+    });
+  };
+
+  const asyncFilter = async (
+    arr: string[],
+    predicate: (tco2: string) => Promise<boolean>
+  ) =>
+    Promise.all(arr.map(predicate)).then((results) =>
+      arr.filter((_v, index) => results[index])
+    );
 
   before(async () => {
     [addr1, addr2] = await ethers.getSigners();
@@ -46,9 +71,6 @@ describe("Testing Toucan-SDK", function () {
         parseEther("1.0")
       ),
     });
-
-    scoredTCO2sNCT = await toucan.getScoredTCO2s("NCT");
-    scoredTCO2sBCT = await toucan.getScoredTCO2s("BCT");
   });
 
   describe("Testing OffsetHelper related methods", function () {
@@ -88,7 +110,8 @@ describe("Testing Toucan-SDK", function () {
     });
 
     it("Should automatically redeem NCT & return a correct array of TCO2s", async function () {
-      const tco2 = new ethers.Contract(scoredTCO2sNCT[0], tco2ABI, addr1);
+      const scoredTCO2s = await getFilteredScoredTCO2s("NCT");
+      const tco2 = new ethers.Contract(scoredTCO2s[0], tco2ABI, addr1);
       const balanceBefore = await tco2.balanceOf(addr1.address);
 
       const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
@@ -108,6 +131,8 @@ describe("Testing Toucan-SDK", function () {
         addr1
       );
       const nctBalanceBefore = await nct.balanceOf(addr1.address);
+
+      const scoredTCO2sNCT = await getFilteredScoredTCO2s("NCT");
 
       const tco2Address = scoredTCO2sNCT[scoredTCO2sNCT.length - 1];
 
@@ -131,8 +156,9 @@ describe("Testing Toucan-SDK", function () {
     });
 
     it("Should automatically redeem NCT & deposit the TCO2 back", async function () {
+      const scoredTCO2s = await getFilteredScoredTCO2s("NCT");
       const tco2 = new ethers.Contract(
-        scoredTCO2sNCT[0],
+        scoredTCO2s[0],
         tco2ABI,
         addr1
       ) as IToucanCarbonOffsets;
@@ -167,6 +193,8 @@ describe("Testing Toucan-SDK", function () {
       );
       const bctBalanceBefore = await bct.balanceOf(addr1.address);
 
+      const scoredTCO2sBCT = await getFilteredScoredTCO2s("BCT");
+
       const tco2Address = scoredTCO2sBCT[scoredTCO2sBCT.length - 1];
 
       const fees = await toucan.calculateRedeemFees(
@@ -189,7 +217,8 @@ describe("Testing Toucan-SDK", function () {
     });
 
     it("Should automatically redeem BCT & deposit the TCO2 back", async function () {
-      const TCO2 = toucan.getTCO2Contract(scoredTCO2sBCT[0]);
+      const scoredTCO2s = await getFilteredScoredTCO2s("BCT");
+      const TCO2 = toucan.getTCO2Contract(scoredTCO2s[0]);
       const tco2BalanceBefore = await TCO2.balanceOf(addr1.address);
       const bct = toucan.getPoolContract("BCT");
       const bctBalanceBefore = await bct.balanceOf(addr1.address);
@@ -210,7 +239,8 @@ describe("Testing Toucan-SDK", function () {
 
   describe("Testing Contract Registry related methods", function () {
     it("Should return true", async function () {
-      expect(await toucan.checkIfTCO2(scoredTCO2sBCT[0])).to.be.eql(true);
+      const scoredTCO2s = await getFilteredScoredTCO2s("BCT");
+      expect(await toucan.checkIfTCO2(scoredTCO2s[0])).to.be.eql(true);
     });
 
     it("Should return false", async function () {

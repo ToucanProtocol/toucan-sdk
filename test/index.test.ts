@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { BigNumber, constants, Contract } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import {
   formatEther,
   FormatTypes,
@@ -14,6 +14,8 @@ import { IToucanCarbonOffsets } from "../dist/typechain";
 import { PoolSymbol } from "../dist/types";
 import { poolTokenABI, swapperABI, tco2ABI } from "../dist/utils/ABIs";
 import addresses from "../dist/utils/addresses";
+
+const ONE_ETHER = parseEther("1.0");
 
 describe("Testing Toucan-SDK contract interactions", function () {
   let addr1: SignerWithAddress;
@@ -33,7 +35,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     const pool = toucan.getPoolContract(poolSymbol);
     return await asyncFilter(scoredTCO2s, async (tco2Address: string) => {
       const tokenBalance: BigNumber = await pool["tokenBalances"](tco2Address);
-      return tokenBalance.gt(constants.Zero);
+      return tokenBalance.gt(parseEther("0.0"));
     });
   };
 
@@ -63,17 +65,17 @@ describe("Testing Toucan-SDK contract interactions", function () {
         parseEther("100.0")
       ),
     });
-    await swapper.swap(addresses.polygon.weth, parseEther("1.0"), {
+    await swapper.swap(addresses.polygon.weth, ONE_ETHER, {
       value: await swapper.calculateNeededETHAmount(
         addresses.polygon.weth,
-        parseEther("1.0")
+        ONE_ETHER
       ),
     });
   });
 
   describe("Testing OffsetHelper related methods", function () {
     it("Should retire 1 TCO2 using pool token deposit", async function () {
-      await toucan.autoOffsetUsingPoolToken("NCT", parseEther("1.0"));
+      await toucan.autoOffsetUsingPoolToken("NCT", ONE_ETHER);
     });
 
     it("Should retire 1 TCO2 using swap token", async function () {
@@ -83,11 +85,11 @@ describe("Testing Toucan-SDK contract interactions", function () {
       iface.format(FormatTypes.full);
       const weth = new ethers.Contract(addresses.polygon.weth, iface, addr1);
 
-      await toucan.autoOffsetUsingSwapToken("NCT", parseEther("1.0"), weth);
+      await toucan.autoOffsetUsingSwapToken("NCT", ONE_ETHER, weth);
     });
 
     it("Should retire 1 TCO2 using ETH deposit", async function () {
-      await toucan.autoOffsetUsingETH("NCT", parseEther("1.0"));
+      await toucan.autoOffsetUsingETH("NCT", ONE_ETHER);
     });
   });
 
@@ -100,10 +102,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
       );
       const nctBalanceBefore = await nct.balanceOf(addr1.address);
 
-      await toucan.redeemAuto("NCT", parseEther("1.0"));
+      await toucan.redeemAuto("NCT", ONE_ETHER);
 
       expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(nctBalanceBefore.sub(parseEther("1.0")))
+        formatEther(nctBalanceBefore.sub(ONE_ETHER))
       );
     });
 
@@ -112,7 +114,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const tco2 = new ethers.Contract(scoredTCO2s[0], tco2ABI, addr1);
       const balanceBefore = await tco2.balanceOf(addr1.address);
 
-      const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
+      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
 
       for (let i = 0; i < tco2s.length; i++) {
         const tco2 = new ethers.Contract(tco2s[i].address, tco2ABI, addr1);
@@ -137,19 +139,17 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const fees = await toucan.calculateRedeemFees(
         "NCT",
         [tco2Address],
-        [parseEther("1.0")]
+        [ONE_ETHER]
       );
 
-      await toucan.redeemMany("NCT", [tco2Address], [parseEther("1.0")]);
+      await toucan.redeemMany("NCT", [tco2Address], [ONE_ETHER]);
 
       const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(formatEther(balance)).to.be.eql(
-        formatEther(parseEther("1.0").sub(fees))
-      );
+      expect(formatEther(balance)).to.be.eql(formatEther(ONE_ETHER.sub(fees)));
 
       expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(nctBalanceBefore.sub(parseEther("1.0")))
+        formatEther(nctBalanceBefore.sub(ONE_ETHER))
       );
     });
 
@@ -168,9 +168,9 @@ describe("Testing Toucan-SDK contract interactions", function () {
       );
       const nctBalanceBefore = await nct.balanceOf(addr1.address);
 
-      await toucan.redeemAuto("NCT", parseEther("1.0"));
+      await toucan.redeemAuto("NCT", ONE_ETHER);
 
-      await toucan.depositTCO2("NCT", parseEther("1.0"), tco2.address);
+      await toucan.depositTCO2("NCT", ONE_ETHER, tco2.address);
 
       expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
         formatEther(tco2BalanceBefore)
@@ -198,19 +198,17 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const fees = await toucan.calculateRedeemFees(
         "BCT",
         [tco2Address],
-        [parseEther("1.0")]
+        [ONE_ETHER]
       );
 
-      await toucan.redeemMany("BCT", [tco2Address], [parseEther("1.0")]);
+      await toucan.redeemMany("BCT", [tco2Address], [ONE_ETHER]);
 
       const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(formatEther(balance)).to.be.eql(
-        formatEther(parseEther("1.0").sub(fees))
-      );
+      expect(formatEther(balance)).to.be.eql(formatEther(ONE_ETHER.sub(fees)));
 
       expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(bctBalanceBefore.sub(parseEther("1.0")))
+        formatEther(bctBalanceBefore.sub(ONE_ETHER))
       );
     });
 
@@ -221,9 +219,9 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const bct = toucan.getPoolContract("BCT");
       const bctBalanceBefore = await bct.balanceOf(addr1.address);
 
-      await toucan.redeemAuto("BCT", parseEther("1.0"));
+      await toucan.redeemAuto("BCT", ONE_ETHER);
 
-      await toucan.depositTCO2("BCT", parseEther("1.0"), TCO2.address);
+      await toucan.depositTCO2("BCT", ONE_ETHER, TCO2.address);
 
       expect(formatEther(await TCO2.balanceOf(addr1.address))).to.be.eql(
         formatEther(tco2BalanceBefore)
@@ -248,14 +246,14 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
   describe("Testing TCO related methods", function () {
     it("Should retire 1 TCO2 & mint the certificate", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
+      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
 
       await toucan.retireAndMintCertificate(
         "Test",
         addr1.address,
         "Test",
         "Test Message",
-        parseEther("1.0"),
+        ONE_ETHER,
         tco2s[0].address
       );
 
@@ -263,10 +261,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
 
     it("Should retire 1 TCO2", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
+      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
 
       const retirementReceipt = await toucan.retire(
-        parseEther("1.0"),
+        ONE_ETHER,
         tco2s[0].address
       );
       const retiredEvents = retirementReceipt.events?.filter((event) => {
@@ -278,15 +276,15 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
 
     it("Should retire 1 TCO2 from another address", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", parseEther("1.0"));
+      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
 
       const TCO2 = toucan.getTCO2Contract(tco2s[0].address);
-      await TCO2.approve(addr2.address, parseEther("1.0"));
+      await TCO2.approve(addr2.address, ONE_ETHER);
 
       const toucan2 = new ToucanClient("polygon");
       toucan2.setSigner(addr2);
 
-      await toucan2.retireFrom(parseEther("1.0"), addr1.address, TCO2.address);
+      await toucan2.retireFrom(ONE_ETHER, addr1.address, TCO2.address);
     });
   });
 });

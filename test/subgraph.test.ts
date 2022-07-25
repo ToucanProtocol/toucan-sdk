@@ -6,11 +6,10 @@ import { ToucanClient } from "../dist";
 
 describe("Testing Toucan-SDK subgraph interactions", function () {
   let addr1: SignerWithAddress;
-  let addr2: SignerWithAddress;
   let toucan: ToucanClient;
 
   before(async () => {
-    [addr1, addr2] = await ethers.getSigners();
+    [addr1] = await ethers.getSigners();
     toucan = new ToucanClient("polygon");
     toucan.setSigner(addr1);
   });

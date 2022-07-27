@@ -10,7 +10,6 @@ import {
 import { ethers } from "hardhat";
 
 import { ToucanClient } from "../dist";
-import { IToucanCarbonOffsets } from "../dist/typechain";
 import { PoolSymbol } from "../dist/types";
 import { poolTokenABI, swapperABI, tco2ABI } from "../dist/utils/ABIs";
 import addresses from "../dist/utils/addresses";
@@ -110,6 +109,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
       );
     });
 
+    // also need to check these out
     it("Should automatically redeem NCT & return a correct array of TCO2s", async function () {
       const scoredTCO2s = await getFilteredScoredTCO2s("NCT");
       const tco2 = new ethers.Contract(scoredTCO2s[0], tco2ABI, addr1);
@@ -159,23 +159,19 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
 
     it("Should automatically redeem NCT & deposit the TCO2 back", async function () {
+      const nct = toucan.getPoolContract("NCT");
       const scoredTCO2s = await getFilteredScoredTCO2s("NCT");
-      const tco2 = new ethers.Contract(
-        scoredTCO2s[0],
-        tco2ABI,
-        addr1
-      ) as IToucanCarbonOffsets;
+      const tco2 = toucan.getTCO2Contract(scoredTCO2s[0]);
+
+      const tco2Amount = (await tco2.balanceOf(nct.address)) as BigNumber;
+      const amountToRedeem = tco2Amount.gt(ONE_ETHER) ? ONE_ETHER : tco2Amount;
       const tco2BalanceBefore = await tco2.balanceOf(addr1.address);
-      const nct = new ethers.Contract(
-        addresses.polygon.nct,
-        poolTokenABI,
-        addr1
-      );
+
       const nctBalanceBefore = await nct.balanceOf(addr1.address);
 
-      await toucan.redeemAuto("NCT", ONE_ETHER);
+      await toucan.redeemAuto("NCT", amountToRedeem);
 
-      await toucan.depositTCO2("NCT", ONE_ETHER, tco2.address);
+      await toucan.depositTCO2("NCT", amountToRedeem, tco2.address);
 
       expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
         formatEther(tco2BalanceBefore)
@@ -222,17 +218,21 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
 
     it("Should automatically redeem BCT & deposit the TCO2 back", async function () {
-      const scoredTCO2s = await getFilteredScoredTCO2s("BCT");
-      const TCO2 = toucan.getTCO2Contract(scoredTCO2s[0]);
-      const tco2BalanceBefore = await TCO2.balanceOf(addr1.address);
       const bct = toucan.getPoolContract("BCT");
+      const scoredTCO2s = await getFilteredScoredTCO2s("BCT");
+      const tco2 = toucan.getTCO2Contract(scoredTCO2s[0]);
+
+      const tco2Amount = (await tco2.balanceOf(bct.address)) as BigNumber;
+      const amountToRedeem = tco2Amount.gt(ONE_ETHER) ? ONE_ETHER : tco2Amount;
+      const tco2BalanceBefore = await tco2.balanceOf(addr1.address);
+
       const bctBalanceBefore = await bct.balanceOf(addr1.address);
 
-      await toucan.redeemAuto("BCT", ONE_ETHER);
+      await toucan.redeemAuto("BCT", amountToRedeem);
 
-      await toucan.depositTCO2("BCT", ONE_ETHER, TCO2.address);
+      await toucan.depositTCO2("BCT", amountToRedeem, tco2.address);
 
-      expect(formatEther(await TCO2.balanceOf(addr1.address))).to.be.eql(
+      expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
         formatEther(tco2BalanceBefore)
       );
 

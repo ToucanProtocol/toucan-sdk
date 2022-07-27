@@ -11,7 +11,7 @@ import { ethers } from "hardhat";
 
 import { ToucanClient } from "../dist";
 import { PoolSymbol } from "../dist/types";
-import { poolTokenABI, swapperABI, tco2ABI } from "../dist/utils/ABIs";
+import { poolTokenABI, swapperABI } from "../dist/utils/ABIs";
 import addresses from "../dist/utils/addresses";
 
 const ONE_ETHER = parseEther("1.0");
@@ -109,20 +109,22 @@ describe("Testing Toucan-SDK contract interactions", function () {
       );
     });
 
-    // also need to check these out
     it("Should automatically redeem NCT & return a correct array of TCO2s", async function () {
+      const nct = toucan.getPoolContract("NCT");
       const scoredTCO2s = await getFilteredScoredTCO2s("NCT");
-      const tco2 = new ethers.Contract(scoredTCO2s[0], tco2ABI, addr1);
-      const balanceBefore = await tco2.balanceOf(addr1.address);
 
-      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const tco2 = toucan.getTCO2Contract(scoredTCO2s[0]);
+      const tco2Amount = (await tco2.balanceOf(nct.address)) as BigNumber;
+      const amountToRedeem = tco2Amount.gt(ONE_ETHER) ? ONE_ETHER : tco2Amount;
 
-      for (let i = 0; i < tco2s.length; i++) {
-        const tco2 = new ethers.Contract(tco2s[i].address, tco2ABI, addr1);
-        expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
-          formatEther((await tco2s[i].amount).add(balanceBefore))
-        );
-      }
+      const expectedTco2s: {
+        address: string;
+        amount: BigNumber;
+      }[] = [{ address: scoredTCO2s[0], amount: amountToRedeem }];
+
+      const tco2s = await toucan.redeemAuto2("NCT", amountToRedeem);
+
+      expect(tco2s).to.be.eql(expectedTco2s);
     });
 
     it("Should selectively redeem NCT for the highest quality TCO2s", async function () {

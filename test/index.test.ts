@@ -36,7 +36,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     return await asyncFilter(scoredTCO2s, async (tco2Address: string) => {
       // tokenBalances is not defined because the storage contract is not in typechain
       const tokenBalance: BigNumber = await pool["tokenBalances"](tco2Address);
-      return tokenBalance.gt(ONE_ETHER);
+      return tokenBalance.gt(ethers.constants.Zero);
     });
   };
 
@@ -136,21 +136,25 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const scoredTCO2sNCT = await getFilteredScoredTCO2s("NCT");
 
       const tco2Address = scoredTCO2sNCT[scoredTCO2sNCT.length - 1];
+      const tco2 = toucan.getTCO2Contract(tco2Address);
+      const tco2Amount = (await tco2.balanceOf(nct.address)) as BigNumber;
+      const amountToRedeem = tco2Amount.gt(ONE_ETHER) ? ONE_ETHER : tco2Amount;
 
       const fees = await toucan.calculateRedeemFees(
         "NCT",
         [tco2Address],
-        [ONE_ETHER]
+        [amountToRedeem]
       );
 
-      await toucan.redeemMany("NCT", [tco2Address], [ONE_ETHER]);
+      await toucan.redeemMany("NCT", [tco2Address], [amountToRedeem]);
 
-      const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(formatEther(balance)).to.be.eql(formatEther(ONE_ETHER.sub(fees)));
+      expect(formatEther(balance)).to.be.eql(
+        formatEther(amountToRedeem.sub(fees))
+      );
 
       expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(nctBalanceBefore.sub(ONE_ETHER))
+        formatEther(nctBalanceBefore.sub(amountToRedeem))
       );
     });
 
@@ -195,21 +199,25 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const scoredTCO2sBCT = await getFilteredScoredTCO2s("BCT");
 
       const tco2Address = scoredTCO2sBCT[scoredTCO2sBCT.length - 1];
+      const tco2 = toucan.getTCO2Contract(tco2Address);
+      const tco2Amount = (await tco2.balanceOf(bct.address)) as BigNumber;
+      const amountToRedeem = tco2Amount.gt(ONE_ETHER) ? ONE_ETHER : tco2Amount;
 
       const fees = await toucan.calculateRedeemFees(
         "BCT",
         [tco2Address],
-        [ONE_ETHER]
+        [amountToRedeem]
       );
 
-      await toucan.redeemMany("BCT", [tco2Address], [ONE_ETHER]);
+      await toucan.redeemMany("BCT", [tco2Address], [amountToRedeem]);
 
-      const tco2 = new ethers.Contract(tco2Address, tco2ABI, addr1);
       const balance = await tco2.balanceOf(addr1.address);
-      expect(formatEther(balance)).to.be.eql(formatEther(ONE_ETHER.sub(fees)));
+      expect(formatEther(balance)).to.be.eql(
+        formatEther(amountToRedeem.sub(fees))
+      );
 
       expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(bctBalanceBefore.sub(ONE_ETHER))
+        formatEther(bctBalanceBefore.sub(amountToRedeem))
       );
     });
 

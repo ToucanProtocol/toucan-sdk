@@ -182,6 +182,14 @@ export const poolTokenABI = [
   {
     anonymous: false,
     inputs: [
+      { indexed: false, internalType: "uint8", name: "version", type: "uint8" },
+    ],
+    name: "Initialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: false,
         internalType: "address",
@@ -809,6 +817,13 @@ export const poolTokenABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "proxiableUUID",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
     name: "redeemAuto",
     outputs: [],
@@ -834,7 +849,7 @@ export const poolTokenABI = [
   },
   {
     inputs: [
-      { internalType: "address[]", name: "erc20s", type: "address[]" },
+      { internalType: "address[]", name: "tco2s", type: "address[]" },
       { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
     ],
     name: "redeemMany",
@@ -921,6 +936,13 @@ export const poolTokenABI = [
     inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     name: "scoredTCO2s",
     outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "seedMode",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
     type: "function",
   },
@@ -1480,17 +1502,70 @@ export const tco2ABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: "address",
-        name: "from",
+        name: "bridger",
         type: "address",
       },
       {
-        indexed: true,
+        indexed: false,
+        internalType: "uint256",
+        name: "fees",
+        type: "uint256",
+      },
+    ],
+    name: "FeeBurnt",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "address",
-        name: "to",
+        name: "bridger",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "fees",
+        type: "uint256",
+      },
+    ],
+    name: "FeePaid",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "eventId",
+        type: "uint256",
+      },
+    ],
+    name: "Retired",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "from", type: "address" },
+      { indexed: true, internalType: "address", name: "to", type: "address" },
       {
         indexed: false,
         internalType: "uint256",
@@ -1503,69 +1578,53 @@ export const tco2ABI = [
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
+      { internalType: "address", name: "owner", type: "address" },
+      { internalType: "address", name: "spender", type: "address" },
     ],
     name: "allowance",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "approve",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
     name: "balanceOf",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "contractRegistry",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "decimals",
+    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "subtractedValue", type: "uint256" },
+    ],
+    name: "decreaseAllowance",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1574,56 +1633,16 @@ export const tco2ABI = [
     outputs: [
       {
         components: [
-          {
-            internalType: "string",
-            name: "projectId",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "standard",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "methodology",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "region",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "storageMethod",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "method",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "emissionType",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "category",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "uri",
-            type: "string",
-          },
-          {
-            internalType: "address",
-            name: "controller",
-            type: "address",
-          },
+          { internalType: "string", name: "projectId", type: "string" },
+          { internalType: "string", name: "standard", type: "string" },
+          { internalType: "string", name: "methodology", type: "string" },
+          { internalType: "string", name: "region", type: "string" },
+          { internalType: "string", name: "storageMethod", type: "string" },
+          { internalType: "string", name: "method", type: "string" },
+          { internalType: "string", name: "emissionType", type: "string" },
+          { internalType: "string", name: "category", type: "string" },
+          { internalType: "string", name: "uri", type: "string" },
+          { internalType: "address", name: "controller", type: "address" },
         ],
         internalType: "struct ProjectData",
         name: "",
@@ -1631,61 +1650,25 @@ export const tco2ABI = [
       },
       {
         components: [
-          {
-            internalType: "string",
-            name: "name",
-            type: "string",
-          },
-          {
-            internalType: "uint64",
-            name: "startTime",
-            type: "uint64",
-          },
-          {
-            internalType: "uint64",
-            name: "endTime",
-            type: "uint64",
-          },
-          {
-            internalType: "uint256",
-            name: "projectTokenId",
-            type: "uint256",
-          },
+          { internalType: "string", name: "name", type: "string" },
+          { internalType: "uint64", name: "startTime", type: "uint64" },
+          { internalType: "uint64", name: "endTime", type: "uint64" },
+          { internalType: "uint256", name: "projectTokenId", type: "uint256" },
           {
             internalType: "uint64",
             name: "totalVintageQuantity",
             type: "uint64",
           },
-          {
-            internalType: "bool",
-            name: "isCorsiaCompliant",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "isCCPcompliant",
-            type: "bool",
-          },
-          {
-            internalType: "string",
-            name: "coBenefits",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "correspAdjustment",
-            type: "string",
-          },
+          { internalType: "bool", name: "isCorsiaCompliant", type: "bool" },
+          { internalType: "bool", name: "isCCPcompliant", type: "bool" },
+          { internalType: "string", name: "coBenefits", type: "string" },
+          { internalType: "string", name: "correspAdjustment", type: "string" },
           {
             internalType: "string",
             name: "additionalCertification",
             type: "string",
           },
-          {
-            internalType: "string",
-            name: "uri",
-            type: "string",
-          },
+          { internalType: "string", name: "uri", type: "string" },
         ],
         internalType: "struct VintageData",
         name: "",
@@ -1698,13 +1681,7 @@ export const tco2ABI = [
   {
     inputs: [],
     name: "getDepositCap",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
@@ -1712,16 +1689,8 @@ export const tco2ABI = [
     inputs: [],
     name: "getGlobalProjectVintageIdentifiers",
     outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
+      { internalType: "string", name: "", type: "string" },
+      { internalType: "string", name: "", type: "string" },
     ],
     stateMutability: "view",
     type: "function",
@@ -1729,43 +1698,43 @@ export const tco2ABI = [
   {
     inputs: [],
     name: "getRemaining",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "remaining",
-        type: "uint256",
-      },
-    ],
+    outputs: [{ internalType: "uint256", name: "remaining", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "string",
-        name: "retiringEntityString",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "beneficiary",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "beneficiaryString",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "retirementMessage",
-        type: "string",
-      },
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "addedValue", type: "uint256" },
+    ],
+    name: "increaseAllowance",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "string", name: "name_", type: "string" },
+      { internalType: "string", name: "symbol_", type: "string" },
       {
         internalType: "uint256",
-        name: "amount",
+        name: "_projectVintageTokenId",
         type: "uint256",
       },
+      { internalType: "address", name: "_contractRegistry", type: "address" },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "string", name: "retiringEntityString", type: "string" },
+      { internalType: "address", name: "beneficiary", type: "address" },
+      { internalType: "string", name: "beneficiaryString", type: "string" },
+      { internalType: "string", name: "retirementMessage", type: "string" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "mintCertificateLegacy",
     outputs: [],
@@ -1773,79 +1742,54 @@ export const tco2ABI = [
     type: "function",
   },
   {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "minterToId",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "name",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
-      {
-        internalType: "address",
-        name: "operator",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
+      { internalType: "address", name: "", type: "address" },
+      { internalType: "address", name: "from", type: "address" },
+      { internalType: "uint256", name: "tokenId", type: "uint256" },
+      { internalType: "bytes", name: "", type: "bytes" },
     ],
     name: "onERC721Received",
-    outputs: [
-      {
-        internalType: "bytes4",
-        name: "",
-        type: "bytes4",
-      },
-    ],
+    outputs: [{ internalType: "bytes4", name: "", type: "bytes4" }],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
+    name: "projectVintageTokenId",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
     name: "retire",
-    outputs: [],
+    outputs: [
+      { internalType: "uint256", name: "retirementEventId", type: "uint256" },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "string",
-        name: "retiringEntityString",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "beneficiary",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "beneficiaryString",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "retirementMessage",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "string", name: "retiringEntityString", type: "string" },
+      { internalType: "address", name: "beneficiary", type: "address" },
+      { internalType: "string", name: "beneficiaryString", type: "string" },
+      { internalType: "string", name: "retirementMessage", type: "string" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "retireAndMintCertificate",
     outputs: [],
@@ -1854,173 +1798,410 @@ export const tco2ABI = [
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "retireFrom",
-    outputs: [],
+    outputs: [
+      { internalType: "uint256", name: "retirementEventId", type: "uint256" },
+    ],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "retiredAmount",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "symbol",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "totalSupply",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "recipient", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "transfer",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "recipient", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "transferFrom",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "version",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "pure",
     type: "function",
   },
 ];
 
 export const toucanContractRegistryABI = [
   {
-    inputs: [],
-    name: "carbonOffsetBadgesAddress",
-    outputs: [
+    anonymous: false,
+    inputs: [
       {
+        indexed: false,
         internalType: "address",
-        name: "",
+        name: "previousAdmin",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newAdmin",
         type: "address",
       },
     ],
+    name: "AdminChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "beacon",
+        type: "address",
+      },
+    ],
+    name: "BeaconUpgraded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "previousAdminRole",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "newAdminRole",
+        type: "bytes32",
+      },
+    ],
+    name: "RoleAdminChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleGranted",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleRevoked",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "implementation",
+        type: "address",
+      },
+    ],
+    name: "Upgraded",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "DEFAULT_ADMIN_ROLE",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "PAUSER_ROLE",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "addERC20",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "carbonOffsetBadgesAddress",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "carbonOffsetBatchesAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "carbonProjectVintagesAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "carbonProjectsAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "checkERC20",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }],
+    name: "getRoleAdmin",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "_address",
-        type: "address",
-      },
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
     ],
-    name: "checkERC20",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+    name: "grantRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
     ],
+    name: "hasRole",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "pauseSystem",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "projectVintageERC20Registry",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "renounceRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "revokeRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "setCarbonOffsetBadgesAddress",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "setCarbonOffsetBatchesAddress",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "setCarbonProjectVintagesAddress",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "setCarbonProjectsAddress",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "setToucanCarbonOffsetsFactoryAddress",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes4", name: "interfaceId", type: "bytes4" }],
+    name: "supportsInterface",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "toucanCarbonOffsetsFactoryAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "newOwner", type: "address" }],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "unpauseSystem",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "newImplementation", type: "address" },
+    ],
+    name: "upgradeTo",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "newImplementation", type: "address" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "upgradeToAndCall",
+    outputs: [],
+    stateMutability: "payable",
     type: "function",
   },
 ];

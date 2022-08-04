@@ -111,17 +111,15 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
     it("Should automatically redeem NCT & return a correct array of TCO2s", async function () {
       const scoredTCO2s = await getFilteredScoredTCO2s("NCT");
-      const tco2 = new ethers.Contract(scoredTCO2s[0], tco2ABI, addr1);
-      const balanceBefore = await tco2.balanceOf(addr1.address);
+
+      const expectedTco2s: {
+        address: string;
+        amount: BigNumber;
+      }[] = [{ address: scoredTCO2s[0], amount: ONE_ETHER }];
 
       const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
 
-      for (let i = 0; i < tco2s.length; i++) {
-        const tco2 = new ethers.Contract(tco2s[i].address, tco2ABI, addr1);
-        expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
-          formatEther((await tco2s[i].amount).add(balanceBefore))
-        );
-      }
+      expect(tco2s).to.be.eql(expectedTco2s);
     });
 
     it("Should selectively redeem NCT for the highest quality TCO2s", async function () {

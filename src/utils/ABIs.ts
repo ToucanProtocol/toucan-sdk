@@ -1,4 +1,18 @@
 export const poolTokenABI = [
+  { inputs: [], stateMutability: "nonpayable", type: "constructor" },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "tco2",
+        type: "address",
+      },
+    ],
+    name: "AddFeeExemptedTCO2",
+    type: "event",
+  },
   {
     anonymous: false,
     inputs: [
@@ -182,6 +196,14 @@ export const poolTokenABI = [
   {
     anonymous: false,
     inputs: [
+      { indexed: false, internalType: "uint8", name: "version", type: "uint8" },
+    ],
+    name: "Initialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: false,
         internalType: "address",
@@ -351,6 +373,19 @@ export const poolTokenABI = [
       },
     ],
     name: "Redeemed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "tco2",
+        type: "address",
+      },
+    ],
+    name: "RemoveFeeExemptedTCO2",
     type: "event",
   },
   {
@@ -534,6 +569,13 @@ export const poolTokenABI = [
     type: "function",
   },
   {
+    inputs: [{ internalType: "address", name: "_tco2", type: "address" }],
+    name: "addRedeemFeeExemptedTCO2",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       { internalType: "address[]", name: "erc20Addr", type: "address[]" },
     ],
@@ -585,6 +627,26 @@ export const poolTokenABI = [
     name: "balanceOf",
     outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "_account", type: "address" },
+      { internalType: "uint256", name: "_amount", type: "uint256" },
+    ],
+    name: "bridgeBurn",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "_account", type: "address" },
+      { internalType: "uint256", name: "_amount", type: "uint256" },
+    ],
+    name: "bridgeMint",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -809,6 +871,23 @@ export const poolTokenABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "proxiableUUID",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "tco2", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "redeemAndBurn",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
     name: "redeemAuto",
     outputs: [],
@@ -833,8 +912,15 @@ export const poolTokenABI = [
     type: "function",
   },
   {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "redeemFeeExemptedTCO2s",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
-      { internalType: "address[]", name: "erc20s", type: "address[]" },
+      { internalType: "address[]", name: "tco2s", type: "address[]" },
       { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
     ],
     name: "redeemMany",
@@ -891,6 +977,13 @@ export const poolTokenABI = [
     type: "function",
   },
   {
+    inputs: [{ internalType: "address", name: "_tco2", type: "address" }],
+    name: "removeRedeemFeeExemptedTCO2",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "renounceOwnership",
     outputs: [],
@@ -918,9 +1011,23 @@ export const poolTokenABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "router",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     name: "scoredTCO2s",
     outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "seedMode",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
     type: "function",
   },
@@ -981,6 +1088,13 @@ export const poolTokenABI = [
       },
     ],
     name: "setMinimumVintageStartTime",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_router", type: "address" }],
+    name: "setRouter",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1148,7 +1262,12 @@ export const offsetHelperABI = [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "uint8", name: "version", type: "uint8" },
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "version",
+        type: "uint8",
+      },
     ],
     name: "Initialized",
     type: "event",
@@ -1175,7 +1294,12 @@ export const offsetHelperABI = [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "who", type: "address" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "who",
+        type: "address",
+      },
       {
         indexed: false,
         internalType: "address",
@@ -1198,64 +1322,143 @@ export const offsetHelperABI = [
     name: "Redeemed",
     type: "event",
   },
-  { stateMutability: "payable", type: "fallback" },
+  {
+    stateMutability: "payable",
+    type: "fallback",
+  },
   {
     inputs: [
-      { internalType: "address", name: "_poolToken", type: "address" },
-      { internalType: "uint256", name: "_amountToOffset", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amountToOffset",
+        type: "uint256",
+      },
     ],
     name: "autoOffsetUsingETH",
     outputs: [
-      { internalType: "address[]", name: "tco2s", type: "address[]" },
-      { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
     ],
     stateMutability: "payable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "_poolToken", type: "address" },
-      { internalType: "uint256", name: "_amountToOffset", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amountToOffset",
+        type: "uint256",
+      },
     ],
     name: "autoOffsetUsingPoolToken",
     outputs: [
-      { internalType: "address[]", name: "tco2s", type: "address[]" },
-      { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
     ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "_depositedToken", type: "address" },
-      { internalType: "address", name: "_poolToken", type: "address" },
-      { internalType: "uint256", name: "_amountToOffset", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_depositedToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amountToOffset",
+        type: "uint256",
+      },
     ],
     name: "autoOffsetUsingToken",
     outputs: [
-      { internalType: "address[]", name: "tco2s", type: "address[]" },
-      { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
     ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "_fromToken", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_fromToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "autoRedeem",
     outputs: [
-      { internalType: "address[]", name: "tco2s", type: "address[]" },
-      { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
     ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address[]", name: "_tco2s", type: "address[]" },
-      { internalType: "uint256[]", name: "_amounts", type: "uint256[]" },
+      {
+        internalType: "address[]",
+        name: "_tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "_amounts",
+        type: "uint256[]",
+      },
     ],
     name: "autoRetire",
     outputs: [],
@@ -1264,44 +1467,102 @@ export const offsetHelperABI = [
   },
   {
     inputs: [
-      { internalType: "address", name: "", type: "address" },
-      { internalType: "address", name: "", type: "address" },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
     ],
     name: "balances",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "_toToken", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_toToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "calculateNeededETHAmount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "_fromToken", type: "address" },
-      { internalType: "address", name: "_toToken", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_fromToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_toToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "calculateNeededTokenAmount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "contractRegistryAddress",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "string", name: "_tokenSymbol", type: "string" }],
+    inputs: [
+      {
+        internalType: "string",
+        name: "_tokenSymbol",
+        type: "string",
+      },
+    ],
     name: "deleteEligibleTokenAddress",
     outputs: [],
     stateMutability: "nonpayable",
@@ -1309,8 +1570,16 @@ export const offsetHelperABI = [
   },
   {
     inputs: [
-      { internalType: "address", name: "_erc20Addr", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_erc20Addr",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "deposit",
     outputs: [],
@@ -1318,16 +1587,34 @@ export const offsetHelperABI = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "string", name: "", type: "string" }],
+    inputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
     name: "eligibleTokenAddresses",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "owner",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
@@ -1340,8 +1627,16 @@ export const offsetHelperABI = [
   },
   {
     inputs: [
-      { internalType: "string", name: "_tokenSymbol", type: "string" },
-      { internalType: "address", name: "_address", type: "address" },
+      {
+        internalType: "string",
+        name: "_tokenSymbol",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "_address",
+        type: "address",
+      },
     ],
     name: "setEligibleTokenAddress",
     outputs: [],
@@ -1349,7 +1644,13 @@ export const offsetHelperABI = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "_address",
+        type: "address",
+      },
+    ],
     name: "setToucanContractRegistry",
     outputs: [],
     stateMutability: "nonpayable",
@@ -1358,14 +1659,28 @@ export const offsetHelperABI = [
   {
     inputs: [],
     name: "sushiRouterAddress",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "_toToken", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_toToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "swap",
     outputs: [],
@@ -1374,9 +1689,21 @@ export const offsetHelperABI = [
   },
   {
     inputs: [
-      { internalType: "address", name: "_fromToken", type: "address" },
-      { internalType: "address", name: "_toToken", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_fromToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_toToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "swap",
     outputs: [],
@@ -1384,7 +1711,13 @@ export const offsetHelperABI = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "newOwner", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
@@ -1392,15 +1725,26 @@ export const offsetHelperABI = [
   },
   {
     inputs: [
-      { internalType: "address", name: "_erc20Addr", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_erc20Addr",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "withdraw",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
-  { stateMutability: "payable", type: "receive" },
+  {
+    stateMutability: "payable",
+    type: "receive",
+  },
 ];
 
 export const swapperABI = [

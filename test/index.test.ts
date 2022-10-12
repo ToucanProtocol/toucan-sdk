@@ -101,7 +101,30 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
   describe("Testing OffsetHelper related methods", function () {
     it("Should retire 1 TCO2 using pool token deposit", async function () {
+      const pool = await toucan.getPoolContract("NCT");
+
+      const state: any[] = [];
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        nctBalance: await pool.balanceOf(addr1.address),
+      });
+
       await toucan.autoOffsetUsingPoolToken("NCT", ONE_ETHER);
+
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        nctBalance: await pool.balanceOf(addr1.address),
+      });
+
+      expect(
+        formatEther(state[0].nctSupply.sub(ONE_ETHER)),
+        "Expect NCT supply to be less by 1.0"
+      ).to.be.equal(formatEther(state[1].nctSupply));
+
+      expect(
+        formatEther(state[0].nctBalance.sub(ONE_ETHER)),
+        "Expect addr1's NCT balance to be less by 1.0"
+      ).to.be.equal(formatEther(state[1].nctBalance));
     });
 
     it("Should retire 1 TCO2 using swap token", async function () {
@@ -110,12 +133,55 @@ describe("Testing Toucan-SDK contract interactions", function () {
       );
       iface.format(FormatTypes.full);
       const weth = new ethers.Contract(addresses.polygon.weth, iface, addr1);
+      const pool = await toucan.getPoolContract("NCT");
 
+      const state: any[] = [];
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        wethBalance: await weth.balanceOf(addr1.address),
+      });
+
+      const cost = await toucan.calculateNeededTokenAmount(
+        "NCT",
+        ONE_ETHER,
+        weth
+      );
       await toucan.autoOffsetUsingSwapToken("NCT", ONE_ETHER, weth);
+
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        wethBalance: await weth.balanceOf(addr1.address),
+      });
+
+      expect(
+        formatEther(state[0].nctSupply.sub(ONE_ETHER)),
+        `Expect NCT supply to be less by 1.0`
+      ).to.be.equal(formatEther(state[1].nctSupply));
+
+      expect(
+        formatEther(state[0].wethBalance.sub(cost)),
+        `Expect addr1's WETH balance to be less by ${formatEther(cost)}`
+      ).to.be.equal(formatEther(state[1].wethBalance));
     });
 
     it("Should retire 1 TCO2 using ETH deposit", async function () {
+      const pool = await toucan.getPoolContract("NCT");
+
+      const state: any[] = [];
+      state.push({
+        nctSupply: await pool.totalSupply(),
+      });
+
       await toucan.autoOffsetUsingETH("NCT", ONE_ETHER);
+
+      state.push({
+        nctSupply: await pool.totalSupply(),
+      });
+
+      expect(
+        formatEther(state[0].nctSupply.sub(ONE_ETHER)),
+        `Expect NCT supply to be less by 1.0`
+      ).to.be.equal(formatEther(state[1].nctSupply));
     });
   });
 

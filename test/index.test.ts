@@ -342,46 +342,100 @@ describe("Testing Toucan-SDK contract interactions", function () {
   });
 
   describe("Testing TCO related methods", function () {
-    it("Should retire 1 TCO2 & mint the certificate", async function () {
+    it("Should retire TCO2 & mint the certificate", async function () {
       const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const { address, amount } = tco2s[0];
+      const tco2 = toucan.getTCO2Contract(address);
+
+      const state: any[] = [];
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
 
       await toucan.retireAndMintCertificate(
         "Test",
         addr1.address,
         "Test",
         "Test Message",
-        ONE_ETHER,
-        tco2s[0].address
+        amount,
+        address
       );
 
-      // TODO check NFT ownership
-    });
-
-    it("Should retire 1 TCO2", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
-
-      const retirementReceipt = await toucan.retire(
-        ONE_ETHER,
-        tco2s[0].address
-      );
-      const retiredEvents = retirementReceipt.events?.filter((event) => {
-        return event.event == "Retired";
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
       });
 
-      // TODO why doesn't the retire method have any "Retired" events
-      console.log("Retired events", retiredEvents);
+      expect(
+        state[0].tco2Supply.sub(amount),
+        `Expect there to be ${amount} less of the TCO2 ${address} in total supply`
+      ).to.be.eql(state[1].tco2Supply);
+      expect(
+        state[0].tco2Balance.sub(amount),
+        `Expect addr1 to have ${amount} less of the TCO2 ${address}`
+      ).to.be.eql(state[1].tco2Balance);
     });
 
-    it("Should retire 1 TCO2 from another address", async function () {
+    it("Should retire TCO2", async function () {
       const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const { address, amount } = tco2s[0];
+      const tco2 = toucan.getTCO2Contract(address);
 
-      const TCO2 = toucan.getTCO2Contract(tco2s[0].address);
-      await TCO2.approve(addr2.address, ONE_ETHER);
+      const state: any[] = [];
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      await toucan.retire(amount, address);
+
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      expect(
+        state[0].tco2Supply.sub(amount),
+        `Expect there to be ${amount} less of the TCO2 ${address} in total supply`
+      ).to.be.eql(state[1].tco2Supply);
+      expect(
+        state[0].tco2Balance.sub(amount),
+        `Expect addr1 to have ${amount} less of the TCO2 ${address}`
+      ).to.be.eql(state[1].tco2Balance);
+    });
+
+    it("Should retire TCO2 for another address", async function () {
+      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const { address, amount } = tco2s[0];
+      const tco2 = toucan.getTCO2Contract(address);
+
+      const state: any[] = [];
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      await tco2.approve(addr2.address, amount);
 
       const toucan2 = new ToucanClient("polygon");
       toucan2.setSigner(addr2);
 
-      await toucan2.retireFrom(ONE_ETHER, addr1.address, TCO2.address);
+      await toucan2.retireFrom(amount, addr1.address, address);
+
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      expect(
+        state[0].tco2Supply.sub(amount),
+        `Expect there to be ${amount} less of the TCO2 ${address} in total supply`
+      ).to.be.eql(state[1].tco2Supply);
+      expect(
+        state[0].tco2Balance.sub(amount),
+        `Expect addr1 to have ${amount} less of the TCO2 ${address}`
+      ).to.be.eql(state[1].tco2Balance);
     });
   });
 });

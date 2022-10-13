@@ -11,7 +11,7 @@ import { ethers } from "hardhat";
 
 import { ToucanClient } from "../dist";
 import { PoolSymbol } from "../dist/types";
-import { poolTokenABI, swapperABI } from "../dist/utils/ABIs";
+import { swapperABI } from "../dist/utils/ABIs";
 import addresses from "../dist/utils/addresses";
 
 const ONE_ETHER = parseEther("1.0");
@@ -101,7 +101,30 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
   describe("Testing OffsetHelper related methods", function () {
     it("Should retire 1 TCO2 using pool token deposit", async function () {
+      const pool = await toucan.getPoolContract("NCT");
+
+      const state: any[] = [];
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        nctBalance: await pool.balanceOf(addr1.address),
+      });
+
       await toucan.autoOffsetUsingPoolToken("NCT", ONE_ETHER);
+
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        nctBalance: await pool.balanceOf(addr1.address),
+      });
+
+      expect(
+        formatEther(state[0].nctSupply.sub(ONE_ETHER)),
+        "Expect NCT supply to be less by 1.0"
+      ).to.be.equal(formatEther(state[1].nctSupply));
+
+      expect(
+        formatEther(state[0].nctBalance.sub(ONE_ETHER)),
+        "Expect addr1's NCT balance to be less by 1.0"
+      ).to.be.equal(formatEther(state[1].nctBalance));
     });
 
     it("Should retire 1 TCO2 using swap token", async function () {
@@ -110,29 +133,69 @@ describe("Testing Toucan-SDK contract interactions", function () {
       );
       iface.format(FormatTypes.full);
       const weth = new ethers.Contract(addresses.polygon.weth, iface, addr1);
+      const pool = await toucan.getPoolContract("NCT");
 
+      const state: any[] = [];
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        wethBalance: await weth.balanceOf(addr1.address),
+      });
+
+      const cost = await toucan.calculateNeededTokenAmount(
+        "NCT",
+        ONE_ETHER,
+        weth
+      );
       await toucan.autoOffsetUsingSwapToken("NCT", ONE_ETHER, weth);
+
+      state.push({
+        nctSupply: await pool.totalSupply(),
+        wethBalance: await weth.balanceOf(addr1.address),
+      });
+
+      expect(
+        formatEther(state[0].nctSupply.sub(ONE_ETHER)),
+        `Expect NCT supply to be less by 1.0`
+      ).to.be.equal(formatEther(state[1].nctSupply));
+
+      expect(
+        formatEther(state[0].wethBalance.sub(cost)),
+        `Expect addr1's WETH balance to be less by ${formatEther(cost)}`
+      ).to.be.equal(formatEther(state[1].wethBalance));
     });
 
     it("Should retire 1 TCO2 using ETH deposit", async function () {
+      const pool = await toucan.getPoolContract("NCT");
+
+      const state: any[] = [];
+      state.push({
+        nctSupply: await pool.totalSupply(),
+      });
+
       await toucan.autoOffsetUsingETH("NCT", ONE_ETHER);
+
+      state.push({
+        nctSupply: await pool.totalSupply(),
+      });
+
+      expect(
+        formatEther(state[0].nctSupply.sub(ONE_ETHER)),
+        `Expect NCT supply to be less by 1.0`
+      ).to.be.equal(formatEther(state[1].nctSupply));
     });
   });
 
   describe("Testing NCT related methods", function () {
     it("Should automatically redeem NCT", async function () {
-      const nct = new ethers.Contract(
-        addresses.polygon.nct,
-        poolTokenABI,
-        addr1
-      );
+      const nct = toucan.getPoolContract("NCT");
       const nctBalanceBefore = await nct.balanceOf(addr1.address);
 
       await toucan.redeemAuto("NCT", ONE_ETHER);
 
-      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(nctBalanceBefore.sub(ONE_ETHER))
-      );
+      expect(
+        formatEther(await nct.balanceOf(addr1.address)),
+        "Expect addr1 to have 1.0 less NCT"
+      ).to.be.eql(formatEther(nctBalanceBefore.sub(ONE_ETHER)));
     });
 
     it("Should automatically redeem NCT & return a correct array of TCO2s", async function () {
@@ -148,7 +211,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
       const tco2s = await toucan.redeemAuto2("NCT", amountToRedeem);
 
-      expect(tco2s).to.be.eql(expectedTco2s);
+      expect(tco2s, "Expect returned TCO2s to match").to.be.eql(expectedTco2s);
     });
 
     it("Should selectively redeem NCT for the highest quality TCO2s", async function () {
@@ -157,11 +220,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
         "high"
       );
 
-      const nct = new ethers.Contract(
-        addresses.polygon.nct,
-        poolTokenABI,
-        addr1
-      );
+      const nct = toucan.getPoolContract("NCT");
       const nctBalanceBefore = await nct.balanceOf(addr1.address);
 
       const tco2 = toucan.getTCO2Contract(tco2Address);
@@ -175,12 +234,16 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
       const balance = await tco2.balanceOf(addr1.address);
 
-      expect(formatEther(balance)).to.be.eql(
-        formatEther(amountToRedeem.sub(fees))
-      );
-      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(nctBalanceBefore.sub(amountToRedeem))
-      );
+      expect(
+        formatEther(balance),
+        `Expect addr1 to have ${formatEther(
+          amountToRedeem
+        )}  minus fees ${formatEther(fees)} of the TCO2 (${tco2Address})`
+      ).to.be.eql(formatEther(amountToRedeem.sub(fees)));
+      expect(
+        formatEther(await nct.balanceOf(addr1.address)),
+        `Expect addr1 to have ${formatEther(amountToRedeem)} less NCT`
+      ).to.be.eql(formatEther(nctBalanceBefore.sub(amountToRedeem)));
     });
 
     it("Should automatically redeem NCT & deposit the TCO2 back", async function () {
@@ -198,12 +261,14 @@ describe("Testing Toucan-SDK contract interactions", function () {
       await toucan.redeemAuto("NCT", amountToRedeem);
       await toucan.depositTCO2("NCT", amountToRedeem, tco2.address);
 
-      expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
-        formatEther(tco2BalanceBefore)
-      );
-      expect(formatEther(await nct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(nctBalanceBefore)
-      );
+      expect(
+        formatEther(await tco2.balanceOf(addr1.address)),
+        `Expect addr1 to have the same amount of TCO2`
+      ).to.be.eql(formatEther(tco2BalanceBefore));
+      expect(
+        formatEther(await nct.balanceOf(addr1.address)),
+        `Expect addr1 to have the same amount of NCT`
+      ).to.be.eql(formatEther(nctBalanceBefore));
     });
   });
 
@@ -214,11 +279,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
         "high"
       );
 
-      const bct = new ethers.Contract(
-        addresses.polygon.bct,
-        poolTokenABI,
-        addr1
-      );
+      const bct = toucan.getPoolContract("BCT");
       const bctBalanceBefore = await bct.balanceOf(addr1.address);
       const tco2 = toucan.getTCO2Contract(tco2Address);
 
@@ -231,12 +292,16 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
       const balance = await tco2.balanceOf(addr1.address);
 
-      expect(formatEther(balance)).to.be.eql(
-        formatEther(amountToRedeem.sub(fees))
-      );
-      expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(bctBalanceBefore.sub(amountToRedeem))
-      );
+      expect(
+        formatEther(balance),
+        `Expect addr1 to have ${formatEther(
+          amountToRedeem
+        )}  minus fees ${formatEther(fees)} of the TCO2 (${tco2Address})`
+      ).to.be.eql(formatEther(amountToRedeem.sub(fees)));
+      expect(
+        formatEther(await bct.balanceOf(addr1.address)),
+        `Expect addr1 to have ${formatEther(amountToRedeem)} less BCT`
+      ).to.be.eql(formatEther(bctBalanceBefore.sub(amountToRedeem)));
     });
 
     it("Should automatically redeem BCT & deposit the TCO2 back", async function () {
@@ -254,12 +319,14 @@ describe("Testing Toucan-SDK contract interactions", function () {
       await toucan.redeemAuto("BCT", amountToRedeem);
       await toucan.depositTCO2("BCT", amountToRedeem, tco2.address);
 
-      expect(formatEther(await tco2.balanceOf(addr1.address))).to.be.eql(
-        formatEther(tco2BalanceBefore)
-      );
-      expect(formatEther(await bct.balanceOf(addr1.address))).to.be.eql(
-        formatEther(bctBalanceBefore)
-      );
+      expect(
+        formatEther(await tco2.balanceOf(addr1.address)),
+        `Expect addr1 to have the same amount of TCO2`
+      ).to.be.eql(formatEther(tco2BalanceBefore));
+      expect(
+        formatEther(await bct.balanceOf(addr1.address)),
+        `Expect addr1 to have the same amount of BCT`
+      ).to.be.eql(formatEther(bctBalanceBefore));
     });
   });
 
@@ -275,46 +342,100 @@ describe("Testing Toucan-SDK contract interactions", function () {
   });
 
   describe("Testing TCO related methods", function () {
-    it("Should retire 1 TCO2 & mint the certificate", async function () {
+    it("Should retire TCO2 & mint the certificate", async function () {
       const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const { address, amount } = tco2s[0];
+      const tco2 = toucan.getTCO2Contract(address);
+
+      const state: any[] = [];
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
 
       await toucan.retireAndMintCertificate(
         "Test",
         addr1.address,
         "Test",
         "Test Message",
-        ONE_ETHER,
-        tco2s[0].address
+        amount,
+        address
       );
 
-      // TODO check NFT ownership
-    });
-
-    it("Should retire 1 TCO2", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
-
-      const retirementReceipt = await toucan.retire(
-        ONE_ETHER,
-        tco2s[0].address
-      );
-      const retiredEvents = retirementReceipt.events?.filter((event) => {
-        return event.event == "Retired";
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
       });
 
-      // TODO why doesn't the retire method have any "Retired" events
-      console.log("Retired events", retiredEvents);
+      expect(
+        state[0].tco2Supply.sub(amount),
+        `Expect there to be ${amount} less of the TCO2 ${address} in total supply`
+      ).to.be.eql(state[1].tco2Supply);
+      expect(
+        state[0].tco2Balance.sub(amount),
+        `Expect addr1 to have ${amount} less of the TCO2 ${address}`
+      ).to.be.eql(state[1].tco2Balance);
     });
 
-    it("Should retire 1 TCO2 from another address", async function () {
+    it("Should retire TCO2", async function () {
       const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const { address, amount } = tco2s[0];
+      const tco2 = toucan.getTCO2Contract(address);
 
-      const TCO2 = toucan.getTCO2Contract(tco2s[0].address);
-      await TCO2.approve(addr2.address, ONE_ETHER);
+      const state: any[] = [];
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      await toucan.retire(amount, address);
+
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      expect(
+        state[0].tco2Supply.sub(amount),
+        `Expect there to be ${amount} less of the TCO2 ${address} in total supply`
+      ).to.be.eql(state[1].tco2Supply);
+      expect(
+        state[0].tco2Balance.sub(amount),
+        `Expect addr1 to have ${amount} less of the TCO2 ${address}`
+      ).to.be.eql(state[1].tco2Balance);
+    });
+
+    it("Should retire TCO2 for another address", async function () {
+      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const { address, amount } = tco2s[0];
+      const tco2 = toucan.getTCO2Contract(address);
+
+      const state: any[] = [];
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      await tco2.approve(addr2.address, amount);
 
       const toucan2 = new ToucanClient("polygon");
       toucan2.setSigner(addr2);
 
-      await toucan2.retireFrom(ONE_ETHER, addr1.address, TCO2.address);
+      await toucan2.retireFrom(amount, addr1.address, address);
+
+      state.push({
+        tco2Supply: await tco2.totalSupply(),
+        tco2Balance: await tco2.balanceOf(addr1.address),
+      });
+
+      expect(
+        state[0].tco2Supply.sub(amount),
+        `Expect there to be ${amount} less of the TCO2 ${address} in total supply`
+      ).to.be.eql(state[1].tco2Supply);
+      expect(
+        state[0].tco2Balance.sub(amount),
+        `Expect addr1 to have ${amount} less of the TCO2 ${address}`
+      ).to.be.eql(state[1].tco2Balance);
     });
   });
 });

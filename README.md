@@ -69,7 +69,7 @@ _(Uses SushiSwap to acquire BCT/NCT, redeems it for TCO2s and retires them)_
 
 This is how you do that when you want to use ETH (or the network's native currency) in your balance.
 
-In this example, you'd be offseting 1 TON of CO2 with carbon projects from the NCT pool.
+In this example, you'd be offsetting 1 TON of CO2 with carbon projects from the NCT pool.
 
 ```typescript
 const offsetReceipt = await toucan.autoOffsetUsingETH("NCT", parseEther("1.0"));
@@ -106,7 +106,7 @@ You may want to selectively offset certain carbon projects. You can do that too.
 
 Assuming you already have some NCT, this example gets an array of all TCO2s in the NCT pool ascending by rank/quality.
 
-Then redeems and retires 3 TONS of the higest ranked TCO2 it can find.
+Then redeems and retires 3 TONS of the highest ranked TCO2 it can find.
 
 ```typescript
 const scoredTCO2s = await toucan.getScoredTCO2s("NCT");

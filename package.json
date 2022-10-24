@@ -22,7 +22,7 @@
     "toucan"
   ],
   "author": "Toucan Protocol",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "dependencies": {
     "@urql/core": "^2.5.0",
     "ethers": "^5.6.4",

@@ -33,7 +33,6 @@ import {
 import { Network, PoolSymbol } from "../types";
 import { GAS_LIMIT } from "../utils";
 import {
-  offsetHelperABI,
   poolTokenABI,
   tco2ABI,
   toucanContractRegistryABI,
@@ -638,12 +637,7 @@ class ContractInteractions {
   public getOffsetHelperContract = (
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): OffsetHelper => {
-    const offsetHelper = new ethers.Contract(
-      this.addresses.offsetHelper,
-      offsetHelperABI,
-      signerOrProvider
-    ) as OffsetHelper;
-    return offsetHelper;
+    throw new Error("OffsetHelper is not supported yet");
   };
 }
 

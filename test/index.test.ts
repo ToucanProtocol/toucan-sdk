@@ -99,7 +99,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
   });
 
-  describe("Testing OffsetHelper related methods", function () {
+  describe.skip("Testing OffsetHelper related methods", function () {
     it("Should retire 1 TCO2 using pool token deposit", async function () {
       const pool = await toucan.getPoolContract("NCT");
 

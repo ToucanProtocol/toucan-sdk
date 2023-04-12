@@ -10,7 +10,7 @@ describe("Testing Toucan-SDK subgraph interactions", function () {
 
   before(async () => {
     [addr1] = await ethers.getSigners();
-    toucan = new ToucanClient("polygon");
+    toucan = new ToucanClient("alfajores");
     toucan.setSigner(addr1);
   });
 
@@ -68,10 +68,10 @@ describe("Testing Toucan-SDK subgraph interactions", function () {
   });
 
   it("Should fetch price of BCT", async function () {
-    expect(await toucan.fetchTokenPriceOnSushiSwap("BCT")).to.not.throw;
+    expect(await toucan.fetchTokenPriceOnDex("BCT")).to.not.throw;
   });
 
   it("Should fetch price of NCT", async function () {
-    expect(await toucan.fetchTokenPriceOnSushiSwap("NCT")).to.not.throw;
+    expect(await toucan.fetchTokenPriceOnDex("NCT")).to.not.throw;
   });
 });

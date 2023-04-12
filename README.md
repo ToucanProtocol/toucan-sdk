@@ -47,7 +47,7 @@ If you don't have a signer nor a provider set, you can only interact with the su
 Something that may come in handy in your applications is fetching the USD price of our pool tokens.
 
 ```typescript
-nctPrice = await toucan.fetchTokenPriceOnSushiSwap("NCT");
+nctPrice = await toucan.fetchTokenPriceOnDex("NCT");
 ```
 
 The object returned by the above method will look like so:
@@ -279,9 +279,3 @@ const remainingTCO2 = await bct.tokenBalances(tco2Address);
 This is useful if you need to interact with a method of our contracts that hasn't been implemented in the SDK yet.
 
 It's important to note that, if you want to use write methods you need to have a signer set, but otherwise you can also set a provider.
-
-# Tutorials
-
-If you're not familiar with web3 you may want to take look at the following tutorials.
-
-TODO

@@ -16,12 +16,13 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export type Network = "polygon" | "mumbai";
+  export type Network = "polygon" | "mumbai" | "celo" | "alfajores";
 
-export type PoolSymbol = "BCT" | "NCT";
-
-export declare enum RetirementStatus {
-  Pending = 0,
-  Rejected = 1,
-  Confirmed = 2,
-}
+  export type PoolSymbol = "BCT" | "NCT";
+  
+  export declare enum RetirementStatus {
+    Pending = 0,
+    Rejected = 1,
+    Confirmed = 2,
+  }
+  

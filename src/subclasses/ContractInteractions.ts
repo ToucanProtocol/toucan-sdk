@@ -592,7 +592,6 @@ class ContractInteractions {
       poolTokenABI,
       signerOrProvider
     ) as IToucanPoolToken;
-    console.log(this.getPoolAddress(pool));
 
     return poolContract;
   };

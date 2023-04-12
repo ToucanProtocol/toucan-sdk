@@ -6,7 +6,7 @@ A Typescript SDK for [Toucan Protocol](https://toucan.earth/). Wraps around [Eth
 
 _Full documentation coming soon._
 
-⚠️ This SDK is heavily under development. USE AT YOUR OWN RISK.
+⚠️ This SDK is under development. USE AT YOUR OWN RISK. ⚠️
 
 ## Install
 
@@ -216,14 +216,7 @@ const result = await toucan.fetchCustomQuery(query, { id: "1" });
 
 # AutoOffset using the OffsetHelper
 
-> **Warning**
-> This part is currently under construction and can't be used.
-
-> **Warning**
-> This part is currently under construction and can't be used.
-
-> **Warning**
-> This part is currently under construction and can't be used.
+⚠️ This part is currently under construction and can't be used. ⚠️
 
 ## AutoOffset CO2
 

@@ -19,10 +19,10 @@ const addresses: IfcAddresses = {
   celo: {
     bct: "0x0CcB0071e8B8B716A2a5998aB4d97b83790873Fe",
     nct: "0x02De4766C272abc10Bc88c220D214A26960a7e92",
-    offsetHelper: "0xAcf9FD890F06e6F200339193a64c0952a164Cb9d",
+    offsetHelper: "",
     cUSD: "0x765DE816845861e75A25fCA122bb6898B8B1282a",
     weth: "0x122013fd7dF1C6F636a5bb8f03108E876548b455",
-    swapper: "0xa12A728656Fbc82dC25515b548b328E63B556572",
+    swapper: "",
     toucanContractRegistry: "0xa30589F50b9641dacCB98AA2B4A8F24739c5B007",
   },
   alfajores: {
@@ -30,7 +30,7 @@ const addresses: IfcAddresses = {
     nct: "0xfb60a08855389F3c0A66b29aB9eFa911ed5cbCB5",
     offsetHelper: "0xAcf9FD890F06e6F200339193a64c0952a164Cb9d",
     cUSD: "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa",
-    weth: "0x122013fd7dF1C6F636a5bb8f03108E876548b455",
+    weth: "",
     swapper: "0xa12A728656Fbc82dC25515b548b328E63B556572",
     toucanContractRegistry: "0x48E04110aa4691ec3E9493187e6e9A3dB613e6e4",
   },

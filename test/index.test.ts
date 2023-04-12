@@ -22,10 +22,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
   let toucan: ToucanClient;
   let swapper: Contract;
   // change these three variables when testing the different networks
-  const network = addresses.alfajores;
-  const networkName = "alfajores";
+  const network = addresses.polygon;
+  const networkName = "polygon";
   const provider = new ethers.providers.JsonRpcProvider(
-    process.env.NODE_PROVIDER_ALFAJORES_RPC_URL
+    process.env.NODE_PROVIDER_MATIC_RPC_URL
   );
 
   /**

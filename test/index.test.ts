@@ -21,6 +21,9 @@ describe("Testing Toucan-SDK contract interactions", function () {
   let addr2: SignerWithAddress;
   let toucan: ToucanClient;
   let swapper: Contract;
+  const provider = new ethers.providers.JsonRpcProvider(
+    " https://matic-mainnet.chainstacklabs.com"
+  );
   // change these three variables when testing the different networks
   const network = addresses.polygon;
   const networkName = "polygon";
@@ -80,6 +83,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     [addr1, addr2] = await ethers.getSigners();
 
     toucan = new ToucanClient(networkName);
+    toucan.setProvider(provider);
     toucan.setSigner(addr1);
 
     swapper = new ethers.Contract(network.swapper, swapperABI, addr1);

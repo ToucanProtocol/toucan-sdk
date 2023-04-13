@@ -27,7 +27,7 @@ Instantiate the ToucanClient and set a signer & provider to interact with our in
 ```typescript
 import { ToucanClient } from "toucan-sdk";
 
-const toucan = new ToucanClient("polygon", provider, signer);
+const toucan = new ToucanClient("alfajores", provider, signer);
 ```
 
 You could also set the signer/provider later if you prefer that. They are optional. But you will need to set them if you want to interact with contracts. The provider is read-only, while the signer allows both writing to and reading from the blockchain.
@@ -35,7 +35,7 @@ You could also set the signer/provider later if you prefer that. They are option
 ```typescript
 import { ToucanClient } from "toucan-sdk";
 
-const toucan = new ToucanClient("celo");
+const toucan = new ToucanClient("alfajores");
 toucan.setProvider(provider);
 toucan.setSigner(signer);
 ```

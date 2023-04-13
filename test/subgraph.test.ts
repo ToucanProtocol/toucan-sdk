@@ -10,7 +10,7 @@ describe("Testing Toucan-SDK subgraph interactions", function () {
 
   before(async () => {
     [addr1] = await ethers.getSigners();
-    toucan = new ToucanClient("polygon");
+    toucan = new ToucanClient("alfajores");
     toucan.setSigner(addr1);
   });
 
@@ -22,13 +22,13 @@ describe("Testing Toucan-SDK subgraph interactions", function () {
     it("Should fetch details about TCO2 based on its address", async function () {
       expect(
         await toucan.fetchTCO2TokenById(
-          "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153"
+          "0x0bebef6417a0200508f9bbae4c7108852f7c7ace"
         )
       ).to.not.throw;
     });
 
     it("Should fetch details about TCO2 based on its full symbol", async function () {
-      expect(await toucan.fetchTCO2TokenByFullSymbol("TCO2-VCS-1718-2013")).to
+      expect(await toucan.fetchTCO2TokenByFullSymbol("TCO2-VCS-844-2017")).to
         .not.throw;
     });
 
@@ -68,10 +68,10 @@ describe("Testing Toucan-SDK subgraph interactions", function () {
   });
 
   it("Should fetch price of BCT", async function () {
-    expect(await toucan.fetchTokenPriceOnSushiSwap("BCT")).to.not.throw;
+    expect(await toucan.fetchTokenPriceOnDex("BCT")).to.not.throw;
   });
 
   it("Should fetch price of NCT", async function () {
-    expect(await toucan.fetchTokenPriceOnSushiSwap("NCT")).to.not.throw;
+    expect(await toucan.fetchTokenPriceOnDex("NCT")).to.not.throw;
   });
 });

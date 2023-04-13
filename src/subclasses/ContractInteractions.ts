@@ -55,7 +55,13 @@ class ContractInteractions {
     this.network = network;
 
     this.addresses =
-      this.network == "polygon" ? addresses.polygon : addresses.mumbai;
+      this.network === "polygon"
+        ? addresses.polygon
+        : this.network === "mumbai"
+        ? addresses.mumbai
+        : this.network === "celo"
+        ? addresses.celo
+        : addresses.alfajores;
   }
 
   // --------------------------------------------------------------------------------
@@ -586,6 +592,7 @@ class ContractInteractions {
       poolTokenABI,
       signerOrProvider
     ) as IToucanPoolToken;
+
     return poolContract;
   };
 

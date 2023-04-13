@@ -38,10 +38,7 @@ import {
 } from "../types/methods";
 import { PairSchema } from "../types/schemas";
 import addresses, { IfcOneNetworksAddresses } from "../utils/addresses";
-import {
-  getSushiGraphClient,
-  getToucanGraphClient,
-} from "../utils/graphClients";
+import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
 
 /**
  * @class ContractInteractions
@@ -61,7 +58,13 @@ class SubgraphInteractions {
     this.network = network;
 
     this.addresses =
-      network === "polygon" ? addresses.polygon : addresses.mumbai;
+      this.network === "polygon"
+        ? addresses.polygon
+        : this.network === "mumbai"
+        ? addresses.mumbai
+        : this.network === "celo"
+        ? addresses.celo
+        : addresses.alfajores;
 
     this.graphClient = getToucanGraphClient(network);
   }
@@ -648,68 +651,133 @@ class SubgraphInteractions {
   };
 
   private fetchTokenPrice = async (tokenAddress: string): Promise<number[]> => {
-    const SushiGraphClient = getSushiGraphClient();
+    const DexGraphClient = getDexGraphClient(this.network);
 
-    const senderQuery = gql`
-      query tokenPairsQuery($id: String!, $skip: Int, $block: Block_height) {
-        pairs0: pairs(
-          first: 1000
-          skip: $skip
-          orderBy: reserveUSD
-          orderDirection: desc
-          token0: $id
-          block: $block
-          orderBy: reserveUSD
-          orderDirection: desc
-        ) {
-          ...pairFields
-        }
-        pairs1: pairs(
-          first: 1000
-          skip: $skip
-          orderBy: reserveUSD
-          orderDirection: desc
-          token1: $id
-          block: $block
-          orderBy: reserveUSD
-          orderDirection: desc
-        ) {
-          ...pairFields
-        }
-      }
+    const senderQuery =
+      this.network === "celo" || this.network === "alfajores"
+        ? gql`
+            query tokenPairsQuery(
+              $id: String!
+              $skip: Int
+              $block: Block_height
+            ) {
+              pairs0: pairs(
+                first: 1000
+                skip: $skip
+                orderBy: reserveUSD
+                orderDirection: desc
+                token0: $id
+                block: $block
+                orderBy: reserveUSD
+                orderDirection: desc
+              ) {
+                ...pairFields
+              }
+              pairs1: pairs(
+                first: 1000
+                skip: $skip
+                orderBy: reserveUSD
+                orderDirection: desc
+                token1: $id
+                block: $block
+                orderBy: reserveUSD
+                orderDirection: desc
+              ) {
+                ...pairFields
+              }
+            }
 
-      fragment pairFields on Pair {
-        id
-        reserveUSD
-        reserveETH
-        volumeUSD
-        untrackedVolumeUSD
-        trackedReserveETH
-        token0 {
-          ...PairToken
-        }
-        token1 {
-          ...PairToken
-        }
-        reserve0
-        reserve1
-        token0Price
-        token1Price
-        totalSupply
-        txCount
-        timestamp
-      }
+            fragment pairFields on Pair {
+              id
+              reserveUSD
+              reserveCELO
+              volumeUSD
+              untrackedVolumeUSD
+              trackedReserveUSD
+              token0 {
+                ...PairToken
+              }
+              token1 {
+                ...PairToken
+              }
+              reserve0
+              reserve1
+              token0Price
+              token1Price
+              totalSupply
+              txCount
+            }
 
-      fragment PairToken on Token {
-        id
-        name
-        symbol
-        totalSupply
-        derivedETH
-      }
-    `;
+            fragment PairToken on Token {
+              id
+              name
+              symbol
+              totalSupply
+            }
+          `
+        : gql`
+            query tokenPairsQuery(
+              $id: String!
+              $skip: Int
+              $block: Block_height
+            ) {
+              pairs0: pairs(
+                first: 1000
+                skip: $skip
+                orderBy: reserveUSD
+                orderDirection: desc
+                token0: $id
+                block: $block
+                orderBy: reserveUSD
+                orderDirection: desc
+              ) {
+                ...pairFields
+              }
+              pairs1: pairs(
+                first: 1000
+                skip: $skip
+                orderBy: reserveUSD
+                orderDirection: desc
+                token1: $id
+                block: $block
+                orderBy: reserveUSD
+                orderDirection: desc
+              ) {
+                ...pairFields
+              }
+            }
 
-    const result = await SushiGraphClient.query(senderQuery, {
+            fragment pairFields on Pair {
+              id
+              reserveUSD
+              reserveETH
+              volumeUSD
+              untrackedVolumeUSD
+              trackedReserveETH
+              token0 {
+                ...PairToken
+              }
+              token1 {
+                ...PairToken
+              }
+              reserve0
+              reserve1
+              token0Price
+              token1Price
+              totalSupply
+              txCount
+              timestamp
+            }
+
+            fragment PairToken on Token {
+              id
+              name
+              symbol
+              totalSupply
+              derivedETH
+            }
+          `;
+    const result = await DexGraphClient.query(senderQuery, {
       id: tokenAddress,
     }).toPromise();
 
@@ -742,7 +810,7 @@ class SubgraphInteractions {
     return [priceInUSD, liquidityUSD, volumeUSD];
   };
 
-  fetchTokenPriceOnSushiSwap = async (
+  fetchTokenPriceOnDex = async (
     pool: PoolSymbol
   ): Promise<{
     price: number | null;
@@ -756,7 +824,10 @@ class SubgraphInteractions {
       tokenAddress
     );
     if (!price) throw new Error(`No price found for ${pool}`);
-    url = `https://app.sushi.com/analytics/tokens/${tokenAddress}`;
+    url =
+      this.network === "celo" || this.network === "alfajores"
+        ? `https://info.ubeswap.org/token/${tokenAddress}`
+        : `https://app.sushi.com/analytics/tokens/${tokenAddress}`;
     return { price, url, liquidityUSD, volumeUSD };
   };
 

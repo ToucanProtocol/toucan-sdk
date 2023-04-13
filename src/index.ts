@@ -686,7 +686,7 @@ export class ToucanClient {
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
-  fetchTokenPriceOnSushiSwap = async (
+  fetchTokenPriceOnDex = async (
     pool: PoolSymbol
   ): Promise<{
     price: number | null;
@@ -694,7 +694,7 @@ export class ToucanClient {
     liquidityUSD: number | null;
     volumeUSD: number | null;
   }> => {
-    return this.subgraphInteractions.fetchTokenPriceOnSushiSwap(pool);
+    return this.subgraphInteractions.fetchTokenPriceOnDex(pool);
   };
 
   // --------------------------------------------------------------------------------

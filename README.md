@@ -92,12 +92,12 @@ toucan.setSigner(signer);
 // get the NCT pool contract
 const nct = toucan.getPoolContract("NCT");
 
-// call the reddem function
-const tco2Tokens = nct.redeem(parseEther("1"));
+// call the redeem function
+const tco2Tokens = nct.redeemAuto2(parseEther("1"));
 
-// get OffsetContract and retire the tokens.
-const tco2 = toucan.re(tco2Address);
-tco2Tokens.retire(parseEther("1"));
+// get TCO2 Contract and retire the tokens.
+const tco2 = toucan.getTCO2Contract(tco2Address);
+tco2.retire(parseEther("1"));
 ```
 
 # Subgraph queries

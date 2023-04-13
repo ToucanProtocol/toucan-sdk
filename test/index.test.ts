@@ -22,7 +22,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
   let toucan: ToucanClient;
   let swapper: Contract;
   const provider = new ethers.providers.JsonRpcProvider(
-    " https://matic-mainnet.chainstacklabs.com"
+    "https://matic-mainnet.chainstacklabs.com"
   );
   // change these three variables when testing the different networks
   const network = addresses.polygon;

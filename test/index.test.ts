@@ -277,10 +277,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
   });
 
-  describe("Testing BCT related methods", function () {
-    xit("Should selectively redeem BCT for the highest quality TCO2s", async function () {
+  xdescribe("Testing BCT related methods", function () {
+    it("Should selectively redeem BCT for the highest quality TCO2s", async function () {
       const { tco2Address, amountToRedeem } = await getDynamicRedeemAmount(
-        "BCT",
+        "NCT",
         "high"
       );
 

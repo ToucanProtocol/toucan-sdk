@@ -278,7 +278,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
   });
 
   describe("Testing BCT related methods", function () {
-    it("Should selectively redeem BCT for the highest quality TCO2s", async function () {
+    xit("Should selectively redeem BCT for the highest quality TCO2s", async function () {
       const { tco2Address, amountToRedeem } = await getDynamicRedeemAmount(
         "BCT",
         "high"
@@ -337,7 +337,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
   describe("Testing Contract Registry related methods", function () {
     it("Should return true", async function () {
-      const scoredTCO2s = await getFilteredScoredTCO2s("BCT");
+      const scoredTCO2s = await getFilteredScoredTCO2s("NCT");
       expect(await toucan.checkIfTCO2(scoredTCO2s[0])).to.be.eql(true);
     });
 

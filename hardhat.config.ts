@@ -25,8 +25,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url:
-          process.env.NODE_PROVIDER_MATIC_RPC_URL ||
-          "https://matic-mainnet.chainstacklabs.com",
+          process.env.NODE_PROVIDER_MATIC_RPC_URL || "https://polygon-rpc.com",
       },
     },
   },
@@ -38,7 +37,7 @@ const config: HardhatUserConfig = {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   mocha: {
-    timeout: 160000,
+    timeout: 200000,
   },
 };
 

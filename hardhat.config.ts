@@ -25,7 +25,8 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url:
-          process.env.NODE_PROVIDER_MATIC_RPC_URL || "https://polygon-rpc.com",
+          process.env.NODE_PROVIDER_MATIC_RPC_URL ||
+          "https://matic-mainnet.chainstacklabs.com",
       },
     },
   },

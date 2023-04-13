@@ -1,10 +1,10 @@
 export interface IfcOneNetworksAddresses {
   bct: string;
   nct: string;
-  toucanContractRegistry: string;
   offsetHelper: string;
   swapper: string;
   weth: string;
+  toucanContractRegistry: string;
 }
 
 export interface IfcAddresses {
@@ -37,7 +37,7 @@ const addresses: IfcAddresses = {
     offsetHelper: "0xFAFcCd01C395e4542BEed819De61f02f5562fAEa",
     swapper: "0x1C7f2CCa1Cd52Aae8A25B7BA4b7800c153F48D70",
     weth: "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-    toucanContractRegistry: "0x263fA1c180889b3a3f46330F32a4a23287E99FC9",
+    toucanContractRegistry: "0x263fa1c180889b3a3f46330f32a4a23287e99fc9",
   },
   mumbai: {
     bct: "0xf2438a14f668b1bba53408346288f3d7c71c10a1",

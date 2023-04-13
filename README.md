@@ -6,7 +6,7 @@ A Typescript SDK for [Toucan Protocol](https://toucan.earth/). Wraps around [Eth
 
 _Full documentation coming soon._
 
-⚠️ This SDK is under development. USE AT YOUR OWN RISK. ⚠️
+⚠️ This SDK is heavily under development. USE AT YOUR OWN RISK. ⚠️
 
 ## Install
 

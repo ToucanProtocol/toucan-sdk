@@ -1,4 +1,4 @@
-import { errorExchange, createClient } from "@urql/core";
+import { createClient } from "@urql/core";
 
 import { Network } from "../types";
 import {

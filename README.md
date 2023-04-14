@@ -108,7 +108,7 @@ Now, the above example of selective retirement is only useful in specific cases.
 
 **What if you only have the name or symbol of the project?**
 
-That's where subgraph queries come in handy. (and we have plenty of those 😉)
+That's where subgraph queries come in handy. (and we have plenty of those 😉) - But feel free to also [create your own](#custom-queries).
 
 ## Fetching a TCO2 by its symbol
 
@@ -135,45 +135,13 @@ The result will look like so:
 
 Now you have quite some info on the project, including its address.
 
-## Fetching a pool's contents
+Other queries:
 
-It may come in handy to know what TCO2s are in the NCT pool.
-
-```typescript
-const tco2s = await toucan.fetchPoolContents("NCT");
 ```
-
-This is how the result would look (with a lot more projects in it though):
-
-```json
-[
-  {
-    "token": {
-      "name": "Toucan Protocol: TCO2-VCS-1718-2013",
-      "projectVintage": {
-        "id": "296",
-        "project": {
-          "methodology": "VM0010",
-          "standard": "VCS"
-        }
-      }
-    },
-    "amount": "37152880725394938464551"
-  },
-  {
-    "token": {
-      "name": "Toucan Protocol: TCO2-VCS-1577-2015",
-      "projectVintage": {
-        "id": "25",
-        "project": {
-          "methodology": "VM0010",
-          "standard": "VCS"
-        }
-      }
-    },
-    "amount": "10000000000000000000000"
-  }
-]
+fetchUserBatches(address)
+fetchTCO2TokenById(tokenId)
+fetchAllTCO2Tokens()
+fetchUserRetirements()
 ```
 
 ## Custom queries
@@ -181,6 +149,29 @@ This is how the result would look (with a lot more projects in it though):
 There's a lot more other pre-built subgraph queries that I could show you, but what I really want to show you is the `fetchCustomQuery` method.
 
 This allows you to fetch with your own queries and can be very powerful if you know graphQL.
+
+- Getting your redeemed Tokens (TCO2s) you hold - useful for retirement of carbon credits.
+
+```typescript
+import { gql } from "@urql/core";
+
+const query = gql`
+  query ($id: String) {
+    user(id: $id) {
+      redeemsCreated {
+        token {
+          address
+          name
+        }
+      }
+    }
+  }
+`;
+
+const result = await toucan.fetchCustomQuery(query, { id: "1" });
+```
+
+- Getting all infos on a project of a Carbon Credit
 
 ```typescript
 import { gql } from "@urql/core";

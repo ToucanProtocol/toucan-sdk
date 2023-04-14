@@ -53,15 +53,7 @@ class ContractInteractions {
    */
   constructor(network: Network) {
     this.network = network;
-
-    this.addresses =
-      this.network === "polygon"
-        ? addresses.polygon
-        : this.network === "mumbai"
-        ? addresses.mumbai
-        : this.network === "celo"
-        ? addresses.celo
-        : addresses.alfajores;
+    this.addresses = addresses[this.network];
   }
 
   // --------------------------------------------------------------------------------

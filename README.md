@@ -27,7 +27,7 @@ Instantiate the ToucanClient and set a signer & provider to interact with our in
 ```typescript
 import { ToucanClient } from "toucan-sdk";
 
-const toucan = new ToucanClient("polygon", provider, signer);
+const toucan = new ToucanClient("alfajores", provider, signer);
 ```
 
 You could also set the signer/provider later if you prefer that. They are optional. But you will need to set them if you want to interact with contracts. The provider is read-only, while the signer allows both writing to and reading from the blockchain.
@@ -35,7 +35,7 @@ You could also set the signer/provider later if you prefer that. They are option
 ```typescript
 import { ToucanClient } from "toucan-sdk";
 
-const toucan = new ToucanClient("celo");
+const toucan = new ToucanClient("alfajores");
 toucan.setProvider(provider);
 toucan.setSigner(signer);
 ```
@@ -70,11 +70,9 @@ You can always access any method or property of the BCT, NCT and TCO2 contracts 
 ```typescript
 toucan.setSigner(signer);
 
-const nct = toucan.getPoolContract("NCT");
-const tco2 = toucan.getTCO2Contract(tco2Address);
-const registry = toucan.getRegistryContract();
-const offsetHelper = toucan.getOffsetHelperContract(); // not yet available on CELO
-
+const nct = await toucan.getPoolContract("NCT");
+const tco2 = await toucan.getTCO2Contract(tco2Address);
+const registry = await toucan.getRegistryContract();
 const remainingTCO2 = await nct.tokenBalances(tco2Address);
 ```
 
@@ -84,20 +82,24 @@ It's important to note that, if you want to use write methods you need to have a
 
 ## Example to retire Carbon Credits
 
-Considering you already own NCTs you can follow this example. In case you don't just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more way to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
+To retire Carbon Credits on mainnet, you will have to get Carbon Pool Tokens from a DEX like Ubeswap, which you need to redeem for TCO2s. You can then retire these and get a certificate for that. If you already own NCTs, you can follow this example. In case you don't and are developing on testnet, you can also just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more ways to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
+
+- Redeem your Pool Tokens
 
 ```typescript
-toucan.setSigner(signer);
-
 // get the NCT pool contract
-const nct = toucan.getPoolContract("NCT");
+const nct = await toucan.getPoolContract("NCT");
 
-// call the reddem function
-const tco2Tokens = nct.redeem(parseEther("1"));
+// call the redeem function
+const tco2Tokens = await nct.redeemAuto2(parseEther("1"));
+```
 
-// get OffsetContract and retire the tokens.
-const tco2 = toucan.re(tco2Address);
-tco2Tokens.retire(parseEther("1"));
+- Retire the Carbon Credits
+
+```typescript
+// get TCO2 Contract and retire the tokens.
+const tco2 = await toucan.getTCO2Contract(tco2Tokens.address);
+tco2.retire(parseEther("1"));
 ```
 
 # Subgraph queries
@@ -106,7 +108,7 @@ Now, the above example of selective retirement is only useful in specific cases.
 
 **What if you only have the name or symbol of the project?**
 
-That's where subgraph queries come in handy. (and we have plenty of those 😉)
+That's where subgraph queries come in handy. (and we have plenty of those 😉) - But feel free to also [create your own](#custom-queries).
 
 ## Fetching a TCO2 by its symbol
 
@@ -133,59 +135,13 @@ The result will look like so:
 
 Now you have quite some info on the project, including its address.
 
-## Fetching a TCO2's data by its address
+Other queries:
 
-What if you already had a TCO2s address, but you now want to get more data about it?
-
-There's a pre-built subgraph query for that too.
-
-```typescript
-const tco2 = await toucan.fetchTCO2TokenById(
-  "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153"
-);
 ```
-
-The result will look like the same as the one of the query above.
-
-## Fetching a pool's contents
-
-It may come in handy to know what TCO2s are in the NCT pool.
-
-```typescript
-const tco2s = await toucan.fetchPoolContents("NCT");
-```
-
-This is how the result would look (with a lot more projects in it though):
-
-```json
-[
-  {
-    "token": {
-      "name": "Toucan Protocol: TCO2-VCS-1718-2013",
-      "projectVintage": {
-        "id": "296",
-        "project": {
-          "methodology": "VM0010",
-          "standard": "VCS"
-        }
-      }
-    },
-    "amount": "37152880725394938464551"
-  },
-  {
-    "token": {
-      "name": "Toucan Protocol: TCO2-VCS-1577-2015",
-      "projectVintage": {
-        "id": "25",
-        "project": {
-          "methodology": "VM0010",
-          "standard": "VCS"
-        }
-      }
-    },
-    "amount": "10000000000000000000000"
-  }
-]
+fetchUserBatches(address)
+fetchTCO2TokenById(tokenId)
+fetchAllTCO2Tokens()
+fetchUserRetirements()
 ```
 
 ## Custom queries
@@ -193,6 +149,29 @@ This is how the result would look (with a lot more projects in it though):
 There's a lot more other pre-built subgraph queries that I could show you, but what I really want to show you is the `fetchCustomQuery` method.
 
 This allows you to fetch with your own queries and can be very powerful if you know graphQL.
+
+- Getting your redeemed Tokens (TCO2s) you hold - useful for retirement of carbon credits.
+
+```typescript
+import { gql } from "@urql/core";
+
+const query = gql`
+  query ($id: String) {
+    user(id: $id) {
+      redeemsCreated {
+        token {
+          address
+          name
+        }
+      }
+    }
+  }
+`;
+
+const result = await toucan.fetchCustomQuery(query, { id: "1" });
+```
+
+- Getting all infos on a project of a Carbon Credit
 
 ```typescript
 import { gql } from "@urql/core";

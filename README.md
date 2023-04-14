@@ -70,11 +70,9 @@ You can always access any method or property of the BCT, NCT and TCO2 contracts 
 ```typescript
 toucan.setSigner(signer);
 
-const nct = toucan.getPoolContract("NCT");
-const tco2 = toucan.getTCO2Contract(tco2Address);
-const registry = toucan.getRegistryContract();
-const offsetHelper = toucan.getOffsetHelperContract(); // not yet available on CELO
-
+const nct = await toucan.getPoolContract("NCT");
+const tco2 = await toucan.getTCO2Contract(tco2Address);
+const registry = await toucan.getRegistryContract();
 const remainingTCO2 = await nct.tokenBalances(tco2Address);
 ```
 
@@ -84,19 +82,23 @@ It's important to note that, if you want to use write methods you need to have a
 
 ## Example to retire Carbon Credits
 
-Considering you already own NCTs you can follow this example. In case you don't just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more way to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
+To retire Carbon Credits, you will have to get Carbon Pool Tokens form a DEX like Ubeswap, which you need to redeem for TCO2s. These you can then retire and get a certificate for that. Considering you already own NCTs you can follow this example. In case you don't and are developing you can also just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more way to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
+
+- Redeem your Pool Tokens
 
 ```typescript
-toucan.setSigner(signer);
-
 // get the NCT pool contract
-const nct = toucan.getPoolContract("NCT");
+const nct = await toucan.getPoolContract("NCT");
 
 // call the redeem function
-const tco2Tokens = nct.redeemAuto2(parseEther("1"));
+const tco2Tokens = await nct.redeemAuto2(parseEther("1"));
+```
 
+- Retire the Carbon Credits
+
+```typescript
 // get TCO2 Contract and retire the tokens.
-const tco2 = toucan.getTCO2Contract(tco2Address);
+const tco2 = await toucan.getTCO2Contract(tco2Tokens.address);
 tco2.retire(parseEther("1"));
 ```
 
@@ -132,20 +134,6 @@ The result will look like so:
 ```
 
 Now you have quite some info on the project, including its address.
-
-## Fetching a TCO2's data by its address
-
-What if you already had a TCO2s address, but you now want to get more data about it?
-
-There's a pre-built subgraph query for that too.
-
-```typescript
-const tco2 = await toucan.fetchTCO2TokenById(
-  "0x0044c5a5a6f626b673224a3c0d71e851ad3d5153"
-);
-```
-
-The result will look like the same as the one of the query above.
 
 ## Fetching a pool's contents
 

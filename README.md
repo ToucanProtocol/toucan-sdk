@@ -82,7 +82,7 @@ It's important to note that, if you want to use write methods you need to have a
 
 ## Example to retire Carbon Credits
 
-To retire Carbon Credits, you will have to get Carbon Pool Tokens form a DEX like Ubeswap, which you need to redeem for TCO2s. These you can then retire and get a certificate for that. Considering you already own NCTs you can follow this example. In case you don't and are developing you can also just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more way to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
+To retire Carbon Credits on mainnet, you will have to get Carbon Pool Tokens from a DEX like Ubeswap, which you need to redeem for TCO2s. You can then retire these and get a certificate for that. If you already own NCTs, you can follow this example. In case you don't and are developing on testnet, you can also just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more ways to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
 
 - Redeem your Pool Tokens
 

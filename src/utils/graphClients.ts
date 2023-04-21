@@ -1,4 +1,4 @@
-import { createClient } from "@urql/core";
+import { cacheExchange, createClient, fetchExchange } from "@urql/core";
 
 import { Network } from "../types";
 import {
@@ -22,6 +22,7 @@ export const getToucanGraphClient = (network: Network) =>
         : ALFAJORES_TOUCAN_GRAPH_API_URL,
     requestPolicy: "network-only",
     fetch: fetch,
+    exchanges: [cacheExchange, fetchExchange],
   });
 
 export const getDexGraphClient = (network: Network) =>
@@ -30,4 +31,5 @@ export const getDexGraphClient = (network: Network) =>
       network === "polygon" || network === "mumbai"
         ? POLYGON_SUSHI_GRAPH_API_URL
         : CELO_UBESWAP_GRAPH_API_URL,
+    exchanges: [cacheExchange, fetchExchange],
   });

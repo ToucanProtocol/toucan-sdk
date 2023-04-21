@@ -50,7 +50,7 @@ import {
  * @description This class wraps around classes that help users to interact with Toucan infrastructure
  * @implements ContractInteractions, SubgraphInteractions
  */
-export class ToucanClient {
+export default class ToucanClient {
   signer: ethers.Signer | undefined;
   provider: ethers.providers.Provider | undefined;
   network: Network;

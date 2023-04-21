@@ -9,7 +9,7 @@ import {
 } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
-import { ToucanClient } from "../dist";
+import ToucanClient from "../dist";
 import { PoolSymbol } from "../dist/types";
 import { swapperABI } from "../dist/utils/ABIs";
 import addresses from "../dist/utils/addresses";

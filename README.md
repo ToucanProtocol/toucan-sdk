@@ -84,22 +84,16 @@ It's important to note that, if you want to use write methods you need to have a
 
 To retire Carbon Credits on mainnet, you will have to get Carbon Pool Tokens from a DEX like Ubeswap, which you need to redeem for TCO2s. You can then retire these and get a certificate for that. If you already own NCTs, you can follow this example. In case you don't and are developing on testnet, you can also just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more ways to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
 
-- Redeem your Pool Tokens
+**Redeem your Pool Tokens and get an array of redeemed TCO2s**
 
 ```typescript
-// get the NCT pool contract
-const nct = await toucan.getPoolContract("NCT");
-
-// call the redeem function
-const tco2Tokens = await nct.redeemAuto2(parseEther("1"));
+const tco2addresses = await toucan.redeemAuto2("NCT", parseEther("1"));
 ```
 
-- Retire the Carbon Credits
+**Retire the Carbon Credits**
 
 ```typescript
-// get TCO2 Contract and retire the tokens.
-const tco2 = await toucan.getTCO2Contract(tco2Tokens.address);
-tco2.retire(parseEther("1"));
+await toucan.retire(parseEther("1"), tco2addresses[0].address);
 ```
 
 # Subgraph queries
@@ -109,6 +103,8 @@ Now, the above example of selective retirement is only useful in specific cases.
 **What if you only have the name or symbol of the project?**
 
 That's where subgraph queries come in handy. (and we have plenty of those 😉) - But feel free to also [create your own](#custom-queries).
+
+**_Make sure all addresses are input in lowercase letters, as the queries are case sensitive._**
 
 ## Fetching a TCO2 by its symbol
 
@@ -135,41 +131,49 @@ The result will look like so:
 
 Now you have quite some info on the project, including its address.
 
-Other queries:
+## All queries:
 
-```
-fetchUserBatches(address)
-fetchTCO2TokenById(tokenId)
-fetchAllTCO2Tokens()
-fetchUserRetirements()
+Toucan SDK offers a lot of pre-defined queries. Try them out!
+
+```typescript
+// Fetch the batches of a user.
+fetchUserBatches(address: string);
+
+// Fetch TCO2 token by it's address to get details like name, symbol, address and projectVintage.
+fetchTCO2TokenById(address: string);
+
+// Fetch TCO2Token with the symbol to get details like name, symbol, address and projectVintage. A symbol would look like this: `TCO2-VCS-<projectId>-YYYY`. Make sure to input the full symbol.
+fetchTCO2TokenByFullSymbol(symbol: string);
+
+// Fetch all TCO2s details like name, symbol, address and projectVintage.
+
+fetchAllTCO2Tokens();
+
+// Fetch all user retirements to get information like creationTX, amount, token details and certificate details.
+fetchUserRetirements(address: string, first?: number, skip?: number);
+
+// Fetch all redeems of a given pool to get information like amount, creator and token details. Only accepts the Pooltypes "NCT" or "BCT".
+fetchRedeems(poolSymbol: Pooltypes, first?: number, skip?: number);
+
+// Fetch all redeems of a user by pool and get information like amount and token details.
+fetchUserRedeems(address: string, poolSymbol: Pooltypes, first?: number, skip?: number);
+
+// Fetch TCO2 tokens that are part of the given pool and get information on name, amount, methodology and more.
+fetchPoolContents(poolSymbol: Pooltypes, first?: number, skip?: number);
+
+// Fetch a project by it's id to get more info on region and the standard.
+
+fetchProjectById();
+
+// Fetch all aggregations (including for example, tco2TotalRetired or totalCarbonBridged).
+fetchAggregations();
 ```
 
 ## Custom queries
 
 There's a lot more other pre-built subgraph queries that I could show you, but what I really want to show you is the `fetchCustomQuery` method.
 
-This allows you to fetch with your own queries and can be very powerful if you know graphQL.
-
-- Getting your redeemed Tokens (TCO2s) you hold - useful for retirement of carbon credits.
-
-```typescript
-import { gql } from "@urql/core";
-
-const query = gql`
-  query ($id: String) {
-    user(id: $id) {
-      redeemsCreated {
-        token {
-          address
-          name
-        }
-      }
-    }
-  }
-`;
-
-const result = await toucan.fetchCustomQuery(query, { id: "1" });
-```
+This allows you to fetch with your own queries and can be very powerful if you know graphQL. You can also check out a lot of example queries in our subgraph [playgrounds](https://thegraph.com/hosted-service/subgraph/toucanprotocol/matic).
 
 - Getting all infos on a project of a Carbon Credit
 

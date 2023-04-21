@@ -21,21 +21,23 @@ import { Client, gql } from "@urql/core";
 import { IToucanCarbonOffsets } from "../typechain";
 import { Network, PoolSymbol } from "../types";
 import {
-  fetchAggregationsMethod,
-  fetchAllTCO2TokensMethod,
-  fetchBridgedBatchTokensMethod,
-  fetchBridgedBatchTokensResult,
-  fetchCustomQueryMethod,
-  fetchPoolContentsMethod,
-  fetchProjectByIdMethod,
-  fetchRedeemsMethod,
-  fetchTCO2TokenByFullSymbolMethod,
-  fetchTCO2TokenByIdMethod,
-  fetchTCO2TokenResult,
-  fetchUserBatchesMethod,
-  fetchUserRedeemsMethod,
-  fetchUserRetirementsMethod,
+  AggregationsMethod,
+  AllTCO2TokensMethod,
+  BridgedBatchTokensMethod,
+  CustomQueryMethod,
+  PoolContentsMethod,
+  ProjectByIdMethod,
+  RedeemsMethod,
+  TCO2TokenByFullSymbolMethod,
+  TCO2TokenByIdMethod,
+  UserBatchesMethod,
+  UserRedeemsMethod,
+  UserRetirementsMethod,
 } from "../types/methods";
+import {
+  BridgedBatchTokensResponse,
+  TCO2TokenResponse,
+} from "../types/responses";
 import { PairSchema } from "../types/schemas";
 import addresses, { IfcOneNetworksAddresses } from "../utils/addresses";
 import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
@@ -78,7 +80,7 @@ class SubgraphInteractions {
    * @param walletAddress address of user to query for
    * @returns an array of BatchTokens (they contain different properties of the Batch)
    */
-  fetchUserBatches: fetchUserBatchesMethod = async (walletAddress) => {
+  fetchUserBatches: UserBatchesMethod = async (walletAddress) => {
     const query = gql`
       query ($walletAddress: String) {
         users(id: $walletAddress) {
@@ -123,7 +125,7 @@ class SubgraphInteractions {
    * @param id id of the TCO2 to query for; the id happens to be the same as the address e.g.: "0x004090eef602e024b2a6cb7f0c1edda992382994"
    * @returns a TCO2Detail object with properties of the TCO2 (name, address, etc)
    */
-  fetchTCO2TokenById: fetchTCO2TokenByIdMethod = async (id) => {
+  fetchTCO2TokenById: TCO2TokenByIdMethod = async (id) => {
     const query = gql`
       query ($id: String) {
         tco2Token(id: $id) {
@@ -154,7 +156,7 @@ class SubgraphInteractions {
    * @param symbol full symbol of the TCO2 to query for e.g.: "TCO2-VCS-1718-2013"
    * @returns a TCO2Detail object with properties of the TCO2 (name, address, etc)
    */
-  fetchTCO2TokenByFullSymbol: fetchTCO2TokenByFullSymbolMethod = async (
+  fetchTCO2TokenByFullSymbol: TCO2TokenByFullSymbolMethod = async (
     symbol: string
   ) => {
     const query = gql`
@@ -188,8 +190,8 @@ class SubgraphInteractions {
    * @description fetches TCO2Details of all TCO2s
    * @returns an array of TCO2Detail objects with properties of the TCO2s (name, address, etc)
    */
-  fetchAllTCO2Tokens: fetchAllTCO2TokensMethod = async () => {
-    let TCO2Tokens: fetchTCO2TokenResult[] = [];
+  fetchAllTCO2Tokens: AllTCO2TokensMethod = async () => {
+    let TCO2Tokens: TCO2TokenResponse[] = [];
     let skip = 0;
     const first = 1000;
     for (;;) {
@@ -236,8 +238,8 @@ class SubgraphInteractions {
    * @description fetches data about BatchTokens that have been bridged
    * @returns an array of BatchTokens containing different properties like id, serialNumber or quantity
    */
-  fetchBridgedBatchTokens: fetchBridgedBatchTokensMethod = async () => {
-    let BridgedBatchTokens: fetchBridgedBatchTokensResult[] = [];
+  fetchBridgedBatchTokens: BridgedBatchTokensMethod = async () => {
+    let BridgedBatchTokens: BridgedBatchTokensResponse[] = [];
     let skip = 0;
     const first = 1000;
     for (;;) {
@@ -296,7 +298,7 @@ class SubgraphInteractions {
    * @param skip how many (if any) retirements you want skipped; defaults to 0
    * @returns an array of objects containing properties of the retirements like id, creationTx, amount and more
    */
-  fetchUserRetirements: fetchUserRetirementsMethod = async (
+  fetchUserRetirements: UserRetirementsMethod = async (
     walletAddress,
     first = 100,
     skip = 0
@@ -365,7 +367,7 @@ class SubgraphInteractions {
    * @param skip how many (if any) redeems you want skipped; defaults to 0
    * @returns an array of objects with properties of the redeems like id, amount, timestamp and more
    */
-  fetchRedeems: fetchRedeemsMethod = async (pool, first = 100, skip = 0) => {
+  fetchRedeems: RedeemsMethod = async (pool, first = 100, skip = 0) => {
     const poolAddress = this.getPoolAddress(pool);
 
     const query = gql`
@@ -416,7 +418,7 @@ class SubgraphInteractions {
    * @param skip how many (if any) redeems you want skipped; defaults to 0
    * @returns an array of objects with properties of the redeems like id, amount, timestamp and more
    */
-  fetchUserRedeems: fetchUserRedeemsMethod = async (
+  fetchUserRedeems: UserRedeemsMethod = async (
     walletAddress,
     pool,
     first = 100,
@@ -488,7 +490,7 @@ class SubgraphInteractions {
    * @param skip how many (if any) retirements you want skipped; defaults to 0
    * @returns an array of objects representing TCO2 tokens and containing properties like name, amount, methodology and more
    */
-  fetchPoolContents: fetchPoolContentsMethod = async (
+  fetchPoolContents: PoolContentsMethod = async (
     pool,
     first = 1000,
     skip = 0
@@ -542,7 +544,7 @@ class SubgraphInteractions {
    * @param id id of the project to fetch; e.g.: "10"
    * @returns an object with properties of the Project like projectId, region, standard and more
    */
-  fetchProjectById: fetchProjectByIdMethod = async (id) => {
+  fetchProjectById: ProjectByIdMethod = async (id) => {
     const query = gql`
       query ($id: String) {
         project(id: $id) {
@@ -573,7 +575,7 @@ class SubgraphInteractions {
    * @description fetch all aggregations (including, for example, tco2TotalRetired or totalCarbonBridged)
    * @returns an array of Aggregation objects containing properties like id, key, value
    */
-  fetchAggregations: fetchAggregationsMethod = async () => {
+  fetchAggregations: AggregationsMethod = async () => {
     const query = gql`
       {
         aggregations {
@@ -602,7 +604,7 @@ class SubgraphInteractions {
    * @param params any parameters you may want to pass to the query
    * @returns all data fetched from query; you can use generics to declare what type to expect (if you're a fan of TS)
    */
-  fetchCustomQuery: fetchCustomQueryMethod = async (query, params) => {
+  fetchCustomQuery: CustomQueryMethod = async (query, params) => {
     const result = await this.graphClient
       .query(query, {
         ...(params ?? {}),

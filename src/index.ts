@@ -43,7 +43,16 @@ import {
   UserRedeemsMethod,
   UserRetirementsMethod,
 } from "./types/methods";
-export * from "./types/responses";
+export {
+  UserBatchesResponse,
+  TCO2TokenResponse,
+  BridgedBatchTokensResponse,
+  UserRetirementsResponse,
+  RedeemsResponse,
+  PoolContentsResponse,
+  ProjectResponse,
+  BalanceResponse
+} from "./types/responses";
 
 /**
  *

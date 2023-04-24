@@ -766,13 +766,4 @@ export default class ToucanClient {
 
 
 
-export {
-  UserBatchesResponse,
-  TCO2TokenResponse,
-  BridgedBatchTokensResponse,
-  UserRetirementsResponse,
-  RedeemsResponse,
-  PoolContentsResponse,
-  ProjectResponse,
-  BalanceResponse
-} from "./types/responses";
+export * from "./types/responses";

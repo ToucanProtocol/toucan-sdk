@@ -43,16 +43,7 @@ import {
   UserRedeemsMethod,
   UserRetirementsMethod,
 } from "./types/methods";
-export {
-  UserBatchesResponse,
-  TCO2TokenResponse,
-  BridgedBatchTokensResponse,
-  UserRetirementsResponse,
-  RedeemsResponse,
-  PoolContentsResponse,
-  ProjectResponse,
-  BalanceResponse
-} from "./types/responses";
+
 
 /**
  *
@@ -772,3 +763,16 @@ export default class ToucanClient {
     return this.contractInteractions.getOffsetHelperContract(signerOrProvider);
   };
 }
+
+
+
+export {
+  UserBatchesResponse,
+  TCO2TokenResponse,
+  BridgedBatchTokensResponse,
+  UserRetirementsResponse,
+  RedeemsResponse,
+  PoolContentsResponse,
+  ProjectResponse,
+  BalanceResponse
+} from "./types/responses";

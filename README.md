@@ -11,13 +11,13 @@ _Full documentation coming soon._
 ## Install
 
 ```
-npm i toucan-sdk
+npm i toucan-sdk@1.0.0-beta
 ```
 
 or
 
 ```
-yarn add toucan-sdk
+yarn add toucan-sdk@1.0.0-beta
 ```
 
 # Quickstart

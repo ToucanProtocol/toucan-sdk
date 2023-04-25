@@ -25,7 +25,7 @@ yarn add toucan-sdk
 Instantiate the ToucanClient and set a signer & provider to interact with our infrastructure.
 
 ```typescript
-import { ToucanClient } from "toucan-sdk";
+import ToucanClient from "toucan-sdk";
 
 const toucan = new ToucanClient("alfajores", provider, signer);
 ```
@@ -33,7 +33,7 @@ const toucan = new ToucanClient("alfajores", provider, signer);
 You could also set the signer/provider later if you prefer that. They are optional. But you will need to set them if you want to interact with contracts. The provider is read-only, while the signer allows both writing to and reading from the blockchain.
 
 ```typescript
-import { ToucanClient } from "toucan-sdk";
+import ToucanClient from "toucan-sdk";
 
 const toucan = new ToucanClient("alfajores");
 toucan.setProvider(provider);

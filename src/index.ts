@@ -311,7 +311,7 @@ export default class ToucanClient {
   redeemAuto = async (
     pool: PoolSymbol,
     amount: BigNumber
-  ): Promise<ContractReceipt> => {
+  ): Promise<{ address: string; amount: BigNumber }[]> => {
     if (!this.signer) throw new Error("No signer set");
     const signer = this.signer;
 
@@ -320,6 +320,7 @@ export default class ToucanClient {
 
   /**
    *
+   * @deprecated This function is deprecated. Please use `redeemAuto` instead.
    * @description automatically redeems pool tokens for TCO2s
    * @param pool symbol of the pool (token) to use
    * @param amount amount to redeem

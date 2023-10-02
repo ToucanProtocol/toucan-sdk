@@ -382,7 +382,12 @@ export class IToucanPoolToken extends BaseContract {
 
     getScoredTCO2s(overrides?: CallOverrides): Promise<string[]>;
 
-    redeemAuto(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    redeemAuto(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string[], BigNumber[]] & { tco2s: string[]; amounts: BigNumber[] }
+    >;
 
     redeemAuto2(
       amount: BigNumberish,

@@ -214,7 +214,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
         amount: BigNumber;
       }[] = [{ address: tco2Address, amount: amountToRedeem }];
 
-      const tco2s = await toucan.redeemAuto2("NCT", amountToRedeem);
+      const tco2s = await toucan.redeemAuto("NCT", amountToRedeem);
 
       expect(tco2s, "Expect returned TCO2s to match").to.be.eql(expectedTco2s);
     });
@@ -348,7 +348,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
   describe("Testing TCO related methods", function () {
     it("Should retire TCO2 & mint the certificate", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const tco2s = await toucan.redeemAuto("NCT", ONE_ETHER);
       const { address, amount } = tco2s[0];
       const tco2 = toucan.getTCO2Contract(address);
 
@@ -383,7 +383,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
 
     it("Should retire TCO2", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const tco2s = await toucan.redeemAuto("NCT", ONE_ETHER);
       const { address, amount } = tco2s[0];
       const tco2 = toucan.getTCO2Contract(address);
 
@@ -411,7 +411,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
 
     it("Should retire TCO2 for another address", async function () {
-      const tco2s = await toucan.redeemAuto2("NCT", ONE_ETHER);
+      const tco2s = await toucan.redeemAuto("NCT", ONE_ETHER);
       const { address, amount } = tco2s[0];
       const tco2 = toucan.getTCO2Contract(address);
 

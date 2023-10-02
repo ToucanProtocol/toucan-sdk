@@ -1386,7 +1386,18 @@ export const poolTokenABI = [
       },
     ],
     name: "redeemAuto",
-    outputs: [],
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },

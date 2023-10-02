@@ -7,6 +7,7 @@
     "build": "tsc",
     "clean": "rimraf dist",
     "build:clean": "yarn clean && yarn build",
+    "docs": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts",
     "format:check": "prettier --check \"**/*.ts\"",
     "format:write": "prettier --write \"**/*.ts\"",
     "lint": "eslint '**/*.ts'",
@@ -27,7 +28,9 @@
     "@urql/core": "^2.5.0",
     "ethers": "^5.6.4",
     "graphql": "^16.5.0",
-    "isomorphic-unfetch": "^4.0.2"
+    "isomorphic-unfetch": "^4.0.2",
+    "typedoc": "^0.25.1",
+    "typedoc-plugin-markdown": "^3.16.0"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -37,7 +40,6 @@
     "@typechain/hardhat": "^6.0.0",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^17.0.34",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
     "chai": "^4.2.0",

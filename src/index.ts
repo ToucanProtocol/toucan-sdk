@@ -1,20 +1,20 @@
 /**
-The OffsetHelper's purpose is to simplify the carbon offsetting process.
-Copyright (C) 2022  Toucan Labs
+  The OffsetHelper's purpose is to simplify the carbon offsetting process.
+  Copyright (C) 2022 Toucan Labs
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
 import "isomorphic-unfetch";
 
@@ -88,14 +88,14 @@ export default class ToucanClient {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  TCO2 related methods
+  //  TCO2 related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
   /**
    *
    * @description retires/burns an amount of TCO2s (each represents 1 ton of CO2) to achieve offset
-   * @param amount amount of TCO2 to retire
+   * @param amount The amount of TCO2 to retire
    * @param tco2Address address of the TCO2 token to retire* @returns retirement transaction
    */
   retire = async (
@@ -115,7 +115,7 @@ export default class ToucanClient {
    * @param beneficiaryAddress address of the beneficiary (in case you're retiring for someone else)
    * @param beneficiaryName name of the beneficiary
    * @param retirementMessage retirement message
-   * @param amount amount of TCO2 to retire
+   * @param amount The amount of TCO2 to retire
    * @param tco2Address address of the TCO2 token to retire* @returns retirement transaction
    */
   retireAndMintCertificate = async (
@@ -144,7 +144,7 @@ export default class ToucanClient {
    *
    * @description retires/burns an amount of TCO2s from a different address/wallet
    * @notice requires approval from the address you're trying to retire from
-   * @param amount amount of TCO2 to retire
+   * @param amount The amount of TCO2 to retire
    * @param address address of the account to retire from
    * @param tco2Address address of the TCO2 token to retire* @returns retirement transaction
    */
@@ -214,15 +214,15 @@ export default class ToucanClient {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  Pool related methods
+  //  Pool related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
   /**
    *
    * @description deposits TCO2s in the pool which mints a pool token for the user
-   * @param pool symbol of the pool (token) to use
-   * @param amount amount of TCO2s to deposit
+   * @param pool The pool symbol of the pool (token) to use
+   * @param amount The amount of TCO2s to deposit
    * @param tco2Address address of the TCO2 token to deposit* @returns deposit transaction
    */
   depositTCO2 = async (
@@ -244,7 +244,7 @@ export default class ToucanClient {
   /**
    *
    * @description checks if TCO2 is eligible for pool
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param tco2 address of TCO2 to deposit
    * @returns boolean
    */
@@ -262,11 +262,11 @@ export default class ToucanClient {
   /**
    *
    * @description calculates the fees to selectively redeem pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param tco2s array of TCO2 contract addresses
    * @param amounts array of amounts to redeem for each tco2s
    * @notice tco2s must match amounts; amounts[0] is the amount of tco2[0] token to redeem for
-   * @returns amount (BigNumber) of fees it will cost to redeem
+   * @returns amount of fees it will cost to redeem.
    */
   calculateRedeemFees = async (
     pool: PoolSymbol,
@@ -287,7 +287,7 @@ export default class ToucanClient {
   /**
    *
    * @description selectively redeems pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param tco2s array of TCO2 contract addresses
    * @param amounts array of amounts to redeem for each tco2s
    * @returns redeem transaction
@@ -306,7 +306,7 @@ export default class ToucanClient {
   /**
    *
    * @description automatically redeems pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount amount to redeem
    * @returns redeem transaction
    */
@@ -324,7 +324,7 @@ export default class ToucanClient {
    *
    * @deprecated This function is deprecated. Please use `redeemAuto` instead.
    * @description automatically redeems pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount amount to redeem
    * @returns array containing tco2 addresses (string) and amounts (BigNumber)
    */
@@ -354,7 +354,7 @@ export default class ToucanClient {
   /**
    *
    * @description gets an array of scored TCO2s; scoredTCO2s[0] is lowest ranked
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @returns array of TCO2 addresses by rank
    */
   getScoredTCO2s = async (pool: PoolSymbol): Promise<string[]> => {
@@ -366,7 +366,7 @@ export default class ToucanClient {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  Contract registry related methods
+  //  Contract registry related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
@@ -385,16 +385,16 @@ export default class ToucanClient {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  OffsetHelper related methods
+  //  OffsetHelper related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
   /**
    *
    * @description retires carbon credits using the lowest quality (oldest) TCO2
-   * tokens available by sending Toucan pool tokens, e.g., NCT.
+   * tokens available by sending pool tokens, e.g., NCT.
    * @notice This method may take up to 1 minute to return a result
-   * @param The pool symbol of the pool token to offset,
+   * @param pool The pool symbol of the pool token to offset,
    * e.g., NCT
    * @param amount The amount of of TCO2 to offset.
    * @returns The offset transaction.
@@ -417,7 +417,7 @@ export default class ToucanClient {
    * tokens (cUSD, USDC, WETH, WMATIC).
    * @notice this method needs two different actions signed and may take up to even 1 minute to give a result
    * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
-   * @param The pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount The amount of CO2 tons to offset
    * @returns The offset transaction.
    */
@@ -454,7 +454,7 @@ export default class ToucanClient {
    * TCO2s there are no fees and you receive exactly 1 TCO2 token for 1 pool
    * token.
  * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
- * @param The pool symbol of the pool (token) to use
+ * @param pool The pool symbol of the pool (token) to use
  * @param amount the amount of ERC20 token to swap into Toucan pool token. Full amount will be used for offsetting.
  * @returns The offset transaction.
  */
@@ -485,7 +485,7 @@ export default class ToucanClient {
    * @description retires a specified amount of  carbon credits using the lowest quality (oldest) TCO2 tokens available from the specified Toucan token pool by sending a native token e.g. MATIC.
    * @dev Use `calculateNeededETHAmount()` first in order to find out how much  of the native token e.g. MATIC is required to retire the specified quantity of TCO2. If the user sends much native token e.g. MATIC, the leftover amount will be sent back to the user.
    * @notice This method may take up to 1 minute to return a result
-   * @param The pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount The amount of CO2 tons to offset
    * @returns The offset transaction.
    */
@@ -508,7 +508,7 @@ export default class ToucanClient {
    *
    * @description Swaps ETH for carbon pool tokens and uses them to retire carbon
    * @notice This method may take up to 1 minute to return a result
-   * @param The pool symbol of the pool (token) to use e.g., "NCT"
+   * @param pool The pool symbol of the pool (token) to use e.g., "NCT"
    * @param amount the amount of native tokens e.g., MATIC to swap into Toucan pool token. Full amount will be used for offsetting.
    * @returns The offset transaction.
    */
@@ -530,7 +530,7 @@ export default class ToucanClient {
    * order to swap for the desired amount of a Toucan pool token, for
    * example, e.g., NCT.
    * @param swapToken The ERC20 token used for the swap
-   * @param The pool symbol of the pool token to swap for,
+   * @param pool The pool symbol of the pool token to swap for,
    * e.g., NCT
    * @param amount The desired amount of pool token to receive
    * @returns amount  of the ERC20 token required in order to
@@ -562,7 +562,7 @@ export default class ToucanClient {
    *
    * @description Calculates the amount of native tokens e.g, MATIC is required in order to swap for the
    * desired amount of a Toucan pool token, e.g., NCT.
-   * @param The pool symbol of the pool token to swap for,
+   * @param pool The pool symbol of the pool token to swap for,
    * e.g., NCT
    * @param amount The desired amount of pool token to receive
    * @returns amount of native tokens, e.g., MATIC required in order to swap for
@@ -590,7 +590,7 @@ export default class ToucanClient {
    * acquired by swapping the provided amount of ERC20 token.
    *
    * @param swapToken The ERC20 token used for the swap
-   * @param The pool symbol of the pool token to swap for,
+   * @param pool The pool symbol of the pool token to swap for,
    * e.g., NCT
    * @param amount The amount of ERC20 token to swap
    * @returns amount  The expected amount of Pool token that can be acquired.
@@ -621,7 +621,7 @@ export default class ToucanClient {
    *
    * @description Calculates the expected amount of Toucan Pool token that can be
    * acquired by swapping the provided amount of native tokens e.g., MATIC.
-   * @param The pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount The amount of native tokens  to swap for,
    * e.g., MATIC
    * @returns amount   The expected amount of Pool token that can be acquired.
@@ -735,7 +735,7 @@ export default class ToucanClient {
   /**
    *
    * @description fetches redeems of a given pool
-   * @param pool symbol of pool to fetch for
+   * @param pool The pool symbol of pool to fetch for
    * @param first how many redeems you want fetched; defaults to 100
    * @param skip how many (if any) redeems you want skipped; defaults to 0
    * @returns an array of objects with properties of the redeems like id, amount, timestamp and more
@@ -748,7 +748,7 @@ export default class ToucanClient {
    *
    * @description fetches redeems of a given pool and user
    * @param walletAddress address of the user/wallet to query for
-   * @param pool symbol of pool to fetch for
+   * @param pool The pool symbol of pool to fetch for
    * @param first how many redeems you want fetched; defaults to 100
    * @param skip how many (if any) redeems you want skipped; defaults to 0
    * @returns an array of objects with properties of the redeems like id, amount, timestamp and more
@@ -774,7 +774,7 @@ export default class ToucanClient {
   /**
    *
    * @description fetches TCO2 tokens that are part of the given pool
-   * @param pool symbol of the pool to fetch for
+   * @param pool The pool symbol of the pool to fetch for
    * @param first how many TCO2 tokens you want fetched; defaults to 1000
    * @param skip how many (if any) retirements you want skipped; defaults to 0
    * @returns an array of objects representing TCO2 tokens and containing properties like name, amount, methodology and more
@@ -831,7 +831,7 @@ export default class ToucanClient {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  Price / Sushiswap related methods
+  //  Price / Sushiswap related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
@@ -853,7 +853,7 @@ export default class ToucanClient {
   /**
    *
    * @description gets the contract of a pool token based on the symbol
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
   public getPoolAddress = (pool: PoolSymbol): string => {

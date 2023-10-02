@@ -1,6 +1,6 @@
 /**
   The OffsetHelper's purpose is to simplify the carbon offsetting process.
-  Copyright (C) 2022  Toucan Labs
+  Copyright (C) 2022 Toucan Labs
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -9,11 +9,11 @@
 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -39,7 +39,7 @@ import {
   tco2ABI,
   toucanContractRegistryABI,
 } from "../utils/ABIs";
-import addresses, { IfcOneNetworksAddresses } from "../utils/addresses";
+import addresses, { IfcNetworkAddresses } from "../utils/addresses";
 
 /**
  * @class ContractInteractions
@@ -47,7 +47,7 @@ import addresses, { IfcOneNetworksAddresses } from "../utils/addresses";
  */
 class ContractInteractions {
   network: Network;
-  addresses: IfcOneNetworksAddresses;
+  addresses: IfcNetworkAddresses;
 
   /**
    *
@@ -60,14 +60,16 @@ class ContractInteractions {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  TCO2 related methods
+  //  TCO2 related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
   /**
    *
-   * @description retires/burns an amount of TCO2s (each represents 1 ton of CO2) to achieve offset
-   * @param amount amount of TCO2 to retire
+   * @description retires/offset/burns an amount of TCO2s (each represents 1 ton of CO2).
+   * If you don't own any TCO2s you need to buy pool tokens, e.g.,
+   * NCTs on a DEX and redeem these first.
+   * @param amount The amount of TCO2 to retire
    * @param tco2Address address of the TCO2 token to retire
    * @param signer this being a write transaction, we need a signer
    * @returns retirement transaction
@@ -88,12 +90,13 @@ class ContractInteractions {
 
   /**
    *
-   * @description retires/burns an amount of TCO2s & mints the NFT certificate for it within the same transaction
+   * @description retires/offset/burns an amount of TCO2s & mints the NFT certificate for it within the same transaction. If you don't own any TCO2s you need to buy pool tokens, e.g.,
+   * NCTs on a DEX and redeem these first.
    * @param retirementEntityName name of the entity that does the retirement (you)
    * @param beneficiaryAddress address of the beneficiary (in case you're retiring for someone else)
    * @param beneficiaryName name of the beneficiary
    * @param retirementMessage retirement message
-   * @param amount amount of TCO2 to retire
+   * @param amount The amount of TCO2 to retire
    * @param tco2Address address of the TCO2 token to retire
    * @param signer this being a write transaction, we need a signer
    * @returns retirement transaction
@@ -123,9 +126,10 @@ class ContractInteractions {
 
   /**
    *
-   * @description retires/burns an amount of TCO2s from a different address/wallet
+   * @description retires/offset/burns an amount of TCO2s from a different address/wallet. If you don't own any TCO2s you need to buy pool tokens, e.g.,
+   * NCTs on a DEX and redeem these first.
    * @notice requires approval from the address you're trying to retire from
-   * @param amount amount of TCO2 to retire
+   * @param amount The amount of TCO2 to retire
    * @param address address of the account to retire from
    * @param tco2Address address of the TCO2 token to retire
    * @param signer this being a write transaction, we need a signer
@@ -198,15 +202,15 @@ class ContractInteractions {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  Pool related methods
+  //  Pool related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
   /**
    *
    * @description deposits TCO2s in the pool which mints a pool token for the user
-   * @param pool symbol of the pool (token) to use
-   * @param amount amount of TCO2s to deposit
+   * @param pool The pool symbol of the pool (token) to use
+   * @param amount The amount of TCO2s to deposit
    * @param tco2Address address of the TCO2 token to deposit
    * @param signer this being a write transaction, we need a signer
    * @returns deposit transaction
@@ -238,7 +242,7 @@ class ContractInteractions {
   /**
    *
    * @description checks if TCO2 is eligible for pool
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param tco2 address of TCO2 to deposit
    * @returns boolean
    */
@@ -254,22 +258,12 @@ class ContractInteractions {
   /**
    *
    * @description calculates the fees to selectively redeem pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
-   * @param tco2s array of TCO2 contract addresses
-   * @param amounts array of amounts to redeem for each tco2s
-   * @notice tco2s must match amounts; amounts[0] is the amount of tco2[0] token to redeem for
-   * @returns amount (BigNumber) of fees it will cost to redeem
-   */
-
-  /**
-   *
-   * @description calculates the fees to selectively redeem pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param tco2s array of TCO2 contract addresses
    * @param amounts array of amounts to redeem for each tco2s
    * @notice tco2s must match amounts; amounts[0] is the amount of tco2[0] token to redeem for
    * @param signerOrProvider this being a read transaction, we need a signer or provider
-   * @returns amount (BigNumber) of fees it will cost to redeem
+   * @returns amount The amount of fees it will cost to redeem
    */
   calculateRedeemFees = async (
     pool: PoolSymbol,
@@ -284,7 +278,7 @@ class ContractInteractions {
   /**
    *
    * @description selectively redeems pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param tco2s array of TCO2 contract addresses
    * @param amounts array of amounts to redeem for each tco2s
    * @param signer this being a write transaction, we need a signer
@@ -309,8 +303,8 @@ class ContractInteractions {
   /**
    *
    * @description automatically redeems pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
-   * @param amount amount to redeem
+   * @param pool The pool symbol of the pool (token) to use
+   * @param amount The amount to redeem
    * @param signer this being a write transaction, we need a signer
    * @returns redeem transaction
    */
@@ -346,8 +340,8 @@ class ContractInteractions {
   /**
    * @deprecated This function is deprecated. Please use `redeemAuto` instead.
    * @description automatically redeems pool tokens for TCO2s
-   * @param pool symbol of the pool (token) to use
-   * @param amount amount to redeem
+   * @param pool The pool symbol of the pool (token) to use
+   * @param amount The amount to redeem
    * @param signer this being a write transaction, we need a signer
    * @returns array containing tco2 addresses (string) and amounts (BigNumber)
    */
@@ -398,7 +392,7 @@ class ContractInteractions {
   /**
    *
    * @description gets an array of scored TCO2s; scoredTCO2s[0] is lowest ranked
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param signerOrProvider this being a read transaction, we need a signer or provider
    * @returns array of TCO2 addresses by rank
    */
@@ -412,7 +406,7 @@ class ContractInteractions {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  Contract registry related methods
+  //  Contract registry related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
@@ -433,10 +427,20 @@ class ContractInteractions {
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
-  //  OffsetHelper related methods
+  //  OffsetHelper related functions
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
+  /**
+   *
+   * @description retires carbon credits using the lowest quality (oldest) TCO2
+   * tokens available by sending pool tokens, e.g., NCT.
+   * @param pool The pool symbol of the pool token to offset,
+   * e.g., NCT
+   * @param amount The amount of TCO2s to deposit
+   * @param signer this being a write transaction, we need a signer
+   * @returns The offset transaction.
+   */
   autoOffsetPoolToken = async (
     pool: PoolSymbol,
     amount: BigNumber,
@@ -465,7 +469,7 @@ class ContractInteractions {
    * tokens (cUSD, USDC, WETH, WMATIC).
    * @notice This method needs two different actions signed and may take up to even 1 minute to give a result
    * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount The amount of CO2 tons to offset
    * @param signer this being a write transaction, we need a signer
    * @returns offset transaction
@@ -509,7 +513,7 @@ class ContractInteractions {
    * TCO2s there are no fees and you receive exactly 1 TCO2 token for 1 pool
    * token.
    * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount the amount of ERC20 token to swap into Toucan pool token. Full amount will be used for offsetting.
    * @param signer this being a write transaction, we need a signer
    * @returns offset transaction
@@ -544,7 +548,7 @@ class ContractInteractions {
    * @description Retire a specified amount of carbon credits using the lowest quality (oldest) TCO2 tokens available from the specified pool by sending a native token e.g. MATIC.
    * @dev Use `calculateNeededETHAmount()` first in order to find out how much of the native token e.g. MATIC is required to retire the specified quantity of TCO2. If the user sends much native token e.g. MATIC, the leftover amount will be sent back to the user.
    * @notice This method may take up to 1 minute to return a result
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @param amount The amount of CO2 tons to offset
    * @param signer this being a write transaction, we need a signer
    * @returns offset transaction
@@ -569,7 +573,7 @@ class ContractInteractions {
    *
    * @description swaps ETH for carbon pool tokens and uses them to retire carbon
    * @notice This method may take up to 1 minute to return a result
-   * @param pool symbol of the pool (token) to use e.g., "NCT"
+   * @param pool The pool symbol of the pool (token) to use e.g., "NCT"
    * @param amount the amount of native tokens e.g., MATIC to swap into Toucan pool token. Full amount will be used for offsetting.
    * @param signer this being a write transaction, we need a signer
    * @returns offset transaction
@@ -596,7 +600,7 @@ class ContractInteractions {
    * order to swap for the desired amount of a Toucan pool token, for
    * example, e.g., NCT.
    * @param swapToken The ERC20 token used for the swap
-   * @param pool symbol of the pool token to swap for,
+   * @param pool The pool symbol of the pool token to swap for,
    *  e.g., NCT
    * @param amount The desired amount of pool token to receive
    * @param signerOrProvider this being a read transaction, we need a signer or provider
@@ -621,7 +625,7 @@ class ContractInteractions {
    *
    * @description Calculates the amount of native tokens e.g, MATIC is required in order to swap for the
    * desired amount of a Toucan pool token, e.g., NCT.
-   * @param pool symbol of the pool token to swap for,
+   * @param pool The pool symbol of the pool token to swap for,
    *  e.g., NCT
    * @param amount The desired amount of pool token to receive
    * @param signerOrProvider this being a read transaction, we need a signer or provider
@@ -640,6 +644,54 @@ class ContractInteractions {
     );
   };
 
+  /**
+   *
+   * @description Calculates the expected amount of Toucan Pool token that can be
+   * acquired by swapping the provided amount of ERC20 token.
+   *
+   * @param swapToken The ERC20 token used for the swap
+   * @param pool The pool symbol of the pool token to swap for,
+   *  e.g., NCT
+   * @param amount The amount of ERC20 token to swap
+   * @param signerOrProvider this being a read transaction, we need a signer or provider
+   * @returns amount The amount The expected amount of Pool token that can be acquired
+   */
+  calculateExpectedPoolTokenForToken = async (
+    swapToken: Contract,
+    pool: PoolSymbol,
+    amount: BigNumber,
+    signerOrProvider: ethers.Signer | ethers.providers.Provider
+  ): Promise<BigNumber> => {
+    const offsetHelper = this.getOffsetHelperContract(signerOrProvider);
+    return await offsetHelper.calculateExpectedPoolTokenForToken(
+      swapToken.address,
+      this.getPoolAddress(pool),
+      amount
+    );
+  };
+
+  /**
+   *
+   * @description Calculates the expected amount of Toucan Pool token that can be
+   * acquired by swapping the provided amount of native tokens e.g., MATIC.
+   * @param pool The pool symbol of the pool (token) to use
+   * @param amount The amount of native tokens to swap for,
+   *  e.g., MATIC
+   * @param signerOrProvider this being a read transaction, we need a signer or provider
+   * @returns amount The amount The expected amount of Pool token that can be acquired
+   */
+  calculateExpectedPoolTokenForETH = async (
+    pool: PoolSymbol,
+    amount: BigNumber,
+    signerOrProvider: ethers.Signer | ethers.providers.Provider
+  ): Promise<BigNumber> => {
+    const offsetHelper = this.getOffsetHelperContract(signerOrProvider);
+    return await offsetHelper.calculateExpectedPoolTokenForETH(
+      this.getPoolAddress(pool),
+      amount
+    );
+  };
+
   // --------------------------------------------------------------------------------
   //  Internal methods
   // --------------------------------------------------------------------------------
@@ -647,7 +699,7 @@ class ContractInteractions {
   /**
    *
    * @description gets the contract of a pool token based on the symbol
-   * @param pool symbol of the pool (token) to use
+   * @param pool The pool symbol of the pool (token) to use
    * @returns a ethers.contract to interact with the pool
    */
   public getPoolAddress = (pool: PoolSymbol): string => {

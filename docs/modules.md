@@ -27,7 +27,7 @@
 
 #### Defined in
 
-[types/responses.ts:147](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L147)
+[types/responses.ts:147](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L147)
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:75](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L75)
+[types/responses.ts:75](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L75)
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:126](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L126)
+[types/responses.ts:126](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L126)
 
 ___
 
@@ -57,7 +57,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:138](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L138)
+[types/responses.ts:138](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L138)
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:110](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L110)
+[types/responses.ts:110](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L110)
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:62](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L62)
+[types/responses.ts:62](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L62)
 
 ___
 
@@ -92,7 +92,7 @@ See types/schemas.ts for more information on why I decided to use Pick in the fi
 
 #### Defined in
 
-[types/responses.ts:44](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L44)
+[types/responses.ts:44](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L44)
 
 ___
 
@@ -102,4 +102,4 @@ ___
 
 #### Defined in
 
-[types/responses.ts:84](https://github.com/GigaHierz/toucan-sdk/blob/222be79/src/types/responses.ts#L84)
+[types/responses.ts:84](https://github.com/GigaHierz/toucan-sdk/blob/d3a19d5/src/types/responses.ts#L84)

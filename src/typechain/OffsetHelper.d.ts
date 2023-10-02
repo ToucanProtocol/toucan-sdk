@@ -22,15 +22,19 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface OffsetHelperInterface extends ethers.utils.Interface {
   functions: {
-    "autoOffsetUsingETH(address,uint256)": FunctionFragment;
-    "autoOffsetUsingPoolToken(address,uint256)": FunctionFragment;
-    "autoOffsetUsingToken(address,address,uint256)": FunctionFragment;
+    "addPath(string,address[])": FunctionFragment;
+    "addPoolToken(address)": FunctionFragment;
+    "autoOffsetExactInETH(address)": FunctionFragment;
+    "autoOffsetExactInToken(address,address,uint256)": FunctionFragment;
+    "autoOffsetExactOutETH(address,uint256)": FunctionFragment;
+    "autoOffsetExactOutToken(address,address,uint256)": FunctionFragment;
+    "autoOffsetPoolToken(address,uint256)": FunctionFragment;
     "autoRedeem(address,uint256)": FunctionFragment;
     "autoRetire(address[],uint256[])": FunctionFragment;
-    "balances(address,address)": FunctionFragment;
+    "calculateExpectedPoolTokenForETH(address,uint256)": FunctionFragment;
+    "calculateExpectedPoolTokenForToken(address,address,uint256)": FunctionFragment;
     "calculateNeededETHAmount(address,uint256)": FunctionFragment;
     "calculateNeededTokenAmount(address,address,uint256)": FunctionFragment;
-    "deposit(address,uint256)": FunctionFragment;
     "dexRouterAddress()": FunctionFragment;
     "eligibleSwapPaths(address,uint256)": FunctionFragment;
     "eligibleSwapPathsBySymbol(string,uint256)": FunctionFragment;
@@ -48,20 +52,35 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
     "swapExactOutToken(address,address,uint256)": FunctionFragment;
     "tokenSymbolsForPaths(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "withdraw(address,uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "autoOffsetUsingETH",
-    values: [string, BigNumberish]
+    functionFragment: "addPath",
+    values: [string, string[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "autoOffsetUsingPoolToken",
-    values: [string, BigNumberish]
+    functionFragment: "addPoolToken",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "autoOffsetUsingToken",
+    functionFragment: "autoOffsetExactInETH",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "autoOffsetExactInToken",
     values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "autoOffsetExactOutETH",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "autoOffsetExactOutToken",
+    values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "autoOffsetPoolToken",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "autoRedeem",
@@ -72,8 +91,12 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
     values: [string[], BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "balances",
-    values: [string, string]
+    functionFragment: "calculateExpectedPoolTokenForETH",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateExpectedPoolTokenForToken",
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "calculateNeededETHAmount",
@@ -82,10 +105,6 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "calculateNeededTokenAmount",
     values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "deposit",
-    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "dexRouterAddress",
@@ -121,7 +140,6 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
     functionFragment: "removePoolToken",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -150,26 +168,42 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "withdraw",
-    values: [string, BigNumberish]
-  ): string;
 
+  decodeFunctionResult(functionFragment: "addPath", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "autoOffsetUsingETH",
+    functionFragment: "addPoolToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "autoOffsetUsingPoolToken",
+    functionFragment: "autoOffsetExactInETH",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "autoOffsetUsingToken",
+    functionFragment: "autoOffsetExactInToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "autoOffsetExactOutETH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "autoOffsetExactOutToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "autoOffsetPoolToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "autoRedeem", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "autoRetire", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "balances", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateExpectedPoolTokenForETH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateExpectedPoolTokenForToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "calculateNeededETHAmount",
     data: BytesLike
@@ -178,9 +212,16 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
     functionFragment: "calculateNeededTokenAmount",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "eligibleTokenAddresses",
+    functionFragment: "dexRouterAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "eligibleSwapPaths",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "eligibleSwapPathsBySymbol",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -199,11 +240,11 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "removePath", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "renounceOwnership",
+    functionFragment: "removePoolToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setEligibleTokenAddress",
+    functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -222,7 +263,6 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
     functionFragment: "swapExactOutToken",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokenSymbolsForPaths",
     data: BytesLike
@@ -231,7 +271,6 @@ interface OffsetHelperInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
@@ -248,7 +287,7 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type RedeemedEvent = TypedEvent<
   [string, string, string[], BigNumber[]] & {
-    who: string;
+    sender: string;
     poolToken: string;
     tco2s: string[];
     amounts: BigNumber[];
@@ -299,20 +338,43 @@ export class OffsetHelper extends BaseContract {
   interface: OffsetHelperInterface;
 
   functions: {
-    autoOffsetUsingETH(
+    addPath(
+      _tokenSymbol: string,
+      _path: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    addPoolToken(
+      _poolToken: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    autoOffsetExactInETH(
+      _poolToken: string,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    autoOffsetExactInToken(
+      _fromToken: string,
+      _poolToken: string,
+      _amountToSwap: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    autoOffsetExactOutETH(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    autoOffsetUsingPoolToken(
+    autoOffsetExactOutToken(
+      _fromToken: string,
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    autoOffsetUsingToken(
-      _depositedToken: string,
+    autoOffsetPoolToken(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -330,12 +392,6 @@ export class OffsetHelper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    balances(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     calculateExpectedPoolTokenForETH(
       _poolToken: string,
       _fromTokenAmount: BigNumberish,
@@ -350,31 +406,29 @@ export class OffsetHelper extends BaseContract {
     ): Promise<[BigNumber] & { amountOut: BigNumber }>;
 
     calculateNeededETHAmount(
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amountIn: BigNumber }>;
 
     calculateNeededTokenAmount(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amountIn: BigNumber }>;
 
-    deleteEligibleTokenAddress(
-      _tokenSymbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    dexRouterAddress(overrides?: CallOverrides): Promise<[string]>;
 
-    deposit(
-      _erc20Addr: string,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    eligibleTokenAddresses(
+    eligibleSwapPaths(
       arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    eligibleSwapPathsBySymbol(
+      arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -420,10 +474,23 @@ export class OffsetHelper extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "swap(address,address,uint256)"(
+    swapExactInToken(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _fromAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    swapExactOutETH(
+      _poolToken: string,
+      _toAmount: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    swapExactOutToken(
+      _fromToken: string,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -436,28 +503,45 @@ export class OffsetHelper extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    withdraw(
-      _erc20Addr: string,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
-  autoOffsetUsingETH(
+  addPath(
+    _tokenSymbol: string,
+    _path: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  addPoolToken(
+    _poolToken: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  autoOffsetExactInETH(
+    _poolToken: string,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  autoOffsetExactInToken(
+    _fromToken: string,
+    _poolToken: string,
+    _amountToSwap: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  autoOffsetExactOutETH(
     _poolToken: string,
     _amountToOffset: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  autoOffsetUsingPoolToken(
+  autoOffsetExactOutToken(
+    _fromToken: string,
     _poolToken: string,
     _amountToOffset: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  autoOffsetUsingToken(
-    _depositedToken: string,
+  autoOffsetPoolToken(
     _poolToken: string,
     _amountToOffset: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -475,33 +559,43 @@ export class OffsetHelper extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  balances(
-    arg0: string,
-    arg1: string,
+  calculateExpectedPoolTokenForETH(
+    _poolToken: string,
+    _fromTokenAmount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  calculateExpectedPoolTokenForToken(
+    _fromToken: string,
+    _poolToken: string,
+    _fromAmount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   calculateNeededETHAmount(
-    _toToken: string,
-    _amount: BigNumberish,
+    _poolToken: string,
+    _toAmount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   calculateNeededTokenAmount(
     _fromToken: string,
-    _toToken: string,
-    _amount: BigNumberish,
+    _poolToken: string,
+    _toAmount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  deposit(
-    _erc20Addr: string,
-    _amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  dexRouterAddress(overrides?: CallOverrides): Promise<string>;
 
-  eligibleTokenAddresses(
+  eligibleSwapPaths(
     arg0: string,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  eligibleSwapPathsBySymbol(
+    arg0: string,
+    arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -544,10 +638,23 @@ export class OffsetHelper extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "swap(address,address,uint256)"(
+  swapExactInToken(
     _fromToken: string,
-    _toToken: string,
-    _amount: BigNumberish,
+    _poolToken: string,
+    _fromAmount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  swapExactOutETH(
+    _poolToken: string,
+    _toAmount: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  swapExactOutToken(
+    _fromToken: string,
+    _poolToken: string,
+    _toAmount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -561,14 +668,32 @@ export class OffsetHelper extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  withdraw(
-    _erc20Addr: string,
-    _amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    autoOffsetUsingETH(
+    addPath(
+      _tokenSymbol: string,
+      _path: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    addPoolToken(_poolToken: string, overrides?: CallOverrides): Promise<void>;
+
+    autoOffsetExactInETH(
+      _poolToken: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [string[], BigNumber[]] & { tco2s: string[]; amounts: BigNumber[] }
+    >;
+
+    autoOffsetExactInToken(
+      _fromToken: string,
+      _poolToken: string,
+      _amountToSwap: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string[], BigNumber[]] & { tco2s: string[]; amounts: BigNumber[] }
+    >;
+
+    autoOffsetExactOutETH(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: CallOverrides
@@ -576,7 +701,8 @@ export class OffsetHelper extends BaseContract {
       [string[], BigNumber[]] & { tco2s: string[]; amounts: BigNumber[] }
     >;
 
-    autoOffsetUsingPoolToken(
+    autoOffsetExactOutToken(
+      _fromToken: string,
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: CallOverrides
@@ -584,8 +710,7 @@ export class OffsetHelper extends BaseContract {
       [string[], BigNumber[]] & { tco2s: string[]; amounts: BigNumber[] }
     >;
 
-    autoOffsetUsingToken(
-      _depositedToken: string,
+    autoOffsetPoolToken(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: CallOverrides
@@ -607,33 +732,43 @@ export class OffsetHelper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    balances(
-      arg0: string,
-      arg1: string,
+    calculateExpectedPoolTokenForETH(
+      _poolToken: string,
+      _fromTokenAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateExpectedPoolTokenForToken(
+      _fromToken: string,
+      _poolToken: string,
+      _fromAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     calculateNeededETHAmount(
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     calculateNeededTokenAmount(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    deposit(
-      _erc20Addr: string,
-      _amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    dexRouterAddress(overrides?: CallOverrides): Promise<string>;
 
-    eligibleTokenAddresses(
+    eligibleSwapPaths(
       arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    eligibleSwapPathsBySymbol(
+      arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -662,9 +797,8 @@ export class OffsetHelper extends BaseContract {
 
     removePath(_tokenSymbol: string, overrides?: CallOverrides): Promise<void>;
 
-    setEligibleTokenAddress(
-      _tokenSymbol: string,
-      _address: string,
+    removePoolToken(
+      _poolToken: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -688,10 +822,10 @@ export class OffsetHelper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "swap(address,address,uint256)"(
+    swapExactOutToken(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -702,12 +836,6 @@ export class OffsetHelper extends BaseContract {
 
     transferOwnership(
       newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    withdraw(
-      _erc20Addr: string,
-      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -730,41 +858,74 @@ export class OffsetHelper extends BaseContract {
     >;
 
     "Redeemed(address,address,address[],uint256[])"(
-      who?: null,
+      sender?: null,
       poolToken?: null,
       tco2s?: null,
       amounts?: null
     ): TypedEventFilter<
       [string, string, string[], BigNumber[]],
-      { who: string; poolToken: string; tco2s: string[]; amounts: BigNumber[] }
+      {
+        sender: string;
+        poolToken: string;
+        tco2s: string[];
+        amounts: BigNumber[];
+      }
     >;
 
     Redeemed(
-      who?: null,
+      sender?: null,
       poolToken?: null,
       tco2s?: null,
       amounts?: null
     ): TypedEventFilter<
       [string, string, string[], BigNumber[]],
-      { who: string; poolToken: string; tco2s: string[]; amounts: BigNumber[] }
+      {
+        sender: string;
+        poolToken: string;
+        tco2s: string[];
+        amounts: BigNumber[];
+      }
     >;
   };
 
   estimateGas: {
-    autoOffsetUsingETH(
+    addPath(
+      _tokenSymbol: string,
+      _path: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    addPoolToken(
+      _poolToken: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    autoOffsetExactInETH(
+      _poolToken: string,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    autoOffsetExactInToken(
+      _fromToken: string,
+      _poolToken: string,
+      _amountToSwap: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    autoOffsetExactOutETH(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    autoOffsetUsingPoolToken(
+    autoOffsetExactOutToken(
+      _fromToken: string,
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    autoOffsetUsingToken(
-      _depositedToken: string,
+    autoOffsetPoolToken(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -782,33 +943,43 @@ export class OffsetHelper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    balances(
-      arg0: string,
-      arg1: string,
+    calculateExpectedPoolTokenForETH(
+      _poolToken: string,
+      _fromTokenAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateExpectedPoolTokenForToken(
+      _fromToken: string,
+      _poolToken: string,
+      _fromAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     calculateNeededETHAmount(
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     calculateNeededTokenAmount(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    deposit(
-      _erc20Addr: string,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    dexRouterAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    eligibleSwapPaths(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    eligibleTokenAddresses(
+    eligibleSwapPathsBySymbol(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -854,10 +1025,23 @@ export class OffsetHelper extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "swap(address,address,uint256)"(
+    swapExactInToken(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _fromAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    swapExactOutETH(
+      _poolToken: string,
+      _toAmount: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    swapExactOutToken(
+      _fromToken: string,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -870,29 +1054,46 @@ export class OffsetHelper extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    withdraw(
-      _erc20Addr: string,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    autoOffsetUsingETH(
+    addPath(
+      _tokenSymbol: string,
+      _path: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    addPoolToken(
+      _poolToken: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    autoOffsetExactInETH(
+      _poolToken: string,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    autoOffsetExactInToken(
+      _fromToken: string,
+      _poolToken: string,
+      _amountToSwap: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    autoOffsetExactOutETH(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    autoOffsetUsingPoolToken(
+    autoOffsetExactOutToken(
+      _fromToken: string,
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    autoOffsetUsingToken(
-      _depositedToken: string,
+    autoOffsetPoolToken(
       _poolToken: string,
       _amountToOffset: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -910,33 +1111,43 @@ export class OffsetHelper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    balances(
-      arg0: string,
-      arg1: string,
+    calculateExpectedPoolTokenForETH(
+      _poolToken: string,
+      _fromTokenAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateExpectedPoolTokenForToken(
+      _fromToken: string,
+      _poolToken: string,
+      _fromAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     calculateNeededETHAmount(
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     calculateNeededTokenAmount(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    deposit(
-      _erc20Addr: string,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    dexRouterAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    eligibleSwapPaths(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    eligibleTokenAddresses(
+    eligibleSwapPathsBySymbol(
       arg0: string,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -982,10 +1193,23 @@ export class OffsetHelper extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "swap(address,address,uint256)"(
+    swapExactInToken(
       _fromToken: string,
-      _toToken: string,
-      _amount: BigNumberish,
+      _poolToken: string,
+      _fromAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swapExactOutETH(
+      _poolToken: string,
+      _toAmount: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swapExactOutToken(
+      _fromToken: string,
+      _poolToken: string,
+      _toAmount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -996,12 +1220,6 @@ export class OffsetHelper extends BaseContract {
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      _erc20Addr: string,
-      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -209,8 +209,6 @@ const result = await toucan.fetchCustomQuery(query, { id: "1" });
 
 # Auto Offset using the OffsetHelper
 
-⚠️ This part is currently under construction and can't be used. ⚠️
-
 ## Auto Offset CO2
 
 Using the OffsetHelper methods is the easiest way to offset CO2 right now as it handles the whole process for you.

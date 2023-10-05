@@ -462,7 +462,7 @@ class ContractInteractions {
    *
    * @description Retire a specified amount of carbon credits using the lowest quality (oldest) TCO2 tokens available from the specified pool by sending ERC20
    * tokens (cUSD, USDC, WETH, WMATIC).
-   * @notice This method needs two different actions signed and may take up to even 1 minute to give a result
+   * @notice This method needs two different actions signed and may take up to 1 minute to return a result
    * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
    * @param pool The pool symbol of the pool (token) to use
    * @param amount The amount of CO2 tons to offset
@@ -501,7 +501,7 @@ class ContractInteractions {
    *
    * @description retire carbon credits using the lowest quality (oldest) TCO2 tokens available from the specified pool by sending ERC20
    * tokens (cUSD, USDC, WETH, WMATIC). All provided tokens are consumed for offsetting.
-   * @notice This method needs two different actions signed and may take up to even 1 minute to give a result
+   * @notice This method needs two different actions signed and may take up to 1 minute to return a result
    * @dev When automatically redeeming pool tokens for the lowest quality
    * TCO2s there are no fees and you receive exactly 1 TCO2 token for 1 pool
    * token.

@@ -394,7 +394,7 @@ export default class ToucanClient {
 
   /**
    *
-   * @description retires carbon credits using the lowest quality (oldest) TCO2
+   * @description retires carbon credits using the oldest TCO2
    * tokens available by sending pool tokens, e.g., NCT.
    * @notice This method may take up to 1 minute to return a result
    * @param pool The pool symbol of the pool token to offset,
@@ -448,10 +448,10 @@ export default class ToucanClient {
   /**
 /**
  *
- * @description retires carbon credits using the lowest quality (oldest) TCO2 tokens available from the specified Toucan token pool by sending ERC20
+ * @description retires carbon credits using the oldest TCO2 tokens available from the specified Toucan token pool by sending ERC20
    * tokens (cUSD, USDC, WETH, WMATIC). All provided tokens are consumed for offsetting.
  * @notice this method needs two different actions signed and may take up to 1 minute to return a result
- * @dev When automatically redeeming pool tokens for the lowest quality
+ * @dev When automatically redeeming pool tokens for the oldest ones
    * TCO2s there are no fees and you receive exactly 1 TCO2 token for 1 pool
    * token.
  * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
@@ -481,7 +481,7 @@ export default class ToucanClient {
 
   /**
    *
-   * @description retires a specified amount of  carbon credits using the lowest quality (oldest) TCO2 tokens available from the specified Toucan token pool by sending a native token e.g. MATIC.
+   * @description retires a specified amount of  carbon credits using the oldest TCO2 tokens available from the specified Toucan token pool by sending a native token e.g. MATIC.
    * @dev Use `calculateNeededETHAmount()` first in order to find out how much  of the native token e.g. MATIC is required to retire the specified quantity of TCO2. If the user sends much native token e.g. MATIC, the leftover amount will be sent back to the user.
    * @notice This method may take up to 1 minute to return a result
    * @param pool The pool symbol of the pool (token) to use

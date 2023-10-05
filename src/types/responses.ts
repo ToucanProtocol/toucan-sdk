@@ -16,6 +16,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { BigNumber } from "ethers";
+
 import {
   BatchCommentSchema,
   BatchTokenSchema,
@@ -29,6 +31,12 @@ import {
   TCO2TokenSchema,
   UserSchema,
 } from "./schemas";
+
+// --------------------------------------------------------------------------------
+//  Contract Interactions Responses
+// --------------------------------------------------------------------------------
+
+export type RedeemAutoResponse = Array<{ address: string; amount: BigNumber }>;
 
 /**
  * I have decided to separated the types for the subgraph methods here as using Pick to separate

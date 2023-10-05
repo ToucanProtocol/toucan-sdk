@@ -43,6 +43,7 @@ import {
   UserRedeemsMethod,
   UserRetirementsMethod,
 } from "./types/methods";
+import { RedeemAutoResponse } from "./types/responses";
 
 /**
  *
@@ -311,7 +312,7 @@ export default class ToucanClient {
   redeemAuto = async (
     pool: PoolSymbol,
     amount: BigNumber
-  ): Promise<{ address: string; amount: BigNumber }[]> => {
+  ): Promise<RedeemAutoResponse> => {
     if (!this.signer) throw new Error("No signer set");
     const signer = this.signer;
 
@@ -329,7 +330,7 @@ export default class ToucanClient {
   redeemAuto2 = async (
     pool: PoolSymbol,
     amount: BigNumber
-  ): Promise<{ address: string; amount: BigNumber }[]> => {
+  ): Promise<RedeemAutoResponse> => {
     if (!this.signer) throw new Error("No signer set");
     const signer = this.signer;
 

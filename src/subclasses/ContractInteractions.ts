@@ -31,6 +31,7 @@ import {
   OffsetHelper,
 } from "../typechain";
 import { Network, PoolSymbol } from "../types";
+import { RedeemAutoResponse } from "../types/responses";
 import { GAS_LIMIT } from "../utils";
 import {
   poolTokenABI,
@@ -316,27 +317,29 @@ class ContractInteractions {
     pool: PoolSymbol,
     amount: BigNumber,
     signer: ethers.Signer
-  ): Promise<{ address: string; amount: BigNumber }[]> => {
+  ): Promise<RedeemAutoResponse> => {
     const poolToken = this.getPoolContract(pool, signer);
     const redeemReceipt = await (
-      await poolToken.redeemAuto(amount, {
-        gasLimit: GAS_LIMIT,
-      })
+      await poolToken.redeemAuto(amount, { gasLimit: GAS_LIMIT })
     ).wait();
 
     if (!redeemReceipt.events) {
       throw new Error("No events to get tco2 addresses and amounts from");
     }
 
-    return redeemReceipt.events
-      .filter((event) => {
-        return (
-          event.event == "Redeemed" && event.args?.erc20 && event.args?.amount
-        );
-      })
-      .map((event) => {
-        return { address: event.args?.erc20, amount: event.args?.amount };
-      });
+    return redeemReceipt.events.reduce(
+      (acc: Array<{ address: string; amount: BigNumber }>, event) => {
+        if (
+          event.event === "Redeemed" &&
+          event.args?.erc20 &&
+          event.args?.amount
+        ) {
+          acc.push({ address: event.args.erc20, amount: event.args.amount });
+        }
+        return acc;
+      },
+      []
+    );
   };
 
   /**
@@ -351,7 +354,7 @@ class ContractInteractions {
     pool: PoolSymbol,
     amount: BigNumber,
     signer: ethers.Signer
-  ): Promise<{ address: string; amount: BigNumber }[]> => {
+  ): Promise<RedeemAutoResponse> => {
     const poolToken = this.getPoolContract(pool, signer);
     const redeemReceipt = await (
       await poolToken.redeemAuto2(amount, { gasLimit: GAS_LIMIT })
@@ -361,15 +364,19 @@ class ContractInteractions {
       throw new Error("No events to get tco2 addresses and amounts from");
     }
 
-    return redeemReceipt.events
-      .filter((event) => {
-        return (
-          event.event == "Redeemed" && event.args?.erc20 && event.args?.amount
-        );
-      })
-      .map((event) => {
-        return { address: event.args?.erc20, amount: event.args?.amount };
-      });
+    return redeemReceipt.events.reduce(
+      (acc: Array<{ address: string; amount: BigNumber }>, event) => {
+        if (
+          event.event === "Redeemed" &&
+          event.args?.erc20 &&
+          event.args?.amount
+        ) {
+          acc.push({ address: event.args.erc20, amount: event.args.amount });
+        }
+        return acc;
+      },
+      []
+    );
   };
 
   /**

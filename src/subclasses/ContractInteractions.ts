@@ -118,8 +118,7 @@ class ContractInteractions {
         beneficiaryAddress,
         beneficiaryName,
         retirementMessage,
-        amount,
-        { gasLimit: GAS_LIMIT }
+        amount
       );
     return await retirementTxn.wait();
   };
@@ -233,8 +232,7 @@ class ContractInteractions {
 
     const depositTxn: ContractTransaction = await poolToken.deposit(
       tco2Address,
-      amount,
-      { gasLimit: GAS_LIMIT }
+      amount
     );
     return await depositTxn.wait();
   };
@@ -294,8 +292,7 @@ class ContractInteractions {
 
     const redeemTxn: ContractTransaction = await poolToken.redeemMany(
       tco2s,
-      amounts,
-      { gasLimit: GAS_LIMIT }
+      amounts
     );
     return await redeemTxn.wait();
   };
@@ -351,9 +348,7 @@ class ContractInteractions {
     signer: ethers.Signer
   ): Promise<RedeemAutoResponse> => {
     const poolToken = this.getPoolContract(pool, signer);
-    const redeemReceipt = await (
-      await poolToken.redeemAuto2(amount, { gasLimit: GAS_LIMIT })
-    ).wait();
+    const redeemReceipt = await (await poolToken.redeemAuto2(amount)).wait();
 
     if (!redeemReceipt.events) {
       throw new Error("No events to get tco2 addresses and amounts from");
@@ -488,8 +483,7 @@ class ContractInteractions {
       await offsetHelper.calculateNeededTokenAmount(
         swapToken.address,
         poolAddress,
-        amount,
-        { gasLimit: GAS_LIMIT }
+        amount
       )
     );
     await approveTxn.wait();
@@ -498,8 +492,7 @@ class ContractInteractions {
       await offsetHelper.autoOffsetExactOutToken(
         swapToken.address,
         poolAddress,
-        amount,
-        { gasLimit: GAS_LIMIT }
+        amount
       );
     return await offsetTxn.wait();
   };
@@ -537,8 +530,7 @@ class ContractInteractions {
       await offsetHelper.autoOffsetExactInToken(
         swapToken.address,
         poolAddress,
-        amount,
-        { gasLimit: GAS_LIMIT }
+        amount
       );
     return await offsetTxn.wait();
   };

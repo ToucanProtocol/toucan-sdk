@@ -87,7 +87,7 @@ To retire Carbon Credits on mainnet, you will have to get Carbon Pool Tokens fro
 **Redeem your Pool Tokens and get an array of redeemed TCO2s**
 
 ```typescript
-const tco2addresses = await toucan.redeemAuto2("NCT", parseEther("1"));
+const tco2Addresses = await toucan.redeemAuto("NCT", parseEther("1"));
 ```
 
 **Retire the Carbon Credits**

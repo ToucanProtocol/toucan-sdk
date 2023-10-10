@@ -492,9 +492,9 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
+    if (!this.signer) throw new Error("No signer set");
     const signer = this.signer;
 
     return this.contractInteractions.autoOffsetExactOutETH(
@@ -515,9 +515,9 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
+    if (!this.signer) throw new Error("No signer set");
     const signer = this.signer;
 
     return this.contractInteractions.autoOffsetExactInETH(pool, amount, signer);
@@ -570,9 +570,9 @@ export default class ToucanClient {
     amount: BigNumber
   ): Promise<BigNumber> => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
+    if (!signerOrProvider) throw new Error("No signer or provider set");
 
     return this.contractInteractions.calculateNeededETHAmount(
       pool,
@@ -626,9 +626,9 @@ export default class ToucanClient {
     amount: BigNumber
   ): Promise<BigNumber> => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
+    if (!signerOrProvider) throw new Error("No signer or provider set");
 
     return this.contractInteractions.calculateExpectedPoolTokenForETH(
       pool,

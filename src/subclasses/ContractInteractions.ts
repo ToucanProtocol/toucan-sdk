@@ -39,7 +39,7 @@ import {
   tco2ABI,
   toucanContractRegistryABI,
 } from "../utils/ABIs";
-import addresses, { IfcNetworkAddresses } from "../utils/addresses";
+import addresses, { InterfaceNetworkAddresses } from "../utils/addresses";
 
 /**
  * @class ContractInteractions
@@ -47,7 +47,7 @@ import addresses, { IfcNetworkAddresses } from "../utils/addresses";
  */
 class ContractInteractions {
   network: Network;
-  addresses: IfcNetworkAddresses;
+  addresses: InterfaceNetworkAddresses;
 
   /**
    *
@@ -767,7 +767,6 @@ class ContractInteractions {
   public getOffsetHelperContract = (
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ): OffsetHelper => {
-    // throw new Error("OffsetHelper is not supported yet");
     const OffsetHelper = new ethers.Contract(
       this.addresses.offsetHelper,
       offsetHelperABI,

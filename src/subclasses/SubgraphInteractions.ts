@@ -39,7 +39,7 @@ import {
   TCO2TokenResponse,
 } from "../types/responses";
 import { PairSchema } from "../types/schemas";
-import addresses, { IfcNetworkAddresses } from "../utils/addresses";
+import addresses, { InterfaceNetworkAddresses } from "../utils/addresses";
 import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
 
 /**
@@ -48,7 +48,7 @@ import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
  */
 class SubgraphInteractions {
   network: Network;
-  addresses: IfcNetworkAddresses;
+  addresses: InterfaceNetworkAddresses;
   TCO2: IToucanCarbonOffsets | undefined;
   graphClient: Client;
 

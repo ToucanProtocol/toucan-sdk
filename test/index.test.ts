@@ -108,7 +108,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
     it("Should retire 1 TCO2 using pool token #autoOffsetPoolToken", async function () {
       const pool = await toucan.getPoolContract("NCT");
 
-      const state: any[] = [];
+      const state: Array<{
+        nctSupply: BigNumber;
+        nctBalance: BigNumber;
+      }> = [];
       state.push({
         nctSupply: await pool.totalSupply(),
         nctBalance: await pool.balanceOf(addr1.address),
@@ -138,7 +141,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const weth = new ethers.Contract(network.weth, iface, addr1);
       const pool = await toucan.getPoolContract("NCT");
 
-      const state: any[] = [];
+      const state: Array<{
+        nctSupply: BigNumber;
+        wethBalance: BigNumber;
+      }> = [];
       state.push({
         nctSupply: await pool.totalSupply(),
         wethBalance: await weth.balanceOf(addr1.address),
@@ -171,7 +177,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
     it("Should retire 1 TCO2 using ETH (native token) #autoOffsetExactInETH)", async function () {
       const pool = await toucan.getPoolContract("NCT");
 
-      const state: any[] = [];
+      const state: Array<{
+        nctSupply: BigNumber;
+        nativeTokenBalance: BigNumber | any;
+      }> = [];
       state.push({
         nctSupply: await pool.totalSupply(),
         nativeTokenBalance: await addr1.getBalance(),
@@ -207,7 +216,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
     it("Should retire 1 TCO2 using ETH (native token) #autoOffsetExactOutETH)", async function () {
       const pool = await toucan.getPoolContract("NCT");
 
-      const state: any[] = [];
+      const state: Array<{
+        nctSupply: BigNumber;
+        nativeTokenBalance: BigNumber | any;
+      }> = [];
       state.push({
         nctSupply: await pool.totalSupply(),
         nativeTokenBalance: await addr1.getBalance(),
@@ -230,6 +242,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
       )
         .to.be.greaterThanOrEqual(parseInt(state[1].nativeTokenBalance))
         .and.to.be.lessThan(parseInt(state[0].nativeTokenBalance));
+
       expect(
         formatEther(state[0].nctSupply.sub(ONE_ETHER)),
         `Expect NCT supply to be less by ${formatEther(ONE_ETHER)}`
@@ -399,7 +412,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const { address, amount } = tco2s[0];
       const tco2 = toucan.getTCO2Contract(address);
 
-      const state: any[] = [];
+      const state: Array<{
+        tco2Supply: BigNumber;
+        tco2Balance: BigNumber;
+      }> = [];
       state.push({
         tco2Supply: await tco2.totalSupply(),
         tco2Balance: await tco2.balanceOf(addr1.address),
@@ -434,7 +450,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const { address, amount } = tco2s[0];
       const tco2 = toucan.getTCO2Contract(address);
 
-      const state: any[] = [];
+      const state: Array<{
+        tco2Supply: BigNumber;
+        tco2Balance: BigNumber;
+      }> = [];
       state.push({
         tco2Supply: await tco2.totalSupply(),
         tco2Balance: await tco2.balanceOf(addr1.address),
@@ -462,7 +481,10 @@ describe("Testing Toucan-SDK contract interactions", function () {
       const { address, amount } = tco2s[0];
       const tco2 = toucan.getTCO2Contract(address);
 
-      const state: any[] = [];
+      const state: Array<{
+        tco2Supply: BigNumber;
+        tco2Balance: BigNumber;
+      }> = [];
       state.push({
         tco2Supply: await tco2.totalSupply(),
         tco2Balance: await tco2.balanceOf(addr1.address),

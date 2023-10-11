@@ -36,7 +36,7 @@ import { ethers } from "ethers";
 
 // ethers signer and provider
 const provider = new ethers.providers.JsonRpcProvider(
-  "https://polygon-mainnet.infura.io/v3/6479a2cb5cd2416791479f0b0f696c15"
+  "https://rpc.ankr.com/polygon"
 );
 
 // make sure to set your private key in your .env file

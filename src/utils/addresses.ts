@@ -1,4 +1,4 @@
-export interface InterfaceNetworkAddresses {
+export interface INetworkTokenAddresses {
   bct: string;
   nct: string;
   offsetHelper: string;
@@ -7,14 +7,14 @@ export interface InterfaceNetworkAddresses {
   toucanContractRegistry: string;
 }
 
-export interface IfcAddresses {
-  celo: InterfaceNetworkAddresses;
-  alfajores: InterfaceNetworkAddresses;
-  polygon: InterfaceNetworkAddresses;
-  mumbai: InterfaceNetworkAddresses;
+export interface INetworkAddresses {
+  celo: INetworkTokenAddresses;
+  alfajores: INetworkTokenAddresses;
+  polygon: INetworkTokenAddresses;
+  mumbai: INetworkTokenAddresses;
 }
 
-const addresses: IfcAddresses = {
+const addresses: INetworkAddresses = {
   celo: {
     bct: "0x0CcB0071e8B8B716A2a5998aB4d97b83790873Fe",
     nct: "0x02De4766C272abc10Bc88c220D214A26960a7e92",

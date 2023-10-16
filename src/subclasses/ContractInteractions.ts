@@ -39,7 +39,7 @@ import {
   tco2ABI,
   toucanContractRegistryABI,
 } from "../utils/ABIs";
-import addresses, { InterfaceNetworkAddresses } from "../utils/addresses";
+import addresses, { INetworkTokenAddresses } from "../utils/addresses";
 
 /**
  * @class ContractInteractions
@@ -47,7 +47,7 @@ import addresses, { InterfaceNetworkAddresses } from "../utils/addresses";
  */
 class ContractInteractions {
   network: Network;
-  addresses: InterfaceNetworkAddresses;
+  addresses: INetworkTokenAddresses;
 
   /**
    *

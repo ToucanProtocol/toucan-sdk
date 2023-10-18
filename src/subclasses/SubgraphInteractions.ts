@@ -39,7 +39,7 @@ import {
   TCO2TokenResponse,
 } from "../types/responses";
 import { PairSchema } from "../types/schemas";
-import addresses, { IfcOneNetworksAddresses } from "../utils/addresses";
+import addresses, { INetworkTokenAddresses } from "../utils/addresses";
 import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
 
 /**
@@ -48,7 +48,7 @@ import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
  */
 class SubgraphInteractions {
   network: Network;
-  addresses: IfcOneNetworksAddresses;
+  addresses: INetworkTokenAddresses;
   TCO2: IToucanCarbonOffsets | undefined;
   graphClient: Client;
 
@@ -80,7 +80,11 @@ class SubgraphInteractions {
    * @param walletAddress address of user to query for
    * @returns an array of BatchTokens (they contain different properties of the Batch)
    */
-  fetchUserBatches: UserBatchesMethod = async (walletAddress) => {
+  fetchUserBatches: UserBatchesMethod = async (
+    walletAddress,
+    first = 100,
+    skip = 0
+  ) => {
     const query = gql`
       query ($walletAddress: String) {
         users(id: $walletAddress) {
@@ -106,7 +110,7 @@ class SubgraphInteractions {
     `;
 
     const result = await this.graphClient
-      .query(query, { walletAddress: walletAddress })
+      .query(query, { walletAddress, first, skip })
       .toPromise();
 
     if (result.error) throw result.error;
@@ -143,7 +147,7 @@ class SubgraphInteractions {
       }
     `;
 
-    const result = await this.graphClient.query(query, { id: id }).toPromise();
+    const result = await this.graphClient.query(query, { id }).toPromise();
 
     if (result.error) throw result.error;
     if (result.data?.tco2Tokens) return result.data.tco2Tokens;
@@ -190,10 +194,8 @@ class SubgraphInteractions {
    * @description fetches TCO2Details of all TCO2s
    * @returns an array of TCO2Detail objects with properties of the TCO2s (name, address, etc)
    */
-  fetchAllTCO2Tokens: AllTCO2TokensMethod = async () => {
+  fetchAllTCO2Tokens: AllTCO2TokensMethod = async (first = 1000, skip = 0) => {
     let TCO2Tokens: TCO2TokenResponse[] = [];
-    let skip = 0;
-    const first = 1000;
     for (;;) {
       const query = gql`
         query ($first: Int, $skip: Int) {
@@ -211,7 +213,7 @@ class SubgraphInteractions {
         }
       `;
       const result = await this.graphClient
-        .query(query, { first: first, skip: skip })
+        .query(query, { first, skip })
         .toPromise();
 
       if (result.error) throw result.error;
@@ -238,10 +240,12 @@ class SubgraphInteractions {
    * @description fetches data about BatchTokens that have been bridged
    * @returns an array of BatchTokens containing different properties like id, serialNumber or quantity
    */
-  fetchBridgedBatchTokens: BridgedBatchTokensMethod = async () => {
+  fetchBridgedBatchTokens: BridgedBatchTokensMethod = async (
+    first = 1000,
+    skip = 0
+  ) => {
     let BridgedBatchTokens: BridgedBatchTokensResponse[] = [];
-    let skip = 0;
-    const first = 1000;
+
     for (;;) {
       const query = gql`
         query ($retirementStatus: Int, $first: Int, $skip: Int) {
@@ -266,8 +270,8 @@ class SubgraphInteractions {
       const result = await this.graphClient
         .query(query, {
           retirementStatus: 2, // RetirementStatus.Confirmed = 2
-          first: first,
-          skip: skip,
+          first,
+          skip,
         })
         .toPromise();
 
@@ -346,7 +350,7 @@ class SubgraphInteractions {
     `;
 
     const result = await this.graphClient
-      .query(query, { walletAddress: walletAddress, first: first, skip: skip })
+      .query(query, { walletAddress: walletAddress, first, skip })
       .toPromise();
 
     if (result.error) throw result.error;
@@ -401,7 +405,7 @@ class SubgraphInteractions {
     `;
 
     const result = await this.graphClient
-      .query(query, { poolAddress: poolAddress, first: first, skip: skip })
+      .query(query, { poolAddress, first, skip })
       .toPromise();
 
     if (result.error) throw result.error;
@@ -465,10 +469,10 @@ class SubgraphInteractions {
 
     const result = await this.graphClient
       .query(query, {
-        walletAddress: walletAddress,
-        poolAddress: poolAddress,
-        first: first,
-        skip: skip,
+        walletAddress,
+        poolAddress,
+        first,
+        skip,
       })
       .toPromise();
 
@@ -523,9 +527,9 @@ class SubgraphInteractions {
 
     const result = await this.graphClient
       .query(query, {
-        poolAddress: poolAddress,
-        first: first,
-        skip: skip,
+        poolAddress,
+        first,
+        skip,
       })
       .toPromise();
 
@@ -559,7 +563,7 @@ class SubgraphInteractions {
       }
     `;
 
-    const result = await this.graphClient.query(query, { id: id }).toPromise();
+    const result = await this.graphClient.query(query, { id }).toPromise();
 
     if (result.error) throw result.error;
     if (result.data?.project) return result.data.project;

@@ -104,3 +104,7 @@ dist
 .tern-port
 
 cache
+
+# DS Store
+*./DS_Store
+.DS_Store

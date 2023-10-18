@@ -1,3 +1,5 @@
+toucan-sdk / [Exports](modules.md)
+
 # Toucan SDK
 
 [![NPM Package](https://img.shields.io/npm/v/toucan-sdk.svg)](https://www.npmjs.com/package/toucan-sdk)
@@ -26,44 +28,16 @@ yarn add toucan-sdk
 
 Instantiate the ToucanClient and set a `signer` & `provider` to interact with our infrastructure.
 
-We recommend using to use [ethers.js ^5.6.4](https://docs.ethers.org/v5/api/signer/) for the signer and provider. When you are considering using [wagmi](https://0.3.x.wagmi.sh/docs/hooks/useSigner), only versions under 1.0 will work as this library has not yet been upgraded to viem.
-
-### [ethers.js](https://docs.ethers.org/v5/api/signer/)
-
-```typescript
-import ToucanClient from "toucan-sdk";
-import { ethers } from "ethers";
-
-// ethers signer and provider
-const provider = new ethers.providers.JsonRpcProvider(
-  "https://rpc.ankr.com/polygon"
-);
-
-// make sure to set your private key in your .env file
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-
-// set signer & provider
-const toucan = new ToucanClient("alfajores", provider, signer);
-```
-
-### [wagmi](https://0.3.x.wagmi.sh/docs/hooks/useSigner)
-
 ```typescript
 import { ToucanClient } from "toucan-sdk";
-import { useProvider, useSigner } from "wagmi";
 
-// get signer & provider
-const { data: signer } = useSigner();
-const provider = useProvider();
-
-// set signer & provider
 const toucan = new ToucanClient("alfajores", provider, signer);
 ```
 
 You could also set the signer/provider later if you prefer that. They are optional. But you will need to set them if you want to interact with contracts. The provider is read-only, while the signer allows both writing to and reading from the blockchain.
 
 ```typescript
-import ToucanClient from "toucan-sdk";
+import { ToucanClient } from "toucan-sdk";
 
 const toucan = new ToucanClient("alfajores");
 toucan.setProvider(provider);
@@ -117,7 +91,7 @@ To retire Carbon Credits on mainnet, you will have to get Carbon Pool Tokens fro
 **Redeem your Pool Tokens and get an array of redeemed TCO2s**
 
 ```typescript
-const tco2Addresses = await toucan.redeemAuto("NCT", parseEther("1"));
+const tco2Addresses = await toucan.redeemAuto2("NCT", parseEther("1"));
 ```
 
 **Retire the Carbon Credits**

@@ -2020,14 +2020,24 @@ export const offsetHelperABI = [
   {
     inputs: [
       {
+        internalType: "address[]",
+        name: "_poolAddresses",
+        type: "address[]",
+      },
+      {
         internalType: "string[]",
-        name: "_eligibleTokenSymbols",
+        name: "_tokenSymbolsForPaths",
         type: "string[]",
       },
       {
-        internalType: "address[]",
-        name: "_eligibleTokenAddresses",
-        type: "address[]",
+        internalType: "address[][]",
+        name: "_paths",
+        type: "address[][]",
+      },
+      {
+        internalType: "address",
+        name: "_dexRouterAddress",
+        type: "address",
       },
     ],
     stateMutability: "nonpayable",
@@ -2071,7 +2081,7 @@ export const offsetHelperABI = [
       {
         indexed: false,
         internalType: "address",
-        name: "who",
+        name: "sender",
         type: "address",
       },
       {
@@ -2103,8 +2113,126 @@ export const offsetHelperABI = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "_tokenSymbol",
+        type: "string",
+      },
+      {
+        internalType: "address[]",
+        name: "_path",
+        type: "address[]",
+      },
+    ],
+    name: "addPath",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
-        name: "_depositedToken",
+        name: "_poolToken",
+        type: "address",
+      },
+    ],
+    name: "addPoolToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+    ],
+    name: "autoOffsetExactInETH",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_fromToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amountToSwap",
+        type: "uint256",
+      },
+    ],
+    name: "autoOffsetExactInToken",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amountToOffset",
+        type: "uint256",
+      },
+    ],
+    name: "autoOffsetExactOutETH",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "tco2s",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_fromToken",
         type: "address",
       },
       {
@@ -2237,21 +2365,21 @@ export const offsetHelperABI = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "_fromMaticAmount",
-        type: "uint256",
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
       },
       {
-        internalType: "address",
-        name: "_toToken",
-        type: "address",
+        internalType: "uint256",
+        name: "_fromTokenAmount",
+        type: "uint256",
       },
     ],
     name: "calculateExpectedPoolTokenForETH",
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "amountOut",
         type: "uint256",
       },
     ],
@@ -2266,21 +2394,21 @@ export const offsetHelperABI = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "_fromAmount",
         type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "_toToken",
-        type: "address",
       },
     ],
     name: "calculateExpectedPoolTokenForToken",
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "amountOut",
         type: "uint256",
       },
     ],
@@ -2291,7 +2419,7 @@ export const offsetHelperABI = [
     inputs: [
       {
         internalType: "address",
-        name: "_toToken",
+        name: "_poolToken",
         type: "address",
       },
       {
@@ -2304,7 +2432,7 @@ export const offsetHelperABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "amountIn",
         type: "uint256",
       },
     ],
@@ -2320,7 +2448,7 @@ export const offsetHelperABI = [
       },
       {
         internalType: "address",
-        name: "_toToken",
+        name: "_poolToken",
         type: "address",
       },
       {
@@ -2333,37 +2461,11 @@ export const offsetHelperABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "amountIn",
         type: "uint256",
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "contractRegistryAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "_tokenSymbol",
-        type: "string",
-      },
-    ],
-    name: "deleteEligibleTokenAddress",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -2385,19 +2487,106 @@ export const offsetHelperABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "dexRouterAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "eligibleSwapPaths",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "string",
         name: "",
         type: "string",
       },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    name: "eligibleTokenAddresses",
+    name: "eligibleSwapPathsBySymbol",
     outputs: [
       {
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_erc20Address",
+        type: "address",
+      },
+    ],
+    name: "isERC20AddressEligible",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "_path",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+    ],
+    name: "isPoolAddressEligible",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "_isEligible",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -2417,10 +2606,46 @@ export const offsetHelperABI = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "paths",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "poolAddresses",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -2430,13 +2655,8 @@ export const offsetHelperABI = [
         name: "_tokenSymbol",
         type: "string",
       },
-      {
-        internalType: "address",
-        name: "_address",
-        type: "address",
-      },
     ],
-    name: "setEligibleTokenAddress",
+    name: "removePath",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -2445,11 +2665,18 @@ export const offsetHelperABI = [
     inputs: [
       {
         internalType: "address",
-        name: "_address",
+        name: "_poolToken",
         type: "address",
       },
     ],
-    name: "setToucanContractRegistry",
+    name: "removePoolToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -2458,7 +2685,7 @@ export const offsetHelperABI = [
     inputs: [
       {
         internalType: "address",
-        name: "_toToken",
+        name: "_poolToken",
         type: "address",
       },
     ],
@@ -2466,7 +2693,7 @@ export const offsetHelperABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "amountOut",
         type: "uint256",
       },
     ],
@@ -2481,21 +2708,21 @@ export const offsetHelperABI = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "_poolToken",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "_fromAmount",
         type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "_toToken",
-        type: "address",
       },
     ],
     name: "swapExactInToken",
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "amountOut",
         type: "uint256",
       },
     ],
@@ -2506,7 +2733,7 @@ export const offsetHelperABI = [
     inputs: [
       {
         internalType: "address",
-        name: "_toToken",
+        name: "_poolToken",
         type: "address",
       },
       {
@@ -2529,7 +2756,7 @@ export const offsetHelperABI = [
       },
       {
         internalType: "address",
-        name: "_toToken",
+        name: "_poolToken",
         type: "address",
       },
       {
@@ -2546,6 +2773,25 @@ export const offsetHelperABI = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "tokenSymbolsForPaths",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "newOwner",
         type: "address",
@@ -2554,19 +2800,6 @@ export const offsetHelperABI = [
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "ubeswapRouterAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -2596,34 +2829,102 @@ export const offsetHelperABI = [
 export const swapperABI = [
   {
     inputs: [
-      { internalType: "string[]", name: "_tokenSymbols", type: "string[]" },
-      { internalType: "address[]", name: "_tokenAddresses", type: "address[]" },
+      {
+        internalType: "address[][]",
+        name: "_paths",
+        type: "address[][]",
+      },
+      {
+        internalType: "address",
+        name: "_swapToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_dexRouterAddress",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
-  { stateMutability: "payable", type: "fallback" },
+  {
+    stateMutability: "payable",
+    type: "fallback",
+  },
   {
     inputs: [
-      { internalType: "address", name: "_toToken", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_toToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "calculateNeededETHAmount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "sushiRouterAddress",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "dexRouterAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "_toToken", type: "address" },
-      { internalType: "uint256", name: "_amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "eligibleSwapPaths",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_toToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
     ],
     name: "swap",
     outputs: [],
@@ -2631,13 +2932,22 @@ export const swapperABI = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "string", name: "", type: "string" }],
-    name: "tokenAddresses",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    inputs: [],
+    name: "swapToken",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
-  { stateMutability: "payable", type: "receive" },
+  {
+    stateMutability: "payable",
+    type: "receive",
+  },
 ];
 
 export const tco2ABI = [
@@ -4065,6 +4375,401 @@ export const toucanContractRegistryABI = [
     name: "upgradeToAndCall",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+];
+
+export const ERC20ABI = [
+  {
+    inputs: [
+      { internalType: "address", name: "childChainManager", type: "address" },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "addr2",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "Approval",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "userAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address payable",
+        name: "relayerAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "functionSignature",
+        type: "bytes",
+      },
+    ],
+    name: "MetaTransactionExecuted",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "previousAdminRole",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "newAdminRole",
+        type: "bytes32",
+      },
+    ],
+    name: "RoleAdminChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleGranted",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleRevoked",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "from", type: "address" },
+      { indexed: true, internalType: "address", name: "to", type: "address" },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "Transfer",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "CHILD_CHAIN_ID",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "CHILD_CHAIN_ID_BYTES",
+    outputs: [{ internalType: "bytes", name: "", type: "bytes" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "DEFAULT_ADMIN_ROLE",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "DEPOSITOR_ROLE",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "ERC712_VERSION",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "ROOT_CHAIN_ID",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "ROOT_CHAIN_ID_BYTES",
+    outputs: [{ internalType: "bytes", name: "", type: "bytes" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "addr2", type: "address" },
+      { internalType: "address", name: "spender", type: "address" },
+    ],
+    name: "allowance",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "approve",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "balanceOf",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "decimals",
+    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "subtractedValue", type: "uint256" },
+    ],
+    name: "decreaseAllowance",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "user", type: "address" },
+      { internalType: "bytes", name: "depositData", type: "bytes" },
+    ],
+    name: "deposit",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "userAddress", type: "address" },
+      { internalType: "bytes", name: "functionSignature", type: "bytes" },
+      { internalType: "bytes32", name: "sigR", type: "bytes32" },
+      { internalType: "bytes32", name: "sigS", type: "bytes32" },
+      { internalType: "uint8", name: "sigV", type: "uint8" },
+    ],
+    name: "executeMetaTransaction",
+    outputs: [{ internalType: "bytes", name: "", type: "bytes" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getChainId",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDomainSeperator",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "user", type: "address" }],
+    name: "getNonce",
+    outputs: [{ internalType: "uint256", name: "nonce", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }],
+    name: "getRoleAdmin",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "uint256", name: "index", type: "uint256" },
+    ],
+    name: "getRoleMember",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }],
+    name: "getRoleMemberCount",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "grantRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "hasRole",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "addedValue", type: "uint256" },
+    ],
+    name: "increaseAllowance",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "name",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "renounceRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "revokeRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "symbol",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalSupply",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "recipient", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "transfer",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "recipient", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "transferFrom",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

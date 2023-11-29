@@ -108,3 +108,6 @@ cache
 # DS Store
 *./DS_Store
 .DS_Store
+
+# Editor files
+tags

@@ -310,7 +310,7 @@ If you do, that's also quite easy to pull off. You just replace the usage of the
 ```typescript
 const retirementReceipt = await toucan.retireAndMintCertificate(
   "Alice",
-  signer.address,
+  bobsAddress,
   "Bob",
   "Just helping the planet",
   parseEther("3.0"),
@@ -318,8 +318,6 @@ const retirementReceipt = await toucan.retireAndMintCertificate(
 );
 ```
 
-Why do you see my name twice you ask? 🤔
-
-Well, the first "Alice" represents the entity that is doing the retirement/offset. The second one represents the party that 'benefits' from it, in this case "Bob". We will also add Bob's address so now the relation of the certificate is set to that address instead of the retiring party.
+"Alice" represents the entity that is doing the retirement/offset. The second name represents the party that 'benefits' from it, in this case "Bob". We will also add Bob's address so now the relation of the certificate is set to that address instead of the retiring party.
 
 This useful in case you happen to be an entity that retires on behalf of someone else.

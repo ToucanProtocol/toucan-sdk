@@ -10,7 +10,7 @@ For the full documentation, check our [docs](https://docs.toucan.earth/toucan/de
 
 ⚠️ This SDK is heavily under development. USE AT YOUR OWN RISK. ⚠️
 
-## Install
+## Install and setup
 
 ```
 npm i toucan-sdk
@@ -21,6 +21,10 @@ or
 ```
 yarn add toucan-sdk
 ```
+
+Now, copy `.env.example` to `.env`.
+
+Before you can make Subgraph queries, you need to set `GRAPH_API_KEY` in your `.env` file. You can create an API key in [The Graph Studio](https://thegraph.com/studio/apikeys/) after connecting your wallet.
 
 # Quickstart
 
@@ -161,7 +165,7 @@ The result will look like this:
 
 Now you have quite some info on the project, including its address.
 
-## All queries:
+## All queries
 
 Toucan SDK offers a lot of pre-defined queries. Try them out!
 

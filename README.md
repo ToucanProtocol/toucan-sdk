@@ -78,6 +78,9 @@ If you don't have a signer nor a provider set, you can only interact with the su
 
 ## Fetch pool prices from a Dex
 
+IMPORTANT:
+_Fetching pool prices is currently not working. We are working on a fix for this._
+
 You can find pools for Toucan pool tokens on [Celo Network](https://celo.org) at [Uniswap](https://uniswap.org/) and for [Polygon Network](https://polygon.technology) on [SushiSwap](sushi.com).
 
 Something that may come in handy in your applications is fetching the USD price of our pool tokens.

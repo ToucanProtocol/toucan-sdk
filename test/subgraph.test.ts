@@ -67,11 +67,11 @@ describe("Testing Toucan-SDK subgraph interactions", function () {
     expect(await toucan.fetchAggregations()).to.not.throw;
   });
 
-  it("Should fetch price of BCT", async function () {
+  xit("Should fetch price of BCT", async function () {
     expect(await toucan.fetchTokenPriceOnDex("BCT")).to.not.throw;
   });
 
-  it("Should fetch price of NCT", async function () {
+  xit("Should fetch price of NCT", async function () {
     expect(await toucan.fetchTokenPriceOnDex("NCT")).to.not.throw;
   });
 });

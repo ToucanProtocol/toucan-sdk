@@ -10,7 +10,7 @@ For the full documentation, check our [docs](https://docs.toucan.earth/toucan/de
 
 ⚠️ This SDK is heavily under development. USE AT YOUR OWN RISK. ⚠️
 
-## Install
+## Install and setup
 
 ```
 npm i toucan-sdk
@@ -21,6 +21,10 @@ or
 ```
 yarn add toucan-sdk
 ```
+
+Now, copy `.env.example` to `.env`.
+
+Before you can make Subgraph queries, you need to set `GRAPH_API_KEY` in your `.env` file. You can create an API key in [The Graph Studio](https://thegraph.com/studio/apikeys/) after connecting your wallet.
 
 # Quickstart
 
@@ -73,6 +77,9 @@ toucan.setSigner(signer);
 If you don't have a signer nor a provider set, you can only interact with the subgraph.
 
 ## Fetch pool prices from a Dex
+
+IMPORTANT:
+_Fetching pool prices is currently not working. We are working on a fix for this._
 
 You can find pools for Toucan pool tokens on [Celo Network](https://celo.org) at [Uniswap](https://uniswap.org/) and for [Polygon Network](https://polygon.technology) on [SushiSwap](sushi.com).
 
@@ -161,7 +168,7 @@ The result will look like this:
 
 Now you have quite some info on the project, including its address.
 
-## All queries:
+## All queries
 
 Toucan SDK offers a lot of pre-defined queries. Try them out!
 
@@ -206,7 +213,14 @@ await toucan.fetchAggregations();
 
 Now that you have an overview of our pre-build queries, let's have a look at the `fetchCustomQuery` method.
 
-This allows you to fetch with your own queries and can be very powerful if you know graphQL. You can also check out a lot of example queries in our subgraph [playgrounds](https://thegraph.com/hosted-service/subgraph/toucanprotocol/matic).
+This allows you to fetch with your own queries and can be very powerful if you know graphQL. You can also check out a lot of example queries in our Subgraph playgrounds:
+
+- [Matic](https://thegraph.com/explorer/subgraphs/FU5APMSSCqcRy9jy56aXJiGV3PQmFQHg2tzukvSJBgwW)
+- [Celo](https://thegraph.com/explorer/subgraphs/BWmN569zDopYXp3nzDukJsGDHqRstYAFULFPH8rxyVBk)
+- [Base](https://thegraph.com/explorer/subgraphs/AEJ5PEDye6Z198HRQBioG6mZ6ZacHenBg2HTopZPsUCi)
+- [Alfajores](https://thegraph.com/explorer/subgraphs/4uY2L3vQW8XKYPrFFk4i6ZuJkgbpJ8SbJayc8wzMBRYw)
+- [Base Sepolia](https://thegraph.com/explorer/subgraphs/2oKCq3rDwdYPSao4UbDZKSNbawEdhBVf3BxmqJzFe1uj)
+- [Amoy](https://thegraph.com/explorer/subgraphs/FKzFZuYHxyHiiDmdW9Qvwtet1Ad1ERsvjWMhhqd9V8pk)
 
 - Getting all infos on a carbon project (`region` stands for the country)
 

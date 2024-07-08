@@ -11,7 +11,6 @@ export interface INetworkAddresses {
   celo: INetworkTokenAddresses;
   alfajores: INetworkTokenAddresses;
   polygon: INetworkTokenAddresses;
-  mumbai: INetworkTokenAddresses;
 }
 
 const addresses: INetworkAddresses = {
@@ -38,14 +37,6 @@ const addresses: INetworkAddresses = {
     swapper: "0xfca57EE8B62d8e4b9792bd68095c2520723c306d",
     weth: "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
     toucanContractRegistry: "0x263fa1c180889b3a3f46330f32a4a23287e99fc9",
-  },
-  mumbai: {
-    bct: "0xf2438a14f668b1bba53408346288f3d7c71c10a1",
-    nct: "0x7becba11618ca63ead5605de235f6dd3b25c530e",
-    offsetHelper: "0x66B1B59F9D59413dDC1539122D7d5F6b70869717",
-    swapper: "0x68DF99A11BD292cB91d3Fb07272062eF339d6dc1",
-    weth: "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa",
-    toucanContractRegistry: "0x6739d490670b2710dc7e79bb12e455de33ee1cb6",
   },
 };
 

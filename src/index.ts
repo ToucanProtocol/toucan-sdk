@@ -830,6 +830,9 @@ export default class ToucanClient {
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
 
+  // FIXME: The SushiSwap and Ubeswap Subgraph APIs that are used to get token
+  // market prices have changed slightly. This function breaks currently. Work
+  // on it is tracked in LILA-7487.
   fetchTokenPriceOnDex = async (
     pool: PoolSymbol
   ): Promise<{

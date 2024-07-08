@@ -213,7 +213,14 @@ await toucan.fetchAggregations();
 
 Now that you have an overview of our pre-build queries, let's have a look at the `fetchCustomQuery` method.
 
-This allows you to fetch with your own queries and can be very powerful if you know graphQL. You can also check out a lot of example queries in our subgraph [playgrounds](https://thegraph.com/hosted-service/subgraph/toucanprotocol/matic).
+This allows you to fetch with your own queries and can be very powerful if you know graphQL. You can also check out a lot of example queries in our Subgraph playgrounds:
+
+- [Matic](https://thegraph.com/explorer/subgraphs/FU5APMSSCqcRy9jy56aXJiGV3PQmFQHg2tzukvSJBgwW)
+- [Celo](https://thegraph.com/explorer/subgraphs/BWmN569zDopYXp3nzDukJsGDHqRstYAFULFPH8rxyVBk)
+- [Base](https://thegraph.com/explorer/subgraphs/AEJ5PEDye6Z198HRQBioG6mZ6ZacHenBg2HTopZPsUCi)
+- [Alfajores](https://thegraph.com/explorer/subgraphs/4uY2L3vQW8XKYPrFFk4i6ZuJkgbpJ8SbJayc8wzMBRYw)
+- [Base Sepolia](https://thegraph.com/explorer/subgraphs/2oKCq3rDwdYPSao4UbDZKSNbawEdhBVf3BxmqJzFe1uj)
+- [Amoy](https://thegraph.com/explorer/subgraphs/FKzFZuYHxyHiiDmdW9Qvwtet1Ad1ERsvjWMhhqd9V8pk)
 
 - Getting all infos on a carbon project (`region` stands for the country)
 

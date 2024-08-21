@@ -14,6 +14,7 @@
 - [BridgedBatchTokensResponse](modules.md#bridgedbatchtokensresponse)
 - [PoolContentsResponse](modules.md#poolcontentsresponse)
 - [ProjectResponse](modules.md#projectresponse)
+- [RedeemAutoResponse](modules.md#redeemautoresponse)
 - [RedeemsResponse](modules.md#redeemsresponse)
 - [TCO2TokenResponse](modules.md#tco2tokenresponse)
 - [UserBatchesResponse](modules.md#userbatchesresponse)
@@ -27,7 +28,7 @@
 
 #### Defined in
 
-[types/responses.ts:147](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L147)
+[types/responses.ts:155](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L155)
 
 ___
 
@@ -37,7 +38,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:75](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L75)
+[types/responses.ts:83](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L83)
 
 ___
 
@@ -47,7 +48,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:126](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L126)
+[types/responses.ts:134](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L134)
 
 ___
 
@@ -57,7 +58,17 @@ ___
 
 #### Defined in
 
-[types/responses.ts:138](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L138)
+[types/responses.ts:146](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L146)
+
+___
+
+### RedeemAutoResponse
+
+Ƭ **RedeemAutoResponse**: { `address`: `string` ; `amount`: `BigNumber`  }[]
+
+#### Defined in
+
+[types/responses.ts:39](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L39)
 
 ___
 
@@ -67,7 +78,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:110](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L110)
+[types/responses.ts:118](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L118)
 
 ___
 
@@ -77,7 +88,7 @@ ___
 
 #### Defined in
 
-[types/responses.ts:62](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L62)
+[types/responses.ts:70](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L70)
 
 ___
 
@@ -92,7 +103,7 @@ See types/schemas.ts for more information on why I decided to use Pick in the fi
 
 #### Defined in
 
-[types/responses.ts:44](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L44)
+[types/responses.ts:52](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L52)
 
 ___
 
@@ -102,4 +113,4 @@ ___
 
 #### Defined in
 
-[types/responses.ts:84](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/types/responses.ts#L84)
+[types/responses.ts:92](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/types/responses.ts#L92)

@@ -12,7 +12,7 @@ For the full documentation, check our [docs](https://docs.toucan.earth/toucan/de
 
 ⚠️ This SDK is heavily under development. USE AT YOUR OWN RISK. ⚠️
 
-## Install
+## Install and setup
 
 ```
 npm i toucan-sdk
@@ -24,13 +24,45 @@ or
 yarn add toucan-sdk
 ```
 
+Now, copy `.env.example` to `.env`.
+
+Before you can make Subgraph queries, you need to set `GRAPH_API_KEY` in your `.env` file. You can create an API key in [The Graph Studio](https://thegraph.com/studio/apikeys/) after connecting your wallet.
+
 # Quickstart
 
 Instantiate the ToucanClient and set a `signer` & `provider` to interact with our infrastructure.
 
+We recommend using [ethers.js ^5.6.4](https://docs.ethers.org/v5/api/signer/) for the signer and provider. When you are considering using [wagmi](https://0.3.x.wagmi.sh/docs/hooks/useSigner), only versions under 1.0 will work as this library has not yet been upgraded to viem.
+
+### [ethers.js](https://docs.ethers.org/v5/api/signer/)
+
 ```typescript
 import ToucanClient from "toucan-sdk";
+import { ethers } from "ethers";
 
+// ethers signer and provider
+const provider = new ethers.providers.JsonRpcProvider(
+  "https://rpc.ankr.com/polygon"
+);
+
+// make sure to set your private key in your .env file
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+// set signer & provider
+const toucan = new ToucanClient("alfajores", provider, signer);
+```
+
+### [wagmi](https://0.3.x.wagmi.sh/docs/hooks/useSigner)
+
+```typescript
+import { ToucanClient } from "toucan-sdk";
+import { useProvider, useSigner } from "wagmi";
+
+// get signer & provider
+const { data: signer } = useSigner();
+const provider = useProvider();
+
+// set signer & provider
 const toucan = new ToucanClient("alfajores", provider, signer);
 ```
 
@@ -46,7 +78,10 @@ toucan.setSigner(signer);
 
 If you don't have a signer nor a provider set, you can only interact with the subgraph.
 
-## Fetch pool prices from a Dex
+## Fetch pool prices from a DEX
+
+IMPORTANT:
+_Fetching pool prices is currently not working. We are working on a fix for this._
 
 You can find pools for Toucan pool tokens on [Celo Network](https://celo.org) at [Uniswap](https://uniswap.org/) and for [Polygon Network](https://polygon.technology) on [SushiSwap](sushi.com).
 
@@ -69,7 +104,7 @@ The object returned by the above method will look like this:
 
 # Interact with Toucan's Contracts?
 
-You can always access any method or property of the BCT, NCT and TCO2 [contracts](https://github.com/ToucanProtocol/contracts) by first getting and storing them in a variable, like this:
+You can always access any method or property of the pool and TCO2 [contracts](https://github.com/ToucanProtocol/contracts) by first getting and storing them in a variable, like this:
 
 ```typescript
 toucan.setSigner(signer);
@@ -86,12 +121,12 @@ It's important to note that, if you want to use write methods you need to have a
 
 ## Example to retire Carbon Credits
 
-To retire Carbon Credits on mainnet, you will have to get Carbon Pool Tokens from a DEX like [Uniswap](https://uniswap.org), which you need to redeem for TCO2s. You can then retire these and get a certificate for that. If you already own NCTs, you can follow this example. In case you don't and are developing on testnet, you can also just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more ways to retire in our [documentation](https://docs.toucan.earth/toucan/dev-resources/smart-contracts/tco2).
+To retire Carbon Credits on mainnet, you will have to get Carbon Pool Tokens from a DEX like [Uniswap](https://uniswap.org), which you need to redeem for TCO2s. You can then retire TCO2s and get a certificate for the retirement. If you already own NCTs, you can follow this example. In case you don't and are developing on testnet, you can also just get some at the [Toucan Faucet](https://faucet.toucan.earth). You can find more ways to retire in our [documentation](https://docs.toucan.earth/developers/smart-contracts/tco2).
 
 **Redeem your Pool Tokens and get an array of redeemed TCO2s**
 
 ```typescript
-const tco2Addresses = await toucan.redeemAuto2("NCT", parseEther("1"));
+const tco2Addresses = await toucan.redeemAuto("NCT", parseEther("1"));
 ```
 
 **Retire the Carbon Credits**
@@ -106,7 +141,7 @@ Now, the above example of selective retirement is only useful in specific cases.
 
 **What if you only have the name or symbol of the project?**
 
-That's where subgraph queries come in handy. (and we have plenty of those 😉) - But feel free to also [create your own](#custom-queries).
+That's where subgraph queries come in handy (and we have plenty of those 😉) - but feel free to also [create your own](#custom-queries).
 
 **_Make sure all addresses are input in lowercase letters, as the queries are case sensitive._**
 
@@ -135,12 +170,12 @@ The result will look like this:
 
 Now you have quite some info on the project, including its address.
 
-## All queries:
+## All queries
 
 Toucan SDK offers a lot of pre-defined queries. Try them out!
 
 ```typescript
-import ToucanClient from "toucan-sdk";
+import { ToucanClient } from "toucan-sdk";
 
 // here we don't need to set the signer or provider
 const toucan = new ToucanClient("alfajores");
@@ -180,13 +215,20 @@ await toucan.fetchAggregations();
 
 Now that you have an overview of our pre-build queries, let's have a look at the `fetchCustomQuery` method.
 
-This allows you to fetch with your own queries and can be very powerful if you know graphQL. You can also check out a lot of example queries in our subgraph [playgrounds](https://thegraph.com/hosted-service/subgraph/toucanprotocol/matic).
+This allows you to fetch with your own queries and can be very powerful if you know GraphQL. You can also check out a lot of example queries in our Subgraph playgrounds:
+
+- [Matic](https://thegraph.com/explorer/subgraphs/FU5APMSSCqcRy9jy56aXJiGV3PQmFQHg2tzukvSJBgwW)
+- [Celo](https://thegraph.com/explorer/subgraphs/BWmN569zDopYXp3nzDukJsGDHqRstYAFULFPH8rxyVBk)
+- [Base](https://thegraph.com/explorer/subgraphs/AEJ5PEDye6Z198HRQBioG6mZ6ZacHenBg2HTopZPsUCi)
+- [Alfajores](https://thegraph.com/explorer/subgraphs/4uY2L3vQW8XKYPrFFk4i6ZuJkgbpJ8SbJayc8wzMBRYw)
+- [Base Sepolia](https://thegraph.com/explorer/subgraphs/2oKCq3rDwdYPSao4UbDZKSNbawEdhBVf3BxmqJzFe1uj)
+- [Amoy](https://thegraph.com/explorer/subgraphs/FKzFZuYHxyHiiDmdW9Qvwtet1Ad1ERsvjWMhhqd9V8pk)
 
 - Getting all infos on a carbon project (`region` stands for the country)
 
 ```typescript
 import { gql } from "@urql/core";
-import ToucanClient from "toucan-sdk";
+import { ToucanClient } from "toucan-sdk";
 
 const toucan = new ToucanClient("alfajores");
 
@@ -213,7 +255,7 @@ const result = await toucan.fetchCustomQuery(query, { id: "1" });
 
 Using the OffsetHelper methods is the easiest way to offset CO2 right now as it handles the whole process for you.
 
-_(Uses Ubeswap/SushiSwap to acquire BCT/NCT, redeems it for TCO2s and retires them)_
+_(Uses Ubeswap/SushiSwap to acquire pool tokens, redeems pool tokens for TCO2s and retires TCO2s)_
 
 This is how you do that when you want to use ETH (or the network's native currency) in your balance.
 
@@ -240,9 +282,9 @@ const offsetReceipt = await toucan.autoOffsetExactInToken(
 );
 ```
 
-### Offset with your own BCT/NCT
+### Offset with your pool tokens
 
-If you already have BCT/NCT, you can use `autoOffsetPoolToken()` like this:
+If you already have pool tokens (eg. NCT,) you can use `autoOffsetPoolToken()` like this:
 
 ```typescript
 const offsetReceipt = await toucan.autoOffsetPoolToken(
@@ -284,7 +326,7 @@ If you do, that's also quite easy to pull off. You just replace the usage of the
 ```typescript
 const retirementReceipt = await toucan.retireAndMintCertificate(
   "Alice",
-  signer.address,
+  bobsAddress,
   "Bob",
   "Just helping the planet",
   parseEther("3.0"),
@@ -292,8 +334,6 @@ const retirementReceipt = await toucan.retireAndMintCertificate(
 );
 ```
 
-Why do you see my name twice you ask? 🤔
-
-Well, the first "Alice" represents the entity that is doing the retirement/offset. The second one represents the party that 'benefits' from it, in this case "Bob". We will also add Bob's address so now the relation of the certificate is set to that address instead of the retiring party.
+"Alice" represents the entity that is doing the retirement/offset. The second name represents the party that 'benefits' from it, in this case "Bob". We will also add Bob's address so now the relation of the certificate is set to that address instead of the retiring party.
 
 This useful in case you happen to be an entity that retires on behalf of someone else.

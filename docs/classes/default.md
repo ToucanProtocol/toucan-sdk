@@ -79,15 +79,15 @@ ContractInteractions, SubgraphInteractions
 
 #### Parameters
 
-| Name        | Type       | Description                            |
-| :---------- | :--------- | :------------------------------------- |
-| `network`   | `Network`  | network that you want to work on       |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `network` | `Network` | network that you want to work on |
 | `provider?` | `Provider` | to be able to read from the blockchain |
-| `signer?`   | `Signer`   | to be able to sign transactions        |
+| `signer?` | `Signer` | to be able to sign transactions |
 
 #### Defined in
 
-[index.ts:69](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L69)
+[index.ts:71](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L71)
 
 ## Properties
 
@@ -97,9 +97,9 @@ ContractInteractions, SubgraphInteractions
 
 #### Defined in
 
-[index.ts:60](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L60)
+[index.ts:62](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L62)
 
----
+___
 
 ### fetchAggregations
 
@@ -111,9 +111,9 @@ fetch all aggregations (including, for example, tco2TotalRetired or totalCarbonB
 
 #### Defined in
 
-[index.ts:805](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L805)
+[index.ts:808](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L808)
 
----
+___
 
 ### fetchAllTCO2Tokens
 
@@ -125,9 +125,9 @@ fetches TCO2Details of all TCO2s
 
 #### Defined in
 
-[index.ts:682](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L682)
+[index.ts:685](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L685)
 
----
+___
 
 ### fetchBridgedBatchTokens
 
@@ -139,9 +139,9 @@ fetches data about BatchTokens that have been bridged
 
 #### Defined in
 
-[index.ts:695](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L695)
+[index.ts:698](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L698)
 
----
+___
 
 ### fetchCustomQuery
 
@@ -161,9 +161,9 @@ any parameters you may want to pass to the query
 
 #### Defined in
 
-[index.ts:820](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L820)
+[index.ts:823](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L823)
 
----
+___
 
 ### fetchPoolContents
 
@@ -187,9 +187,9 @@ how many (if any) retirements you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:774](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L774)
+[index.ts:777](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L777)
 
----
+___
 
 ### fetchProjectById
 
@@ -205,9 +205,9 @@ id of the project to fetch; e.g.: "10"
 
 #### Defined in
 
-[index.ts:792](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L792)
+[index.ts:795](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L795)
 
----
+___
 
 ### fetchRedeems
 
@@ -231,9 +231,9 @@ how many (if any) redeems you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:735](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L735)
+[index.ts:738](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L738)
 
----
+___
 
 ### fetchTCO2TokenByFullSymbol
 
@@ -249,9 +249,9 @@ full symbol of the TCO2 to query for e.g.: "TCO2-VCS-1718-2013"
 
 #### Defined in
 
-[index.ts:671](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L671)
+[index.ts:674](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L674)
 
----
+___
 
 ### fetchTCO2TokenById
 
@@ -267,9 +267,9 @@ id of the TCO2 to query for; the id happens to be the same as the address e.g.: 
 
 #### Defined in
 
-[index.ts:661](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L661)
+[index.ts:664](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L664)
 
----
+___
 
 ### fetchUserBatches
 
@@ -285,9 +285,9 @@ address of user to query for
 
 #### Defined in
 
-[index.ts:647](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L647)
+[index.ts:650](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L650)
 
----
+___
 
 ### fetchUserRedeems
 
@@ -315,9 +315,9 @@ how many (if any) redeems you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:748](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L748)
+[index.ts:751](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L751)
 
----
+___
 
 ### fetchUserRetirements
 
@@ -341,9 +341,9 @@ how many (if any) retirements you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:711](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L711)
+[index.ts:714](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L714)
 
----
+___
 
 ### network
 
@@ -351,9 +351,9 @@ how many (if any) retirements you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:59](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L59)
+[index.ts:61](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L61)
 
----
+___
 
 ### provider
 
@@ -361,9 +361,9 @@ how many (if any) retirements you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:58](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L58)
+[index.ts:60](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L60)
 
----
+___
 
 ### signer
 
@@ -371,9 +371,9 @@ how many (if any) retirements you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:57](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L57)
+[index.ts:59](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L59)
 
----
+___
 
 ### subgraphInteractions
 
@@ -381,7 +381,7 @@ how many (if any) retirements you want skipped; defaults to 0
 
 #### Defined in
 
-[index.ts:61](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L61)
+[index.ts:63](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L63)
 
 ## Methods
 
@@ -391,10 +391,10 @@ how many (if any) retirements you want skipped; defaults to 0
 
 #### Parameters
 
-| Name     | Type         | Description                                                                                                      |
-| :------- | :----------- | :--------------------------------------------------------------------------------------------------------------- |
-| `pool`   | `PoolSymbol` | The pool symbol of the pool (token) to use e.g., "NCT"                                                           |
-| `amount` | `BigNumber`  | the amount of native tokens e.g., MATIC to swap into Toucan pool token. Full amount will be used for offsetting. |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use e.g., "NCT" |
+| `amount` | `BigNumber` | the amount of native tokens e.g., MATIC to swap into Toucan pool token. Full amount will be used for offsetting. |
 
 #### Returns
 
@@ -412,26 +412,25 @@ This method may take up to 1 minute to return a result
 
 #### Defined in
 
-[index.ts:511](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L511)
+[index.ts:514](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L514)
 
----
+___
 
 ### autoOffsetExactInToken
 
 ▸ **autoOffsetExactInToken**(`swapToken`, `pool`, `amount`): `Promise`<`ContractReceipt`\>
 
-/\*\*
-
--
--
+/**
+ *
+ *
 
 #### Parameters
 
-| Name        | Type         | Description                                                                                           |
-| :---------- | :----------- | :---------------------------------------------------------------------------------------------------- |
-| `swapToken` | `string`     | portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC) \*                 |
-| `pool`      | `PoolSymbol` | The pool symbol of the pool (token) to use \*                                                         |
-| `amount`    | `BigNumber`  | the amount of ERC20 token to swap into Toucan pool token. Full amount will be used for offsetting. \* |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `swapToken` | `string` | portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC) * |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use * |
+| `amount` | `BigNumber` | the amount of ERC20 token to swap into Toucan pool token. Full amount will be used for offsetting. * |
 
 #### Returns
 
@@ -442,29 +441,26 @@ The offset transaction.
 **`Description`**
 
 retires carbon credits using the oldest TCO2 tokens available from the specified Toucan token pool by sending ERC20
-
-- tokens (cUSD, USDC, WETH, WMATIC). All provided tokens are consumed for offsetting.
--
+   * tokens (cUSD, USDC, WETH, WMATIC). All provided tokens are consumed for offsetting.
+ *
 
 **`Notice`**
 
 this method needs two different actions signed and may take up to 1 minute to return a result
-
--
+ *
 
 **`Dev`**
 
 When automatically redeeming pool tokens for the oldest ones
-
-- TCO2s there are no fees and you receive exactly 1 TCO2 token for 1 pool
-- token.
--
+   * TCO2s there are no fees and you receive exactly 1 TCO2 token for 1 pool
+   * token.
+ *
 
 #### Defined in
 
-[index.ts:459](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L459)
+[index.ts:462](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L462)
 
----
+___
 
 ### autoOffsetExactOutETH
 
@@ -472,10 +468,10 @@ When automatically redeeming pool tokens for the oldest ones
 
 #### Parameters
 
-| Name     | Type         | Description                                |
-| :------- | :----------- | :----------------------------------------- |
-| `pool`   | `PoolSymbol` | The pool symbol of the pool (token) to use |
-| `amount` | `BigNumber`  | The amount of CO2 tons to offset           |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `amount` | `BigNumber` | The amount of CO2 tons to offset |
 
 #### Returns
 
@@ -485,11 +481,11 @@ The offset transaction.
 
 **`Description`**
 
-retires a specified amount of carbon credits using the oldest TCO2 tokens available from the specified Toucan token pool by sending a native token e.g. MATIC.
+retires a specified amount of  carbon credits using the oldest TCO2 tokens available from the specified Toucan token pool by sending a native token e.g. MATIC.
 
 **`Dev`**
 
-Use `calculateNeededETHAmount()` first in order to find out how much of the native token e.g. MATIC is required to retire the specified quantity of TCO2. If the user sends much native token e.g. MATIC, the leftover amount will be sent back to the user.
+Use `calculateNeededETHAmount()` first in order to find out how much  of the native token e.g. MATIC is required to retire the specified quantity of TCO2. If the user sends much native token e.g. MATIC, the leftover amount will be sent back to the user.
 
 **`Notice`**
 
@@ -497,9 +493,9 @@ This method may take up to 1 minute to return a result
 
 #### Defined in
 
-[index.ts:488](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L488)
+[index.ts:491](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L491)
 
----
+___
 
 ### autoOffsetExactOutToken
 
@@ -507,11 +503,11 @@ This method may take up to 1 minute to return a result
 
 #### Parameters
 
-| Name        | Type         | Description                                                                        |
-| :---------- | :----------- | :--------------------------------------------------------------------------------- |
-| `swapToken` | `string`     | portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC) |
-| `pool`      | `PoolSymbol` | The pool symbol of the pool (token) to use                                         |
-| `amount`    | `BigNumber`  | The amount of CO2 tons to offset                                                   |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `swapToken` | `string` | portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC) |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `amount` | `BigNumber` | The amount of CO2 tons to offset |
 
 #### Returns
 
@@ -521,7 +517,7 @@ The offset transaction.
 
 **`Description`**
 
-retires a specified amount of carbon credits using the lowest
+retires a specified amount of  carbon credits using the lowest
 quality (oldest) TCO2 tokens available from the specified Toucan token pool by sending ERC20
 tokens (cUSD, USDC, WETH, WMATIC).
 
@@ -531,9 +527,9 @@ this method needs two different actions signed and may take up to 1 minute to re
 
 #### Defined in
 
-[index.ts:424](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L424)
+[index.ts:427](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L427)
 
----
+___
 
 ### autoOffsetPoolToken
 
@@ -541,10 +537,10 @@ this method needs two different actions signed and may take up to 1 minute to re
 
 #### Parameters
 
-| Name     | Type         | Description                                            |
-| :------- | :----------- | :----------------------------------------------------- |
-| `pool`   | `PoolSymbol` | The pool symbol of the pool token to offset, e.g., NCT |
-| `amount` | `BigNumber`  | The amount of of TCO2 to offset.                       |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool token to offset, e.g., NCT |
+| `amount` | `BigNumber` | The amount of of TCO2 to offset. |
 
 #### Returns
 
@@ -563,9 +559,9 @@ This method may take up to 1 minute to return a result
 
 #### Defined in
 
-[index.ts:402](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L402)
+[index.ts:405](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L405)
 
----
+___
 
 ### calculateExpectedPoolTokenForETH
 
@@ -573,16 +569,16 @@ This method may take up to 1 minute to return a result
 
 #### Parameters
 
-| Name     | Type         | Description                                          |
-| :------- | :----------- | :--------------------------------------------------- |
-| `pool`   | `PoolSymbol` | The pool symbol of the pool (token) to use           |
-| `amount` | `BigNumber`  | The amount of native tokens to swap for, e.g., MATIC |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `amount` | `BigNumber` | The amount of native tokens to swap for, e.g., MATIC |
 
 #### Returns
 
 `Promise`<`BigNumber`\>
 
-amount The expected amount of Pool token that can be acquired.
+amount   The expected amount of Pool token that can be acquired.
 
 **`Description`**
 
@@ -591,9 +587,9 @@ acquired by swapping the provided amount of native tokens e.g., MATIC.
 
 #### Defined in
 
-[index.ts:621](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L621)
+[index.ts:624](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L624)
 
----
+___
 
 ### calculateExpectedPoolTokenForToken
 
@@ -601,17 +597,17 @@ acquired by swapping the provided amount of native tokens e.g., MATIC.
 
 #### Parameters
 
-| Name        | Type         | Description                                              |
-| :---------- | :----------- | :------------------------------------------------------- |
-| `swapToken` | `string`     | The ERC20 token used for the swap                        |
-| `pool`      | `PoolSymbol` | The pool symbol of the pool token to swap for, e.g., NCT |
-| `amount`    | `BigNumber`  | The amount of ERC20 token to swap                        |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `swapToken` | `string` | The ERC20 token used for the swap |
+| `pool` | `PoolSymbol` | The pool symbol of the pool token to swap for, e.g., NCT |
+| `amount` | `BigNumber` | The amount of ERC20 token to swap |
 
 #### Returns
 
 `Promise`<`BigNumber`\>
 
-amount The expected amount of Pool token that can be acquired.
+amount  The expected amount of Pool token that can be acquired.
 
 **`Description`**
 
@@ -620,9 +616,9 @@ acquired by swapping the provided amount of ERC20 token.
 
 #### Defined in
 
-[index.ts:592](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L592)
+[index.ts:595](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L595)
 
----
+___
 
 ### calculateNeededETHAmount
 
@@ -630,10 +626,10 @@ acquired by swapping the provided amount of ERC20 token.
 
 #### Parameters
 
-| Name     | Type         | Description                                              |
-| :------- | :----------- | :------------------------------------------------------- |
-| `pool`   | `PoolSymbol` | The pool symbol of the pool token to swap for, e.g., NCT |
-| `amount` | `BigNumber`  | The desired amount of pool token to receive              |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool token to swap for, e.g., NCT |
+| `amount` | `BigNumber` | The desired amount of pool token to receive |
 
 #### Returns
 
@@ -649,9 +645,9 @@ desired amount of a Toucan pool token, e.g., NCT.
 
 #### Defined in
 
-[index.ts:565](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L565)
+[index.ts:568](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L568)
 
----
+___
 
 ### calculateNeededTokenAmount
 
@@ -659,17 +655,17 @@ desired amount of a Toucan pool token, e.g., NCT.
 
 #### Parameters
 
-| Name        | Type         | Description                                              |
-| :---------- | :----------- | :------------------------------------------------------- |
-| `swapToken` | `string`     | The ERC20 token used for the swap                        |
-| `pool`      | `PoolSymbol` | The pool symbol of the pool token to swap for, e.g., NCT |
-| `amount`    | `BigNumber`  | The desired amount of pool token to receive              |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `swapToken` | `string` | The ERC20 token used for the swap |
+| `pool` | `PoolSymbol` | The pool symbol of the pool token to swap for, e.g., NCT |
+| `amount` | `BigNumber` | The desired amount of pool token to receive |
 
 #### Returns
 
 `Promise`<`BigNumber`\>
 
-amount of the ERC20 token required in order to
+amount  of the ERC20 token required in order to
 swap for the specified amount of the pool token.
 
 **`Description`**
@@ -680,9 +676,9 @@ example, e.g., NCT.
 
 #### Defined in
 
-[index.ts:535](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L535)
+[index.ts:538](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L538)
 
----
+___
 
 ### calculateRedeemFees
 
@@ -690,11 +686,11 @@ example, e.g., NCT.
 
 #### Parameters
 
-| Name      | Type          | Description                                |
-| :-------- | :------------ | :----------------------------------------- |
-| `pool`    | `PoolSymbol`  | The pool symbol of the pool (token) to use |
-| `tco2s`   | `string`[]    | array of TCO2 contract addresses           |
-| `amounts` | `BigNumber`[] | array of amounts to redeem for each tco2s  |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `tco2s` | `string`[] | array of TCO2 contract addresses |
+| `amounts` | `BigNumber`[] | array of amounts to redeem for each tco2s |
 
 #### Returns
 
@@ -712,9 +708,9 @@ tco2s must match amounts; amounts[0] is the amount of tco2[0] token to redeem fo
 
 #### Defined in
 
-[index.ts:272](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L272)
+[index.ts:274](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L274)
 
----
+___
 
 ### checkEligible
 
@@ -722,10 +718,10 @@ tco2s must match amounts; amounts[0] is the amount of tco2[0] token to redeem fo
 
 #### Parameters
 
-| Name   | Type         | Description                                |
-| :----- | :----------- | :----------------------------------------- |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
-| `tco2` | `string`     | address of TCO2 to deposit                 |
+| `tco2` | `string` | address of TCO2 to deposit |
 
 #### Returns
 
@@ -739,9 +735,9 @@ checks if TCO2 is eligible for pool
 
 #### Defined in
 
-[index.ts:252](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L252)
+[index.ts:254](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L254)
 
----
+___
 
 ### checkIfTCO2
 
@@ -749,8 +745,8 @@ checks if TCO2 is eligible for pool
 
 #### Parameters
 
-| Name      | Type     | Description                  |
-| :-------- | :------- | :--------------------------- |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `address` | `string` | address of contract to check |
 
 #### Returns
@@ -765,9 +761,9 @@ checks if an address represents a TCO2
 
 #### Defined in
 
-[index.ts:379](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L379)
+[index.ts:382](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L382)
 
----
+___
 
 ### depositTCO2
 
@@ -775,11 +771,11 @@ checks if an address represents a TCO2
 
 #### Parameters
 
-| Name          | Type         | Description                                |
-| :------------ | :----------- | :----------------------------------------- |
-| `pool`        | `PoolSymbol` | The pool symbol of the pool (token) to use |
-| `amount`      | `BigNumber`  | The amount of TCO2s to deposit             |
-| `tco2Address` | `string`     | address of the TCO2 token to deposit\*     |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `amount` | `BigNumber` | The amount of TCO2s to deposit |
+| `tco2Address` | `string` | address of the TCO2 token to deposit* |
 
 #### Returns
 
@@ -793,43 +789,43 @@ deposits TCO2s in the pool which mints a pool token for the user
 
 #### Defined in
 
-[index.ts:229](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L229)
+[index.ts:231](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L231)
 
----
+___
 
 ### fetchTokenPriceOnDex
 
-▸ **fetchTokenPriceOnDex**(`pool`): `Promise`<{ `liquidityUSD`: `null` \| `number` ; `price`: `null` \| `number` ; `url`: `null` \| `string` ; `volumeUSD`: `null` \| `number` }\>
+▸ **fetchTokenPriceOnDex**(`pool`): `Promise`<{ `liquidityUSD`: ``null`` \| `number` ; `price`: ``null`` \| `number` ; `url`: ``null`` \| `string` ; `volumeUSD`: ``null`` \| `number`  }\>
 
 #### Parameters
 
-| Name   | Type         |
-| :----- | :----------- |
+| Name | Type |
+| :------ | :------ |
 | `pool` | `PoolSymbol` |
 
 #### Returns
 
-`Promise`<{ `liquidityUSD`: `null` \| `number` ; `price`: `null` \| `number` ; `url`: `null` \| `string` ; `volumeUSD`: `null` \| `number` }\>
+`Promise`<{ `liquidityUSD`: ``null`` \| `number` ; `price`: ``null`` \| `number` ; `url`: ``null`` \| `string` ; `volumeUSD`: ``null`` \| `number`  }\>
 
 #### Defined in
 
-[index.ts:830](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L830)
+[index.ts:836](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L836)
 
----
+___
 
 ### getAttributes
 
-▸ **getAttributes**(`tco2Address`): `Promise`<[[`string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`] & { `category`: `string` ; `controller`: `string` ; `emissionType`: `string` ; `method`: `string` ; `methodology`: `string` ; `projectId`: `string` ; `region`: `string` ; `standard`: `string` ; `storageMethod`: `string` ; `uri`: `string` }, [`string`, `BigNumber`, `BigNumber`, `BigNumber`, `BigNumber`, `boolean`, `boolean`, `string`, `string`, `string`, `string`] & { `additionalCertification`: `string` ; `coBenefits`: `string` ; `correspAdjustment`: `string` ; `endTime`: `BigNumber` ; `isCCPcompliant`: `boolean` ; `isCorsiaCompliant`: `boolean` ; `name`: `string` ; `projectTokenId`: `BigNumber` ; `startTime`: `BigNumber` ; `totalVintageQuantity`: `BigNumber` ; `uri`: `string` }]\>
+▸ **getAttributes**(`tco2Address`): `Promise`<[[`string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`] & { `category`: `string` ; `controller`: `string` ; `emissionType`: `string` ; `method`: `string` ; `methodology`: `string` ; `projectId`: `string` ; `region`: `string` ; `standard`: `string` ; `storageMethod`: `string` ; `uri`: `string`  }, [`string`, `BigNumber`, `BigNumber`, `BigNumber`, `BigNumber`, `boolean`, `boolean`, `string`, `string`, `string`, `string`] & { `additionalCertification`: `string` ; `coBenefits`: `string` ; `correspAdjustment`: `string` ; `endTime`: `BigNumber` ; `isCCPcompliant`: `boolean` ; `isCorsiaCompliant`: `boolean` ; `name`: `string` ; `projectTokenId`: `BigNumber` ; `startTime`: `BigNumber` ; `totalVintageQuantity`: `BigNumber` ; `uri`: `string`  }]\>
 
 #### Parameters
 
-| Name          | Type     | Description               |
-| :------------ | :------- | :------------------------ |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `tco2Address` | `string` | address of the TCO2 token |
 
 #### Returns
 
-`Promise`<[[`string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`] & { `category`: `string` ; `controller`: `string` ; `emissionType`: `string` ; `method`: `string` ; `methodology`: `string` ; `projectId`: `string` ; `region`: `string` ; `standard`: `string` ; `storageMethod`: `string` ; `uri`: `string` }, [`string`, `BigNumber`, `BigNumber`, `BigNumber`, `BigNumber`, `boolean`, `boolean`, `string`, `string`, `string`, `string`] & { `additionalCertification`: `string` ; `coBenefits`: `string` ; `correspAdjustment`: `string` ; `endTime`: `BigNumber` ; `isCCPcompliant`: `boolean` ; `isCorsiaCompliant`: `boolean` ; `name`: `string` ; `projectTokenId`: `BigNumber` ; `startTime`: `BigNumber` ; `totalVintageQuantity`: `BigNumber` ; `uri`: `string` }]\>
+`Promise`<[[`string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`, `string`] & { `category`: `string` ; `controller`: `string` ; `emissionType`: `string` ; `method`: `string` ; `methodology`: `string` ; `projectId`: `string` ; `region`: `string` ; `standard`: `string` ; `storageMethod`: `string` ; `uri`: `string`  }, [`string`, `BigNumber`, `BigNumber`, `BigNumber`, `BigNumber`, `boolean`, `boolean`, `string`, `string`, `string`, `string`] & { `additionalCertification`: `string` ; `coBenefits`: `string` ; `correspAdjustment`: `string` ; `endTime`: `BigNumber` ; `isCCPcompliant`: `boolean` ; `isCorsiaCompliant`: `boolean` ; `name`: `string` ; `projectTokenId`: `BigNumber` ; `startTime`: `BigNumber` ; `totalVintageQuantity`: `BigNumber` ; `uri`: `string`  }]\>
 
 an array of attributes
 
@@ -839,9 +835,9 @@ gets the attributes of the project represented by the TCO2
 
 #### Defined in
 
-[index.ts:190](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L190)
+[index.ts:192](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L192)
 
----
+___
 
 ### getDepositCap
 
@@ -849,8 +845,8 @@ gets the attributes of the project represented by the TCO2
 
 #### Parameters
 
-| Name          | Type     | Description               |
-| :------------ | :------- | :------------------------ |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `tco2Address` | `string` | address of the TCO2 token |
 
 #### Returns
@@ -863,9 +859,9 @@ gets the cap for TCO2s based on `totalVintageQuantity`
 
 #### Defined in
 
-[index.ts:174](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L174)
+[index.ts:176](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L176)
 
----
+___
 
 ### getOffsetHelperContract
 
@@ -883,9 +879,9 @@ gets the contract of a the OffsetHelper contract
 
 #### Defined in
 
-[index.ts:899](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L899)
+[index.ts:905](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L905)
 
----
+___
 
 ### getPoolAddress
 
@@ -893,8 +889,8 @@ gets the contract of a the OffsetHelper contract
 
 #### Parameters
 
-| Name   | Type         | Description                                |
-| :----- | :----------- | :----------------------------------------- |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
 
 #### Returns
@@ -909,9 +905,9 @@ gets the contract of a pool token based on the symbol
 
 #### Defined in
 
-[index.ts:851](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L851)
+[index.ts:857](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L857)
 
----
+___
 
 ### getPoolContract
 
@@ -919,8 +915,8 @@ gets the contract of a pool token based on the symbol
 
 #### Parameters
 
-| Name   | Type         |
-| :----- | :----------- |
+| Name | Type |
+| :------ | :------ |
 | `pool` | `PoolSymbol` |
 
 #### Returns
@@ -937,9 +933,9 @@ gets the contract of a pool token based on the symbol
 
 #### Defined in
 
-[index.ts:862](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L862)
+[index.ts:868](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L868)
 
----
+___
 
 ### getPoolRemaining
 
@@ -947,8 +943,8 @@ gets the contract of a pool token based on the symbol
 
 #### Parameters
 
-| Name   | Type         |
-| :----- | :----------- |
+| Name | Type |
+| :------ | :------ |
 | `pool` | `PoolSymbol` |
 
 #### Returns
@@ -963,9 +959,9 @@ gets the remaining space in pool contract before hitting the cap
 
 #### Defined in
 
-[index.ts:347](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L347)
+[index.ts:350](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L350)
 
----
+___
 
 ### getRegistryContract
 
@@ -983,9 +979,9 @@ gets the contract of a the Toucan contract registry
 
 #### Defined in
 
-[index.ts:887](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L887)
+[index.ts:893](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L893)
 
----
+___
 
 ### getScoredTCO2s
 
@@ -993,8 +989,8 @@ gets the contract of a the Toucan contract registry
 
 #### Parameters
 
-| Name   | Type         | Description                                |
-| :----- | :----------- | :----------------------------------------- |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
 
 #### Returns
@@ -1009,9 +1005,9 @@ gets an array of scored TCO2s; scoredTCO2s[0] is lowest ranked
 
 #### Defined in
 
-[index.ts:360](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L360)
+[index.ts:363](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L363)
 
----
+___
 
 ### getTCO2Contract
 
@@ -1019,8 +1015,8 @@ gets an array of scored TCO2s; scoredTCO2s[0] is lowest ranked
 
 #### Parameters
 
-| Name      | Type     | Description                                   |
-| :-------- | :------- | :-------------------------------------------- |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `address` | `string` | address of TCO2 ethers.Contract to insantiate |
 
 #### Returns
@@ -1035,9 +1031,9 @@ gets the contract of a TCO2 token based on the address
 
 #### Defined in
 
-[index.ts:875](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L875)
+[index.ts:881](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L881)
 
----
+___
 
 ### getTCO2Remaining
 
@@ -1045,8 +1041,8 @@ gets the contract of a TCO2 token based on the address
 
 #### Parameters
 
-| Name          | Type     | Description               |
-| :------------ | :------- | :------------------------ |
+| Name | Type | Description |
+| :------ | :------ | :------ |
 | `tco2Address` | `string` | address of the TCO2 token |
 
 #### Returns
@@ -1061,24 +1057,24 @@ gets the remaining space in TCO2 contract before hitting the cap
 
 #### Defined in
 
-[index.ts:206](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L206)
+[index.ts:208](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L208)
 
----
+___
 
 ### redeemAuto
 
-▸ **redeemAuto**(`pool`, `amount`): `Promise`<`ContractReceipt`\>
+▸ **redeemAuto**(`pool`, `amount`): `Promise`<[`RedeemAutoResponse`](../modules.md#redeemautoresponse)\>
 
 #### Parameters
 
-| Name     | Type         | Description                                |
-| :------- | :----------- | :----------------------------------------- |
-| `pool`   | `PoolSymbol` | The pool symbol of the pool (token) to use |
-| `amount` | `BigNumber`  | amount to redeem                           |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `amount` | `BigNumber` | amount to redeem |
 
 #### Returns
 
-`Promise`<`ContractReceipt`\>
+`Promise`<[`RedeemAutoResponse`](../modules.md#redeemautoresponse)\>
 
 redeem transaction
 
@@ -1088,26 +1084,30 @@ automatically redeems pool tokens for TCO2s
 
 #### Defined in
 
-[index.ts:314](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L314)
+[index.ts:316](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L316)
 
----
+___
 
 ### redeemAuto2
 
-▸ **redeemAuto2**(`pool`, `amount`): `Promise`<{ `address`: `string` ; `amount`: `BigNumber` }[]\>
+▸ **redeemAuto2**(`pool`, `amount`): `Promise`<[`RedeemAutoResponse`](../modules.md#redeemautoresponse)\>
 
 #### Parameters
 
-| Name     | Type         | Description                                |
-| :------- | :----------- | :----------------------------------------- |
-| `pool`   | `PoolSymbol` | The pool symbol of the pool (token) to use |
-| `amount` | `BigNumber`  | amount to redeem                           |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `amount` | `BigNumber` | amount to redeem |
 
 #### Returns
 
-`Promise`<{ `address`: `string` ; `amount`: `BigNumber` }[]\>
+`Promise`<[`RedeemAutoResponse`](../modules.md#redeemautoresponse)\>
 
 array containing tco2 addresses (string) and amounts (BigNumber)
+
+**`Deprecated`**
+
+This function is deprecated. Please use `redeemAuto` instead.
 
 **`Description`**
 
@@ -1115,9 +1115,9 @@ automatically redeems pool tokens for TCO2s
 
 #### Defined in
 
-[index.ts:331](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L331)
+[index.ts:334](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L334)
 
----
+___
 
 ### redeemMany
 
@@ -1125,11 +1125,11 @@ automatically redeems pool tokens for TCO2s
 
 #### Parameters
 
-| Name      | Type          | Description                                |
-| :-------- | :------------ | :----------------------------------------- |
-| `pool`    | `PoolSymbol`  | The pool symbol of the pool (token) to use |
-| `tco2s`   | `string`[]    | array of TCO2 contract addresses           |
-| `amounts` | `BigNumber`[] | array of amounts to redeem for each tco2s  |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pool` | `PoolSymbol` | The pool symbol of the pool (token) to use |
+| `tco2s` | `string`[] | array of TCO2 contract addresses |
+| `amounts` | `BigNumber`[] | array of amounts to redeem for each tco2s |
 
 #### Returns
 
@@ -1143,9 +1143,9 @@ selectively redeems pool tokens for TCO2s
 
 #### Defined in
 
-[index.ts:296](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L296)
+[index.ts:298](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L298)
 
----
+___
 
 ### retire
 
@@ -1153,10 +1153,10 @@ selectively redeems pool tokens for TCO2s
 
 #### Parameters
 
-| Name          | Type        | Description                           |
-| :------------ | :---------- | :------------------------------------ |
-| `amount`      | `BigNumber` | The amount of TCO2 to retire          |
-| `tco2Address` | `string`    | address of the TCO2 token to retire\* |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `amount` | `BigNumber` | The amount of TCO2 to retire |
+| `tco2Address` | `string` | address of the TCO2 token to retire* |
 
 #### Returns
 
@@ -1170,9 +1170,9 @@ retires/burns an amount of TCO2s (each represents 1 ton of CO2) to achieve offse
 
 #### Defined in
 
-[index.ts:102](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L102)
+[index.ts:104](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L104)
 
----
+___
 
 ### retireAndMintCertificate
 
@@ -1180,14 +1180,14 @@ retires/burns an amount of TCO2s (each represents 1 ton of CO2) to achieve offse
 
 #### Parameters
 
-| Name                   | Type        | Description                                                           |
-| :--------------------- | :---------- | :-------------------------------------------------------------------- |
-| `retirementEntityName` | `string`    | name of the entity that does the retirement (you)                     |
-| `beneficiaryAddress`   | `string`    | address of the beneficiary (in case you're retiring for someone else) |
-| `beneficiaryName`      | `string`    | name of the beneficiary                                               |
-| `retirementMessage`    | `string`    | retirement message                                                    |
-| `amount`               | `BigNumber` | The amount of TCO2 to retire                                          |
-| `tco2Address`          | `string`    | address of the TCO2 token to retire\*                                 |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `retirementEntityName` | `string` | name of the entity that does the retirement (you) |
+| `beneficiaryAddress` | `string` | address of the beneficiary (in case you're retiring for someone else) |
+| `beneficiaryName` | `string` | name of the beneficiary |
+| `retirementMessage` | `string` | retirement message |
+| `amount` | `BigNumber` | The amount of TCO2 to retire |
+| `tco2Address` | `string` | address of the TCO2 token to retire* |
 
 #### Returns
 
@@ -1201,9 +1201,9 @@ retires/burns an amount of TCO2s & mints the NFT certificate for it within the s
 
 #### Defined in
 
-[index.ts:122](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L122)
+[index.ts:124](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L124)
 
----
+___
 
 ### retireFrom
 
@@ -1211,11 +1211,11 @@ retires/burns an amount of TCO2s & mints the NFT certificate for it within the s
 
 #### Parameters
 
-| Name          | Type        | Description                           |
-| :------------ | :---------- | :------------------------------------ |
-| `amount`      | `BigNumber` | The amount of TCO2 to retire          |
-| `address`     | `string`    | address of the account to retire from |
-| `tco2Address` | `string`    | address of the TCO2 token to retire\* |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `amount` | `BigNumber` | The amount of TCO2 to retire |
+| `address` | `string` | address of the account to retire from |
+| `tco2Address` | `string` | address of the TCO2 token to retire* |
 
 #### Returns
 
@@ -1233,9 +1233,9 @@ requires approval from the address you're trying to retire from
 
 #### Defined in
 
-[index.ts:152](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L152)
+[index.ts:154](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L154)
 
----
+___
 
 ### setProvider
 
@@ -1243,8 +1243,8 @@ requires approval from the address you're trying to retire from
 
 #### Parameters
 
-| Name       | Type       |
-| :--------- | :--------- |
+| Name | Type |
+| :------ | :------ |
 | `provider` | `Provider` |
 
 #### Returns
@@ -1253,9 +1253,9 @@ requires approval from the address you're trying to retire from
 
 #### Defined in
 
-[index.ts:86](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L86)
+[index.ts:88](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L88)
 
----
+___
 
 ### setSigner
 
@@ -1263,8 +1263,8 @@ requires approval from the address you're trying to retire from
 
 #### Parameters
 
-| Name     | Type     |
-| :------- | :------- |
+| Name | Type |
+| :------ | :------ |
 | `signer` | `Signer` |
 
 #### Returns
@@ -1273,4 +1273,4 @@ requires approval from the address you're trying to retire from
 
 #### Defined in
 
-[index.ts:82](https://github.com/GigaHierz/toucan-sdk/blob/b837065/src/index.ts#L82)
+[index.ts:84](https://github.com/0xmichalis/toucan-sdk/blob/1488e66/src/index.ts#L84)

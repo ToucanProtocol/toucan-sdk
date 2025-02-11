@@ -345,7 +345,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
   });
 
-  describe("Testing TCO related methods", function () {
+  describe("Testing TCO2 related methods", function () {
     it("Should retire TCO2 & mint the certificate", async function () {
       const tco2s = await toucan.redeemAuto("NCT", ONE_ETHER);
       const { address, amount } = tco2s[0];

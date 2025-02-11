@@ -337,64 +337,6 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
   });
 
-  xdescribe("Testing BCT related methods", function () {
-    it("Should selectively redeem BCT for the highest quality TCO2s", async function () {
-      const { tco2Address, amountToRedeem } = await getDynamicRedeemAmount(
-        "NCT",
-        "high"
-      );
-
-      const bct = toucan.getPoolContract("BCT");
-      const bctBalanceBefore = await bct.balanceOf(addr1.address);
-      const tco2 = toucan.getTCO2Contract(tco2Address);
-
-      const fees = await toucan.calculateRedeemFees(
-        "BCT",
-        [tco2Address],
-        [amountToRedeem]
-      );
-      await toucan.redeemMany("BCT", [tco2Address], [amountToRedeem]);
-
-      const balance = await tco2.balanceOf(addr1.address);
-
-      expect(
-        formatEther(balance),
-        `Expect addr1 to have ${formatEther(
-          amountToRedeem
-        )}  minus fees ${formatEther(fees)} of the TCO2 (${tco2Address})`
-      ).to.be.eql(formatEther(amountToRedeem.sub(fees)));
-      expect(
-        formatEther(await bct.balanceOf(addr1.address)),
-        `Expect addr1 to have ${formatEther(amountToRedeem)} less BCT`
-      ).to.be.eql(formatEther(bctBalanceBefore.sub(amountToRedeem)));
-    });
-
-    it("Should automatically redeem BCT & deposit the TCO2 back", async function () {
-      const { tco2Address, amountToRedeem } = await getDynamicRedeemAmount(
-        "BCT",
-        "low"
-      );
-
-      const bct = toucan.getPoolContract("BCT");
-      const tco2 = toucan.getTCO2Contract(tco2Address);
-
-      const tco2BalanceBefore = await tco2.balanceOf(addr1.address);
-      const bctBalanceBefore = await bct.balanceOf(addr1.address);
-
-      await toucan.redeemAuto("BCT", amountToRedeem);
-      await toucan.depositTCO2("BCT", amountToRedeem, tco2.address);
-
-      expect(
-        formatEther(await tco2.balanceOf(addr1.address)),
-        `Expect addr1 to have the same amount of TCO2`
-      ).to.be.eql(formatEther(tco2BalanceBefore));
-      expect(
-        formatEther(await bct.balanceOf(addr1.address)),
-        `Expect addr1 to have the same amount of BCT`
-      ).to.be.eql(formatEther(bctBalanceBefore));
-    });
-  });
-
   describe("Testing Contract Registry related methods", function () {
     it("Should return true", async function () {
       const scoredTCO2s = await getFilteredScoredTCO2s("NCT");

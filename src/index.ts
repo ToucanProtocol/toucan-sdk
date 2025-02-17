@@ -28,7 +28,7 @@ import {
   IToucanContractRegistry,
   IToucanPoolToken,
   OffsetHelper,
-} from "./typechain";
+} from "./typechain/misc";
 import { Network, PoolSymbol } from "./types";
 import {
   AggregationsMethod,

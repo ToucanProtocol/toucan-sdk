@@ -1,7 +1,7 @@
 {
   "name": "toucan-sdk",
   "version": "1.0.6-beta",
-  "description": "A JavaScript SDK for Toucan Protocol. Works in the web browser and Node.js.",
+  "description": "A Typescript SDK for Toucan Protocol. Works in the web browser and Node.js.",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -18,8 +18,6 @@
     "carbon",
     "offset",
     "retirement",
-    "bct",
-    "nct",
     "toucan"
   ],
   "author": "Toucan Protocol",

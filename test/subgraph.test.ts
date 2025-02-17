@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-import ToucanClient from "../dist";
+import ToucanClient from "../src";
 
 describe("Testing Toucan-SDK subgraph interactions", function () {
   let addr1: SignerWithAddress;

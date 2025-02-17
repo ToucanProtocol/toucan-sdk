@@ -29,7 +29,7 @@ import {
   IToucanContractRegistry,
   IToucanPoolToken,
   OffsetHelper,
-} from "../typechain";
+} from "../typechain/misc";
 import { Network, PoolSymbol } from "../types";
 import { RedeemAutoResponse } from "../types/responses";
 import { GAS_LIMIT } from "../utils";

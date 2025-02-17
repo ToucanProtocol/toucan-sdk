@@ -18,7 +18,7 @@
 
 import { Client, gql } from "@urql/core";
 
-import { IToucanCarbonOffsets } from "../typechain";
+import { IToucanCarbonOffsets } from "../typechain/misc";
 import { Network, PoolSymbol } from "../types";
 import {
   AggregationsMethod,

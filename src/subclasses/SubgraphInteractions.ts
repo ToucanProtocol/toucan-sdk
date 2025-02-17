@@ -590,7 +590,7 @@ class SubgraphInteractions {
       }
     `;
 
-    const result = await this.graphClient.query(query).toPromise();
+    const result = await this.graphClient.query(query, {}).toPromise();
 
     if (result.error) throw result.error;
     if (result.data?.aggregations) return result.data.aggregations;

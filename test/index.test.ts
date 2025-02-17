@@ -1,18 +1,19 @@
+// Explicit import of hardhat plugins are required to obtain type extensions
+// when compiling without hardhat.config.ts.
+import "@nomiclabs/hardhat-ethers";
+
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { BigNumber, Contract } from "ethers";
-import {
-  formatEther,
-  FormatTypes,
-  Interface,
-  parseEther,
-} from "ethers/lib/utils";
+import { formatEther, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
+import { before, describe, it } from "mocha";
 
-import ToucanClient from "../dist";
-import { PoolSymbol } from "../dist/types";
-import { ERC20ABI, swapperABI } from "../dist/utils/ABIs";
-import addresses from "../dist/utils/addresses";
+import ToucanClient from "../src";
+import { ERC20__factory } from "../src/typechain/protocol/factories/@openzeppelin/contracts/token/ERC20/ERC20__factory";
+import { PoolSymbol } from "../src/types";
+import { swapperABI } from "../src/utils/ABIs";
+import addresses from "../src/utils/addresses";
 
 const ONE_ETHER = parseEther("1.0");
 
@@ -96,6 +97,8 @@ describe("Testing Toucan-SDK contract interactions", function () {
         parseEther("100.0")
       ),
     });
+    const weth = ERC20__factory.connect(network.weth, addr1);
+    await weth.approve(swapper.address, ONE_ETHER);
     await swapper.swap(network.weth, ONE_ETHER, {
       value: await swapper.calculateNeededETHAmount(network.weth, ONE_ETHER),
     });
@@ -133,9 +136,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
     });
 
     it("Should retire 1 TCO2 using swap token #autoOffsetExactInToken", async function () {
-      const iface = new Interface(ERC20ABI);
-      iface.format(FormatTypes.full);
-      const weth = new ethers.Contract(network.weth, iface, addr1);
+      const weth = ERC20__factory.connect(network.weth, addr1);
       const pool = await toucan.getPoolContract("NCT");
 
       const state: Array<{

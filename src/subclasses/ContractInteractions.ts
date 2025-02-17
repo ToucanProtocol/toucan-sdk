@@ -24,12 +24,12 @@ import {
   ethers,
 } from "ethers";
 
+import { IToucanPoolToken } from "../typechain/legacy";
+import { OffsetHelper } from "../typechain/misc";
 import {
-  IToucanCarbonOffsets,
-  IToucanContractRegistry,
-  IToucanPoolToken,
-  OffsetHelper,
-} from "../typechain/misc";
+  ToucanCarbonOffsets,
+  ToucanContractRegistry,
+} from "../typechain/protocol";
 import { Network, PoolSymbol } from "../types";
 import { RedeemAutoResponse } from "../types/responses";
 import { GAS_LIMIT } from "../utils";
@@ -729,7 +729,7 @@ class ContractInteractions {
   getTCO2Contract = (
     address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): IToucanCarbonOffsets => {
+  ): ToucanCarbonOffsets => {
     if (!this.checkIfTCO2(address, signerOrProvider))
       throw new Error(`${address} is not a TCO2 address`);
 
@@ -737,7 +737,7 @@ class ContractInteractions {
       address,
       tco2ABI,
       signerOrProvider
-    ) as IToucanCarbonOffsets;
+    ) as ToucanCarbonOffsets;
     return TCO2;
   };
 
@@ -749,12 +749,12 @@ class ContractInteractions {
    */
   public getRegistryContract = (
     signerOrProvider: ethers.Signer | ethers.providers.Provider
-  ): IToucanContractRegistry => {
+  ): ToucanContractRegistry => {
     const toucanContractRegistry = new ethers.Contract(
       this.addresses.toucanContractRegistry,
       toucanContractRegistryABI,
       signerOrProvider
-    ) as IToucanContractRegistry;
+    ) as ToucanContractRegistry;
     return toucanContractRegistry;
   };
 

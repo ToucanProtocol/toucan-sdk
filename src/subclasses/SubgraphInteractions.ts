@@ -18,7 +18,7 @@
 
 import { Client, gql } from "@urql/core";
 
-import { IToucanCarbonOffsets } from "../typechain/misc";
+import { ToucanCarbonOffsets } from "../typechain/protocol";
 import { Network, PoolSymbol } from "../types";
 import {
   AggregationsMethod,
@@ -49,7 +49,7 @@ import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
 class SubgraphInteractions {
   network: Network;
   addresses: INetworkTokenAddresses;
-  TCO2: IToucanCarbonOffsets | undefined;
+  TCO2: ToucanCarbonOffsets | undefined;
   graphClient: Client;
 
   /**

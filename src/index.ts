@@ -23,12 +23,12 @@ import { FormatTypes, Interface } from "ethers/lib/utils";
 
 import ContractInteractions from "./subclasses/ContractInteractions";
 import SubgraphInteractions from "./subclasses/SubgraphInteractions";
+import { IToucanPoolToken } from "./typechain/legacy";
+import { OffsetHelper } from "./typechain/misc";
 import {
-  IToucanCarbonOffsets,
-  IToucanContractRegistry,
-  IToucanPoolToken,
-  OffsetHelper,
-} from "./typechain/misc";
+  ToucanCarbonOffsets,
+  ToucanContractRegistry,
+} from "./typechain/protocol";
 import { Network, PoolSymbol } from "./types";
 import {
   AggregationsMethod,
@@ -878,7 +878,7 @@ export default class ToucanClient {
    * @param address address of TCO2 ethers.Contract to insantiate
    * @returns a ethers.contract to interact with the token
    */
-  getTCO2Contract = (address: string): IToucanCarbonOffsets => {
+  getTCO2Contract = (address: string): ToucanCarbonOffsets => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
@@ -890,7 +890,7 @@ export default class ToucanClient {
    * @description gets the contract of a the Toucan contract registry
    * @returns a ethers.contract to interact with the contract registry
    */
-  public getRegistryContract = (): IToucanContractRegistry => {
+  public getRegistryContract = (): ToucanContractRegistry => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 

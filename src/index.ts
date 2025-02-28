@@ -19,16 +19,16 @@ the Free Software Foundation, either version 3 of the License, or
 import "isomorphic-unfetch";
 
 import { BigNumber, ContractReceipt, ethers } from "ethers";
-import { FormatTypes, Interface } from "ethers/lib/utils";
 
 import ContractInteractions from "./subclasses/ContractInteractions";
 import SubgraphInteractions from "./subclasses/SubgraphInteractions";
+import { IToucanPoolToken } from "./typechain/legacy";
+import { OffsetHelper } from "./typechain/misc";
 import {
-  IToucanCarbonOffsets,
-  IToucanContractRegistry,
-  IToucanPoolToken,
-  OffsetHelper,
-} from "./typechain/misc";
+  ToucanCarbonOffsets,
+  ToucanContractRegistry,
+} from "./typechain/protocol";
+import { ERC20__factory } from "./typechain/protocol/factories/@openzeppelin/contracts/token/ERC20/ERC20__factory";
 import { Network, PoolSymbol } from "./types";
 import {
   AggregationsMethod,
@@ -45,7 +45,6 @@ import {
   UserRetirementsMethod,
 } from "./types/methods";
 import { RedeemAutoResponse } from "./types/responses";
-import { ERC20ABI } from "./utils/ABIs";
 
 export * from "./types/responses";
 
@@ -433,9 +432,7 @@ export default class ToucanClient {
 
     const signer = this.signer;
 
-    const iface = new Interface(ERC20ABI);
-    iface.format(FormatTypes.full);
-    const token = new ethers.Contract(swapToken, iface, signer);
+    const token = ERC20__factory.connect(swapToken, signer);
 
     return this.contractInteractions.autoOffsetExactOutToken(
       token,
@@ -446,19 +443,18 @@ export default class ToucanClient {
   };
 
   /**
-/**
- *
- * @description retires carbon credits using the oldest TCO2 tokens available from the specified Toucan token pool by sending ERC20
+   *
+   * @description retires carbon credits using the oldest TCO2 tokens available from the specified Toucan token pool by sending ERC20
    * tokens (cUSD, USDC, WETH, WMATIC). All provided tokens are consumed for offsetting.
- * @notice this method needs two different actions signed and may take up to 1 minute to return a result
- * @dev When automatically redeeming pool tokens for the oldest ones
+   * @notice this method needs two different actions signed and may take up to 1 minute to return a result
+   * @dev When automatically redeeming pool tokens for the oldest ones
    * TCO2s there are no fees and you receive exactly 1 TCO2 token for 1 pool
    * token.
- * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
- * @param pool The pool symbol of the pool (token) to use
- * @param amount the amount of ERC20 token to swap into Toucan pool token. Full amount will be used for offsetting.
- * @returns The offset transaction.
- */
+   * @param swapToken portal for the token to swap into pool tokens (only accepts WETH, WMATIC and USDC)
+   * @param pool The pool symbol of the pool (token) to use
+   * @param amount the amount of ERC20 token to swap into Toucan pool token. Full amount will be used for offsetting.
+   * @returns The offset transaction.
+   */
   autoOffsetExactInToken = async (
     swapToken: string,
     pool: PoolSymbol,
@@ -467,9 +463,7 @@ export default class ToucanClient {
     if (!this.signer) throw new Error("No signer set");
     const signer = this.signer;
 
-    const iface = new Interface(ERC20ABI);
-    iface.format(FormatTypes.full);
-    const token = new ethers.Contract(swapToken, iface, signer);
+    const token = ERC20__factory.connect(swapToken, signer);
 
     return this.contractInteractions.autoOffsetExactInToken(
       token,
@@ -543,9 +537,7 @@ export default class ToucanClient {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
-    const iface = new Interface(ERC20ABI);
-    iface.format(FormatTypes.full);
-    const token = new ethers.Contract(swapToken, iface, signerOrProvider);
+    const token = ERC20__factory.connect(swapToken, signerOrProvider);
 
     return this.contractInteractions.calculateNeededTokenAmount(
       token,
@@ -600,9 +592,7 @@ export default class ToucanClient {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
-    const iface = new Interface(ERC20ABI);
-    iface.format(FormatTypes.full);
-    const token = new ethers.Contract(swapToken, iface, signerOrProvider);
+    const token = ERC20__factory.connect(swapToken, signerOrProvider);
 
     return this.contractInteractions.calculateExpectedPoolTokenForToken(
       token,
@@ -878,7 +868,7 @@ export default class ToucanClient {
    * @param address address of TCO2 ethers.Contract to insantiate
    * @returns a ethers.contract to interact with the token
    */
-  getTCO2Contract = (address: string): IToucanCarbonOffsets => {
+  getTCO2Contract = (address: string): ToucanCarbonOffsets => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 
@@ -890,7 +880,7 @@ export default class ToucanClient {
    * @description gets the contract of a the Toucan contract registry
    * @returns a ethers.contract to interact with the contract registry
    */
-  public getRegistryContract = (): IToucanContractRegistry => {
+  public getRegistryContract = (): ToucanContractRegistry => {
     const signerOrProvider = this.signer ? this.signer : this.provider;
     if (!signerOrProvider) throw new Error("No signer or provider set");
 

@@ -1,28 +1,20 @@
 import { cacheExchange, createClient, fetchExchange } from "@urql/core";
 
-import { Network } from "../types";
 import {
-  ALFAJORES_TOUCAN_GRAPH_API_URL,
-  CELO_TOUCAN_GRAPH_API_URL,
   CELO_UBESWAP_GRAPH_API_URL,
+  getSubgraphURL,
   POLYGON_SUSHI_GRAPH_API_URL,
-  POLYGON_TOUCAN_GRAPH_API_URL,
 } from "./graphAPIs";
 
-export const getToucanGraphClient = (network: Network) =>
+export const getToucanGraphClient = (network: string) =>
   createClient({
-    url:
-      network === "polygon"
-        ? POLYGON_TOUCAN_GRAPH_API_URL
-        : network === "celo"
-        ? CELO_TOUCAN_GRAPH_API_URL
-        : ALFAJORES_TOUCAN_GRAPH_API_URL,
+    url: getSubgraphURL(network),
     requestPolicy: "network-only",
     fetch: fetch,
     exchanges: [cacheExchange, fetchExchange],
   });
 
-export const getDexGraphClient = (network: Network) =>
+export const getDexGraphClient = (network: string) =>
   createClient({
     url:
       network === "polygon"

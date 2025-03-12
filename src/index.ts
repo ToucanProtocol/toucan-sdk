@@ -29,7 +29,7 @@ import {
   ToucanContractRegistry,
 } from "./typechain/protocol";
 import { ERC20__factory } from "./typechain/protocol/factories/@openzeppelin/contracts/token/ERC20/ERC20__factory";
-import { Network, PoolSymbol } from "./types";
+import { PoolSymbol } from "./types";
 import {
   AggregationsMethod,
   AllTCO2TokensMethod,
@@ -55,38 +55,30 @@ export * from "./types/responses";
  * @implements ContractInteractions, SubgraphInteractions
  */
 export default class ToucanClient {
-  signer: ethers.Signer | undefined;
-  provider: ethers.providers.Provider | undefined;
-  network: Network;
+  network: string;
+  signerOrProvider: ethers.Signer | ethers.providers.Provider;
   contractInteractions: ContractInteractions;
   subgraphInteractions: SubgraphInteractions;
 
   /**
-   *
    * @param network network that you want to work on
-   * @param provider to be able to read from the blockchain
-   * @param signer to be able to sign transactions
+   * @param signerOrProvider to be able to interact with the blockchain
    */
   constructor(
-    network: Network,
-    provider?: ethers.providers.Provider,
-    signer?: ethers.Signer
+    network: string,
+    signerOrProvider: ethers.Signer | ethers.providers.Provider
   ) {
     this.network = network;
-    this.provider = provider;
-    this.signer = signer;
+    this.signerOrProvider = signerOrProvider;
 
     this.contractInteractions = new ContractInteractions(network);
     this.subgraphInteractions = new SubgraphInteractions(network);
+
+    // TODO: Need to validate that network matches the signerOrProvider
+    // This can only be done in an async context as it invloves getting the chainId
+    // from the provider so we need to have an init function that we enforce
+    // users to call before using the SDK.
   }
-
-  setSigner = (signer: ethers.Signer) => {
-    this.signer = signer;
-  };
-
-  setProvider = (provider: ethers.providers.Provider) => {
-    this.provider = provider;
-  };
 
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
@@ -104,8 +96,10 @@ export default class ToucanClient {
     amount: BigNumber,
     tco2Address: string
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.retire(amount, tco2Address, signer);
   };
@@ -128,8 +122,10 @@ export default class ToucanClient {
     amount: BigNumber,
     tco2Address: string
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.retireAndMintCertificate(
       retirementEntityName,
@@ -155,8 +151,10 @@ export default class ToucanClient {
     address: string,
     tco2Address: string
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.retireFrom(
       amount,
@@ -173,12 +171,9 @@ export default class ToucanClient {
    * @returns
    */
   getDepositCap = async (tco2Address: string): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
     return this.contractInteractions.getDepositCap(
       tco2Address,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -189,12 +184,9 @@ export default class ToucanClient {
    * @returns an array of attributes
    */
   getAttributes = async (tco2Address: string) => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
     return this.contractInteractions.getAttributes(
       tco2Address,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -205,12 +197,9 @@ export default class ToucanClient {
    * @returns BigNumber representing the remaining space
    */
   getTCO2Remaining = async (tco2Address: string): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
     return this.contractInteractions.getTCO2Remaining(
       tco2Address,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -232,8 +221,10 @@ export default class ToucanClient {
     amount: BigNumber,
     tco2Address: string
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.depositTCO2(
       pool,
@@ -251,13 +242,10 @@ export default class ToucanClient {
    * @returns boolean
    */
   checkEligible = async (pool: PoolSymbol, tco2: string): Promise<boolean> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
     return this.contractInteractions.checkEligible(
       pool,
       tco2,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -275,14 +263,11 @@ export default class ToucanClient {
     tco2s: string[],
     amounts: BigNumber[]
   ): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
     return this.contractInteractions.calculateRedeemFees(
       pool,
       tco2s,
       amounts,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -299,8 +284,10 @@ export default class ToucanClient {
     tco2s: string[],
     amounts: BigNumber[]
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.redeemMany(pool, tco2s, amounts, signer);
   };
@@ -316,8 +303,10 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<RedeemAutoResponse> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.redeemAuto(pool, amount, signer);
   };
@@ -334,8 +323,10 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<RedeemAutoResponse> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.redeemAuto2(pool, amount, signer);
   };
@@ -347,10 +338,10 @@ export default class ToucanClient {
    * @returns BigNumber representing the remaining space
    */
   getPoolRemaining = async (pool: PoolSymbol): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    return this.contractInteractions.getPoolRemaining(pool, signerOrProvider);
+    return this.contractInteractions.getPoolRemaining(
+      pool,
+      this.signerOrProvider
+    );
   };
 
   /**
@@ -360,10 +351,10 @@ export default class ToucanClient {
    * @returns array of TCO2 addresses by rank
    */
   getScoredTCO2s = async (pool: PoolSymbol): Promise<string[]> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    return this.contractInteractions.getScoredTCO2s(pool, signerOrProvider);
+    return this.contractInteractions.getScoredTCO2s(
+      pool,
+      this.signerOrProvider
+    );
   };
 
   // --------------------------------------------------------------------------------
@@ -379,10 +370,10 @@ export default class ToucanClient {
    * @returns boolean
    */
   checkIfTCO2 = async (address: string): Promise<boolean> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    return this.contractInteractions.checkIfTCO2(address, signerOrProvider);
+    return this.contractInteractions.checkIfTCO2(
+      address,
+      this.signerOrProvider
+    );
   };
 
   // --------------------------------------------------------------------------------
@@ -405,9 +396,10 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.autoOffsetPoolToken(pool, amount, signer);
   };
@@ -428,9 +420,10 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     const token = ERC20__factory.connect(swapToken, signer);
 
@@ -460,8 +453,10 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<ContractReceipt> => {
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     const token = ERC20__factory.connect(swapToken, signer);
 
@@ -488,8 +483,10 @@ export default class ToucanClient {
   ): Promise<ContractReceipt> => {
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.autoOffsetExactOutETH(
       pool,
@@ -511,8 +508,10 @@ export default class ToucanClient {
   ): Promise<ContractReceipt> => {
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
-    if (!this.signer) throw new Error("No signer set");
-    const signer = this.signer;
+    if (!(this.signerOrProvider instanceof ethers.Signer)) {
+      throw new Error("signerOrProvider is not a signer");
+    }
+    const signer = this.signerOrProvider as ethers.Signer;
 
     return this.contractInteractions.autoOffsetExactInETH(pool, amount, signer);
   };
@@ -534,16 +533,13 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    const token = ERC20__factory.connect(swapToken, signerOrProvider);
+    const token = ERC20__factory.connect(swapToken, this.signerOrProvider);
 
     return this.contractInteractions.calculateNeededTokenAmount(
       token,
       pool,
       amount,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -561,15 +557,13 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
-    if (!signerOrProvider) throw new Error("No signer or provider set");
 
     return this.contractInteractions.calculateNeededETHAmount(
       pool,
       amount,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -589,16 +583,13 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    const token = ERC20__factory.connect(swapToken, signerOrProvider);
+    const token = ERC20__factory.connect(swapToken, this.signerOrProvider);
 
     return this.contractInteractions.calculateExpectedPoolTokenForToken(
       token,
       pool,
       amount,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -615,15 +606,13 @@ export default class ToucanClient {
     pool: PoolSymbol,
     amount: BigNumber
   ): Promise<BigNumber> => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
     if (this.network === "celo")
       throw new Error("The function is not available on Celo.");
-    if (!signerOrProvider) throw new Error("No signer or provider set");
 
     return this.contractInteractions.calculateExpectedPoolTokenForETH(
       pool,
       amount,
-      signerOrProvider
+      this.signerOrProvider
     );
   };
 
@@ -856,10 +845,10 @@ export default class ToucanClient {
    * @returns a ethers.contract to interact with the pool
    */
   public getPoolContract = (pool: PoolSymbol): IToucanPoolToken => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    return this.contractInteractions.getPoolContract(pool, signerOrProvider);
+    return this.contractInteractions.getPoolContract(
+      pool,
+      this.signerOrProvider
+    );
   };
 
   /**
@@ -869,10 +858,10 @@ export default class ToucanClient {
    * @returns a ethers.contract to interact with the token
    */
   getTCO2Contract = (address: string): ToucanCarbonOffsets => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    return this.contractInteractions.getTCO2Contract(address, signerOrProvider);
+    return this.contractInteractions.getTCO2Contract(
+      address,
+      this.signerOrProvider
+    );
   };
 
   /**
@@ -881,10 +870,7 @@ export default class ToucanClient {
    * @returns a ethers.contract to interact with the contract registry
    */
   public getRegistryContract = (): ToucanContractRegistry => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    return this.contractInteractions.getRegistryContract(signerOrProvider);
+    return this.contractInteractions.getRegistryContract(this.signerOrProvider);
   };
 
   /**
@@ -893,10 +879,9 @@ export default class ToucanClient {
    * @returns a ethers.contract to interact with the OffsetHelper
    */
   public getOffsetHelperContract = (): OffsetHelper => {
-    const signerOrProvider = this.signer ? this.signer : this.provider;
-    if (!signerOrProvider) throw new Error("No signer or provider set");
-
-    return this.contractInteractions.getOffsetHelperContract(signerOrProvider);
+    return this.contractInteractions.getOffsetHelperContract(
+      this.signerOrProvider
+    );
   };
 }
 

@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 import ToucanClient from "../src";
+import SubgraphInteractions from "../src/subclasses/SubgraphInteractions";
 
 describe("Testing Toucan-SDK subgraph interactions", function () {
   let addr1: SignerWithAddress;
@@ -10,8 +11,13 @@ describe("Testing Toucan-SDK subgraph interactions", function () {
 
   before(async () => {
     [addr1] = await ethers.getSigners();
-    toucan = new ToucanClient("alfajores");
-    toucan.setSigner(addr1);
+    toucan = new ToucanClient("alfajores", addr1);
+  });
+
+  it("Should fail to initialize SubgraphInteractions with an invalid network", async function () {
+    expect(() => new SubgraphInteractions("spankchain")).to.throw(
+      "Subgraph URL not found for network: spankchain"
+    );
   });
 
   it("Should fetch user batches", async function () {

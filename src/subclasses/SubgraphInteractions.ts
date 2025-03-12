@@ -19,7 +19,7 @@
 import { Client, gql } from "@urql/core";
 
 import { ToucanCarbonOffsets } from "../typechain/protocol";
-import { Network, PoolSymbol } from "../types";
+import { PoolSymbol } from "../types";
 import {
   AggregationsMethod,
   AllTCO2TokensMethod,
@@ -47,7 +47,7 @@ import { getDexGraphClient, getToucanGraphClient } from "../utils/graphClients";
  * @description This class helps query Toucan or Toucan-related subgraphs
  */
 class SubgraphInteractions {
-  network: Network;
+  network: string;
   addresses: INetworkTokenAddresses;
   TCO2: ToucanCarbonOffsets | undefined;
   graphClient: Client;
@@ -56,7 +56,7 @@ class SubgraphInteractions {
    *
    * @param network network that you want to work on
    */
-  constructor(network: Network) {
+  constructor(network: string) {
     this.network = network;
     this.addresses = addresses[this.network];
     this.graphClient = getToucanGraphClient(this.network);

@@ -1,0 +1,8 @@
+{
+  "out": "typedoc",
+  "cleanOutputDir": true,
+  "projectDocuments": [
+    "CONTRIBUTING.md",
+    "docs/images/GitHub-header.jpg"
+  ]
+}

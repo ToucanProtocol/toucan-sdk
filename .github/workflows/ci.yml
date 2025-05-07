@@ -7,8 +7,10 @@ on:
     branches: [main]
 
 env:
+  # Work around variables not being passed to forks
   NODE_PROVIDER_MATIC_RPC_URL: https://polygon-mainnet.g.alchemy.com/v2/gZpMQ4LyPEcnZVRE5ueUhcFFDBQinsV8
   GRAPH_API_KEY: 0e7dd738749485cb3dceaeaa33ce3eb8
+  FORKING_BLOCK_NUMBER: 71229929
 
 jobs:
   build:

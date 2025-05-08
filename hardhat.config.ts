@@ -27,6 +27,14 @@ const config: HardhatUserConfig = {
         url:
           process.env.NODE_PROVIDER_MATIC_RPC_URL ||
           "https://rpc.ankr.com/polygon",
+        blockNumber: Number(process.env.FORKING_BLOCK_NUMBER),
+      },
+      chains: {
+        137: {
+          hardforkHistory: {
+            london: 23850000,
+          },
+        },
       },
     },
   },

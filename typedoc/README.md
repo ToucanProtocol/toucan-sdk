@@ -1,4 +1,8 @@
-![Toucan logo](docs/images/GitHub-header.jpg)
+**toucan-sdk**
+
+***
+
+![Toucan logo](_media/GitHub-header.jpg)
 
 # Toucan SDK
 
@@ -17,7 +21,7 @@ For full documentation about Toucan Protocol, please visit
 <https://docs.toucan.earth/>.
 
 ⚠️ This SDK is under development.  If you run into issues, please see
-[the `CONTRIBUTING` file](CONTRIBUTING.md). ⚠️
+[the `CONTRIBUTING` file](documents/CONTRIBUTING.md). ⚠️
 
 ## Tech stack
 
@@ -402,4 +406,4 @@ The object returned by the above method will look like this:
 
 # Contributing
 
-Please see [the `CONTRIBUTING` file](CONTRIBUTING.md).
+Please see [the `CONTRIBUTING` file](documents/CONTRIBUTING.md).

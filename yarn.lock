@@ -12849,7 +12849,7 @@ __metadata:
     ts-node: "npm:^10.1.0"
     typechain: "npm:^8.0.0"
     typedoc: "npm:^0.28.4"
-    typedoc-plugin-markdown: "npm:^4.6.3"
+    typedoc-plugin-markdown: "npm:^4.7.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
@@ -13212,12 +13212,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-markdown@npm:^4.6.3":
-  version: 4.6.3
-  resolution: "typedoc-plugin-markdown@npm:4.6.3"
+"typedoc-plugin-markdown@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "typedoc-plugin-markdown@npm:4.7.0"
   peerDependencies:
     typedoc: 0.28.x
-  checksum: 10c0/5242ef2869bfb6dfbe6b3dbe655be8cb1147ed5f17fa3639ed7643ce889534ef27dfb91170f34fd52a83bf89bdb568a5a7a7ad148bbf0b5785cabc7c81dbcb2d
+  checksum: 10c0/066cb8a0f96bb24c22069830d189904d624204b7ceaaeab78c72008ebb2c2bddb55170ae39fac31352caf20516a1a2360300cf384c9683f7b42465dc2c354bd1
   languageName: node
   linkType: hard
 

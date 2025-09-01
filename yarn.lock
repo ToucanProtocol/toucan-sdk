@@ -5,15 +5,15 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@0no-co/graphql.web@npm:^1.0.5":
-  version: 1.1.2
-  resolution: "@0no-co/graphql.web@npm:1.1.2"
+"@0no-co/graphql.web@npm:^1.0.13":
+  version: 1.2.0
+  resolution: "@0no-co/graphql.web@npm:1.2.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   peerDependenciesMeta:
     graphql:
       optional: true
-  checksum: 10c0/7074de29681f0563cb9a90d702c7cda4443dce858e09f9a09adbafe32c302890cab81959ccba4ed7ac3e332423b2928a1dc95dd4a5004e6a5c156b733caa349a
+  checksum: 10c0/4eed600962bfab42afb49cddcfb31a47b00502f59707609cf160559920ce0f5cf8874791e4cafc465ede30ae291992f3f892bc757b2a989e80e50e358f71c518
   languageName: node
   linkType: hard
 
@@ -1848,13 +1848,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@urql/core@npm:^5.1.0":
-  version: 5.1.1
-  resolution: "@urql/core@npm:5.1.1"
+"@urql/core@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@urql/core@npm:6.0.1"
   dependencies:
-    "@0no-co/graphql.web": "npm:^1.0.5"
+    "@0no-co/graphql.web": "npm:^1.0.13"
     wonka: "npm:^6.3.2"
-  checksum: 10c0/2a66f58452bbf153c251dd6d127fc0bc0473b4cde47171ca360960059eb08fc019202aee16911168a800814a3b9748300bb88b87817b5d05cf92c16f5772447b
+  checksum: 10c0/44ff0d12dcef1e47338a9ff1217759d1124fa66eec1eec21ff9622e44c179b9d66fa78f462f195bfd8b790b04609abbe5a0674cbfcb0bc6d9c6fe6223d7d7b5b
   languageName: node
   linkType: hard
 
@@ -12865,7 +12865,7 @@ __metadata:
     "@types/mocha": "npm:^9.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.25.0"
     "@typescript-eslint/parser": "npm:^5.25.0"
-    "@urql/core": "npm:^5.1.0"
+    "@urql/core": "npm:^6.0.1"
     chai: "npm:^4.2.0"
     dotenv: "npm:^16.0.0"
     eslint: "npm:^8.15.0"

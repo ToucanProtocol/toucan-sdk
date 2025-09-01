@@ -7,13 +7,7 @@ export interface INetworkTokenAddresses {
   toucanContractRegistry: string;
 }
 
-export interface INetworkAddresses {
-  celo: INetworkTokenAddresses;
-  alfajores: INetworkTokenAddresses;
-  polygon: INetworkTokenAddresses;
-}
-
-const addresses: INetworkAddresses = {
+const addresses: Record<string, INetworkTokenAddresses> = {
   celo: {
     bct: "0x0CcB0071e8B8B716A2a5998aB4d97b83790873Fe",
     nct: "0x02De4766C272abc10Bc88c220D214A26960a7e92",

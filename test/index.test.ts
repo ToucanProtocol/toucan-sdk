@@ -10,6 +10,7 @@ import { ethers } from "hardhat";
 import { before, describe, it } from "mocha";
 
 import ToucanClient from "../src";
+import ContractInteractions from "../src/subclasses/ContractInteractions";
 import { ERC20__factory } from "../src/typechain/protocol/factories/@openzeppelin/contracts/token/ERC20/ERC20__factory";
 import { PoolSymbol } from "../src/types";
 import { swapperABI } from "../src/utils/ABIs";
@@ -80,9 +81,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
   before(async () => {
     [addr1, addr2] = await ethers.getSigners();
 
-    toucan = new ToucanClient(networkName);
-    toucan.setProvider(ethers.provider);
-    toucan.setSigner(addr1);
+    toucan = new ToucanClient(networkName, addr1);
 
     swapper = new ethers.Contract(network.swapper, swapperABI, addr1);
     await swapper.swap(network.nct, parseEther("100.0"), {
@@ -102,6 +101,12 @@ describe("Testing Toucan-SDK contract interactions", function () {
     await swapper.swap(network.weth, ONE_ETHER, {
       value: await swapper.calculateNeededETHAmount(network.weth, ONE_ETHER),
     });
+  });
+
+  it("Should fail to initialize ContractInteractions with an invalid network", async function () {
+    expect(() => new ContractInteractions("spankchain")).to.throw(
+      "Unknown network: spankchain"
+    );
   });
 
   describe("Testing OffsetHelper related methods", function () {
@@ -432,8 +437,7 @@ describe("Testing Toucan-SDK contract interactions", function () {
 
       await tco2.approve(addr2.address, amount);
 
-      const toucan2 = new ToucanClient(networkName);
-      toucan2.setSigner(addr2);
+      const toucan2 = new ToucanClient(networkName, addr2);
 
       await toucan2.retireFrom(amount, addr1.address, address);
 

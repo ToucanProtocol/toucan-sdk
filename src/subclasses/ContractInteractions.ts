@@ -30,7 +30,7 @@ import {
   ToucanCarbonOffsets,
   ToucanContractRegistry,
 } from "../typechain/protocol";
-import { Network, PoolSymbol } from "../types";
+import { PoolSymbol } from "../types";
 import { RedeemAutoResponse } from "../types/responses";
 import { GAS_LIMIT } from "../utils";
 import {
@@ -46,16 +46,15 @@ import addresses, { INetworkTokenAddresses } from "../utils/addresses";
  * @description This class helps interact with Toucan contracts
  */
 class ContractInteractions {
-  network: Network;
   addresses: INetworkTokenAddresses;
 
   /**
    *
    * @param network network that you want to work on
    */
-  constructor(network: Network) {
-    this.network = network;
-    this.addresses = addresses[this.network];
+  constructor(network: string) {
+    this.addresses = addresses[network];
+    if (!this.addresses) throw new Error(`Unknown network: ${network}`);
   }
 
   // --------------------------------------------------------------------------------

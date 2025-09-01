@@ -8319,13 +8319,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isomorphic-unfetch@npm:4.0.0":
-  version: 4.0.0
-  resolution: "isomorphic-unfetch@npm:4.0.0"
+"isomorphic-unfetch@npm:4.0.2":
+  version: 4.0.2
+  resolution: "isomorphic-unfetch@npm:4.0.2"
   dependencies:
     node-fetch: "npm:^3.2.0"
-    unfetch: "npm:^4.2.0"
-  checksum: 10c0/c752bd6a3d20f842cdc3ee96e86f6cc4d2fb4438f624d4a05e299ff3a239a572d0c9e04b93008ff4a1b4d263b1371b676e02146dfbc95dfb94a978bf8f9f796d
+    unfetch: "npm:^5.0.0"
+  checksum: 10c0/1727d85344818eaf798b569904f70313e8eafbc192d84400a3e646bb0b893a2e405727ee45ccac0fc3d41ee48561eaa5cdd55813131613d7f8a55031ed49103d
   languageName: node
   linkType: hard
 
@@ -12883,7 +12883,7 @@ __metadata:
     hardhat: "npm:^2.24.0"
     hardhat-gas-reporter: "npm:^1.0.4"
     husky: "npm:^9.1.7"
-    isomorphic-unfetch: "npm:4.0.0"
+    isomorphic-unfetch: "npm:4.0.2"
     mocha: "npm:^10.0.0"
     prettier: "npm:^2.3.2"
     prettier-plugin-solidity: "npm:^1.0.0-beta.13"
@@ -13404,10 +13404,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unfetch@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "unfetch@npm:4.2.0"
-  checksum: 10c0/a5c0a896a6f09f278b868075aea65652ad185db30e827cb7df45826fe5ab850124bf9c44c4dafca4bf0c55a0844b17031e8243467fcc38dd7a7d435007151f1b
+"unfetch@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "unfetch@npm:5.0.0"
+  checksum: 10c0/ccbbf648a384d57aeaf3bd4972761327a6cf60c84a3edb8e2f9d18aed0df6214576fc8fcd444ea87672e8e32f4a74590bc5c07756f053f57f492c6d8363045c9
   languageName: node
   linkType: hard
 
